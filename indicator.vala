@@ -22,14 +22,6 @@
 
 using AppIndicator;
 
-public class TypeItem{
-	
-	public TypeItem(string text){
-
-	}
-}
-
-
 public class Request {
 	// → SOURCE = APP/DOC/FOLDER/IMAGE ETC..
 	//
@@ -67,28 +59,48 @@ class UpdaterThread {
 	}
 }
 
+public class SearchItem:Gtk.MenuItem{
+	//Gtk.Entry entry;
+	Gtk.Label name;
+
+	public SearchItem(){
+		name = new Gtk.Label("Search:");
+		
+		/* NOT WORKING - WIDGET NOT SUPORTED
+		entry = new Gtk.Entry();
+		entry.set_text("asdasd");
+		entry.show();
+		add(entry);
+		*/
+		
+		add(name);
+		show();
+	}
+}
+
+public class Menu:Gtk.Menu {
+	SearchItem search_item;
+
+	public Menu() {
+		search_item = new SearchItem();
+
+		Gtk.SeparatorMenuItem separator = new Gtk.SeparatorMenuItem();
+		separator.show();
+
+		append(search_item);
+		append(separator);
+	}
+}
+
 class Appindicator {
 	Indicator indicator;
-	TypeItem type_item;
-	Gtk.Menu menu;
+	Menu menu;
 
 	public Appindicator(string name, string icon_path) {
 		indicator = new Indicator(name, icon_path, IndicatorCategory.APPLICATION_STATUS);
 		indicator.set_status(IndicatorStatus.ACTIVE);
 
-		//type_item = new TypeItem("Seach");
-
-		//////////////////////
-		menu = new Gtk.Menu();
-		//////////////////////
-
-		var item = new Gtk.MenuItem.with_label(" ---- Get rekt ----");
-		item.activate.connect(() => {
-			stdout.printf("rekt\n");
-		});
-		item.show();
-		menu.append(item);
-
+		menu = new Menu();
 		indicator.set_menu(menu);
 
 		// OTHER INITS
