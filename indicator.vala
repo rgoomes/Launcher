@@ -60,32 +60,30 @@ class UpdaterThread {
 }
 
 public class SearchItem:Gtk.MenuItem{
-	//Gtk.Entry entry;
 	Gtk.Label name;
+	Gtk.Entry entry = new Gtk.Entry();
 
 	public SearchItem(){
 		name = new Gtk.Label("Search:");
-		
-		/* NOT WORKING - WIDGET NOT SUPORTED
-		entry = new Gtk.Entry();
-		entry.set_text("asdasd");
-		entry.show();
+
 		add(entry);
-		*/
-		
-		add(name);
+		//add(name);
 		show();
 	}
 }
 
 public class Menu:Gtk.Menu {
 	SearchItem search_item;
+	Gtk.Entry entry;
 
-	public Menu() {
+	public Menu(){
+		
+
 		search_item = new SearchItem();
-
+		
 		Gtk.SeparatorMenuItem separator = new Gtk.SeparatorMenuItem();
 		separator.show();
+
 
 		append(search_item);
 		append(separator);
