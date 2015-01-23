@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2015-01-14T20:32:15
+# Project created by QtCreator 2015-01-23T01:17:48
 #
 #-------------------------------------------------
 
@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = Search
+TARGET = Launcher
 TEMPLATE = app
 
 
