@@ -1,4 +1,4 @@
 Launcher
 ========
 
-A Linux launcher with both indicator and window interfaces
+A Linux launcher with a stylish interface
