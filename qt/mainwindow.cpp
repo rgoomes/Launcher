@@ -1,16 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <string>
+
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
-
-    // USE THIS LATER
-    //setAttribute(Qt::WA_TranslucentBackground, true);
-
+    setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint);
-    setStyleSheet("*{background-color: #029777;}");
-    setWindowOpacity(0.5);
 
     ui->setupUi(this);
+    inits();
 }
 
 MainWindow::~MainWindow(){
@@ -21,18 +20,7 @@ void MainWindow::mousePressEvent(QMouseEvent* event){
     mouse_x = event->x();
     mouse_y = event->y();
 
-
-    char c[8], tmp[100] = "";
-    generate_colour(c);
-
-    strcpy(tmp,"*{background-color: #");
-    strcat(tmp, c);
-    strcat(tmp, ";}\0");
-
-    setStyleSheet(tmp);
-
-    qDebug() << event->pos() << c;
-
+    qDebug() << event->pos();
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
@@ -40,11 +28,27 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event){
          event->globalY() - mouse_y);
 }
 
-void MainWindow::generate_colour(char *s){
-    char hex[] = "0123456789ABCDEF";
+void MainWindow::setShadow(QColor c, int offset, int blur_radius){
+    effect->setColor(c);
+    effect->setOffset(offset);
+    effect->setBlurRadius(blur_radius);
 
-    for(int i = 0; i < 6; i++)
-        *s++ = hex[rand() % 16];
+    ui->frame->setGraphicsEffect(effect);
+}
 
-    *s = '\0';
+void MainWindow::setBorderRadius(int r){
+    char rad[8];
+    sprintf(rad, "%d", r);
+    string tmp = string("border-radius: ") + rad + string("px; background-color: rgba(10,196,149,0.5);");
+
+    ui->frame->setStyleSheet(tmp.c_str());
+}
+
+void MainWindow::inits(){
+    effect = new QGraphicsDropShadowEffect();
+
+    // DEFINE A DEFAULT SHADOW
+    setShadow(QColor(0,0,0,255), 3, 10);
+
+    //ui->frame->setGraphicsEffect(new QGraphicsBlurEffect);
 }

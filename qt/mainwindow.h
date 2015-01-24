@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 
+#include <QGraphicsBlurEffect>
 #include <QMouseEvent>
 #include <QDebug>
 
@@ -16,9 +17,16 @@ class MainWindow : public QMainWindow{
     int mouse_x;
     int mouse_y;
 
+    QGraphicsDropShadowEffect* effect;
+
     public:
         explicit MainWindow(QWidget *parent = 0);
         ~MainWindow();
+
+    public:
+        void inits();
+        void setBorderRadius(int r);
+        void setShadow(QColor c, int offset, int blur_radius);
 
     private:
         Ui::MainWindow *ui;
@@ -26,9 +34,6 @@ class MainWindow : public QMainWindow{
     protected:
         void mousePressEvent(QMouseEvent* event);
         void mouseMoveEvent(QMouseEvent* event);
-
-    public:
-        void generate_colour(char *s);
 };
 
 #endif // MAINWINDOW_H
