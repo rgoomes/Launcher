@@ -38,8 +38,12 @@ void dfs(char* dir_name, int depth){
 
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
+   if(argc != 3){
+      printf("Usage: ./explorer root_search_directory file\n");
+      return 0;
+   }
+
    strcpy(search, argv[2]);
    for(cdir=0; cdir<=10; cdir++){
       //printf("cdir: %d\n", cdir);
