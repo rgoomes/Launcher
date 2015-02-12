@@ -6,41 +6,38 @@
 #include <dirent.h>
 #include <string.h>
 
-char queue[1000000][256];
-int qsize=0;
 char search[256];
+int cdir;
+int steps=0;
 
-void bfs(){
+void dfs(char* dir_name, int depth){
+   //printf("%d\n", steps++);
+   if(depth > cdir){
+      return;
+   }
 
-   DIR *mydir;
-   struct dirent *myfile;
-   struct stat mystat;
-   int sd=0;
    char name[256];
-
-   while(sd < qsize){
-      mydir = opendir(queue[sd]);
-      //printf("dir: %s\n", argv[1]);
-      while((myfile = readdir(mydir)) != NULL){
-         if(strcmp(myfile->d_name, "..") != 0 && strcmp(myfile->d_name, ".") != 0){
-            sprintf(name, "%s/%s", queue[sd], myfile->d_name);
-            //printf("%d\n", qsize*256);
-            //printf("%s\n", name);
-            stat(name, &mystat);
-            if(S_ISDIR(mystat.st_mode)){
-               //printf("%s\n", myfile->d_name);
-               strcpy(queue[qsize], name);
-               qsize++;
-            }else{
-               if(strstr(myfile->d_name, search) != NULL){
-                  printf("%s\n", myfile->d_name);
-               }
+   DIR *cur_dir;
+   struct dirent *file;
+   struct stat mystat;
+   cur_dir = opendir(dir_name);
+   while( cur_dir != NULL && (file = readdir(cur_dir)) != NULL){
+      if(strcmp(file->d_name, "..") != 0 && strcmp(file->d_name, ".") != 0){
+         sprintf(name, "%s/%s", dir_name, file->d_name);
+         stat(name, &mystat);
+         if(S_ISDIR(mystat.st_mode)){
+            //printf("%s\n", myfile->d_name);
+            dfs(name, depth+1);
+         }else{
+            if(strstr(file->d_name, search) != NULL && cdir == depth){
+               printf("%s/%s\n", name, file->d_name);
             }
          }
       }
-      closedir(mydir);
-      sd++;
    }
+   closedir(cur_dir);
+
+
 }
 
 int main(int argc, char* argv[])
@@ -61,8 +58,16 @@ int main(int argc, char* argv[])
    }
    closedir(mydir);*/
 
-   strcpy(queue[qsize], argv[1]);
+   /*strcpy(queue[qsize], argv[1]);
    qsize++;
    strcpy(search, argv[2]);
-   bfs();
+   bfs();*/
+
+   strcpy(search, argv[2]);
+   for(cdir=1; cdir<=10; cdir++){
+      printf("cdir: %d\n", cdir);
+      dfs(argv[1], 0);
+   }
+   printf("END\n");
+
 }
