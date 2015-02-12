@@ -33,15 +33,16 @@ void dfs(char* dir_name, int depth){
    struct stat mystat;
    cur_dir = opendir(dir_name);
    while( cur_dir != NULL && (file = readdir(cur_dir)) != NULL){
-      if(strcmp(file->d_name, "..") != 0 && strcmp(file->d_name, ".") != 0){
+      if(strcmp(file->d_name, "..") != 0 && strcmp(file->d_name, ".") != 0 && file->d_name[0] != '.' ){
          sprintf(name, "%s/%s", dir_name, file->d_name);
          stat(name, &mystat);
+
+         if(strstr(file->d_name, search) != NULL && cdir == depth){
+            printf("%s/%s\n", name, file->d_name);
+         }
+
          if(S_ISDIR(mystat.st_mode) && check_dir(name)){
             dfs(name, depth+1);
-         }else{
-            if(strstr(file->d_name, search) != NULL && cdir == depth){
-               printf("%s/%s\n", name, file->d_name);
-            }
          }
       }
    }
