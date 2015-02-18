@@ -1,1 +1,9 @@
-.gitignore~
+# IGNORE LINUX BACKUP FILES
+*~
+
+# IGNORE EXPLORER BINARY
+explorer/explorer
+
+# IGNORE QT USER PRO AND BUILD DIR
+qt/Launcher.pro.user
+build-Launcher-Desktop_Qt_Qt_Version_GCC_64bit-Debug/
