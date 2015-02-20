@@ -29,6 +29,8 @@ class MainWindow : public QMainWindow{
         void inits();
         void setBorderRadius(int r);
         void setShadow(QColor c, int offset, int blur_radius);
+        void setFullScreenMode();
+        void setWindowMode();
 
     private:
         Ui::MainWindow *ui;

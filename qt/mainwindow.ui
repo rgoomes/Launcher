@@ -24,22 +24,22 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <property name="leftMargin">
-     <number>10</number>
+     <number>5</number>
     </property>
     <property name="topMargin">
-     <number>10</number>
+     <number>5</number>
     </property>
     <property name="rightMargin">
-     <number>10</number>
+     <number>5</number>
     </property>
     <property name="bottomMargin">
-     <number>10</number>
+     <number>5</number>
     </property>
     <item>
      <widget class="QFrame" name="frame">
       <property name="styleSheet">
        <string notr="true">border-radius: 15px;
-background-color: rgba(10,196,149,0.5);
+background-color: rgba(10,196,149,0.4);
 </string>
       </property>
       <property name="frameShape">

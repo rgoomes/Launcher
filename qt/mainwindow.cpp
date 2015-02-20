@@ -42,11 +42,24 @@ void MainWindow::setShadow(QColor c, int offset, int blur_radius){
 }
 
 void MainWindow::setBorderRadius(int r){
-    char rad[8];
-    sprintf(rad, "%d", r);
-    string tmp = string("border-radius: ") + rad + string("px; background-color: rgba(10,196,149,0.5);");
+    string tmp = string("border-radius: ") + to_string(r) + string("px; background-color: rgba(10,196,149,0.45);");
 
     ui->frame->setStyleSheet(tmp.c_str());
+}
+
+void MainWindow::setFullScreenMode(){
+    setBorderRadius(0);
+    ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
+    this->setWindowState(Qt::WindowFullScreen);
+}
+
+void MainWindow::setWindowMode(){
+    // LATER  CHANGE WINDOW  DEFAULT VALUES TO
+    // USER DEFAULTS THAT ARE STORED IN A FILE
+
+    setBorderRadius(15);
+    ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
+    this->setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
 
 void MainWindow::inits(){
