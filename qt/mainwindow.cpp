@@ -49,6 +49,7 @@ void MainWindow::setBorderRadius(int r){
 
 void MainWindow::setFullScreenMode(){
     setBorderRadius(0);
+    setShadow(QColor(0,0,0,0), 0, 0);
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
     this->setWindowState(Qt::WindowFullScreen);
 }
@@ -58,6 +59,7 @@ void MainWindow::setWindowMode(){
     // USER DEFAULTS THAT ARE STORED IN A FILE
 
     setBorderRadius(15);
+    setShadow(QColor(0,0,0,255), 3, 15);
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
     this->setWindowState(windowState() ^ Qt::WindowFullScreen);
 }
@@ -66,7 +68,7 @@ void MainWindow::inits(){
     effect = new QGraphicsDropShadowEffect();
 
     // DEFINE A DEFAULT SHADOW
-    setShadow(QColor(0,0,0,255), 3, 10);
+    setShadow(QColor(0,0,0,255), 3, 15);
 
     //ui->frame->setGraphicsEffect(new QGraphicsBlurEffect);
 }
