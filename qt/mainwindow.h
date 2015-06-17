@@ -11,6 +11,8 @@
 #include <QGraphicsScene>
 #include <QResizeEvent>
 
+#include "stylesheet.h"
+
 namespace Ui {
     class MainWindow;
 }
@@ -36,6 +38,7 @@ class MainWindow : public QMainWindow{
 
     private:
         Ui::MainWindow *ui;
+        Style *ss;
 
     protected:
         void mousePressEvent(QMouseEvent* event);

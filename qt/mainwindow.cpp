@@ -21,7 +21,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 void MainWindow::mousePressEvent(QMouseEvent* event){
     mouse_x = event->x();
     mouse_y = event->y();
-
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
@@ -44,10 +43,8 @@ void MainWindow::setShadow(QColor c, int offset, int blur_radius){
 }
 
 void MainWindow::setBorderRadius(int r){
-    string tmp = string("border-radius: ") + to_string(r) + string("px; ")
-               + string("background-color: rgba(10,196,149,0.45); ");
-
-    ui->frame->setStyleSheet(tmp.c_str());
+    ss->update_style("border-radius", QString::number(r) + "px;");
+    ui->frame->setStyleSheet(ss->get_stylesheet());
 }
 
 void MainWindow::goFullScreenMode(){
@@ -85,4 +82,12 @@ void MainWindow::inits(){
     QRect screen = widget.availableGeometry(widget.primaryScreen());
     this->move(screen.width()/2  - this->width()/2,
                screen.height()/2 - this->height()/2);
+
+    // POPULATE STYLES
+    ss = new Style();
+    QStringList style_list = ui->frame->styleSheet().split(QRegExp("[\n]"),QString::SkipEmptyParts);
+    for(auto s : style_list){
+        QStringList s_str = s.split(QRegExp("[:]"), QString::SkipEmptyParts);
+        ss->update_style(*s_str.begin(), *++s_str.begin());
+    }
 }
