@@ -6,6 +6,8 @@
 #include <QGraphicsBlurEffect>
 #include <QMouseEvent>
 #include <QDebug>
+#include <QPoint>
+#include <QGraphicsScene>
 
 namespace Ui {
     class MainWindow;
@@ -34,6 +36,7 @@ class MainWindow : public QMainWindow{
     protected:
         void mousePressEvent(QMouseEvent* event);
         void mouseMoveEvent(QMouseEvent* event);
+
 };
 
 #endif // MAINWINDOW_H

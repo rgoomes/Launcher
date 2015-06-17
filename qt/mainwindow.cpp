@@ -2,6 +2,11 @@
 #include "ui_mainwindow.h"
 #include <string>
 
+#include <QPixmap>
+#include <QGraphicsScene>
+#include <QScreen>
+#include <QGuiApplication>
+
 using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
