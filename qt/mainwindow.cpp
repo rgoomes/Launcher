@@ -6,31 +6,33 @@
 #include <QGraphicsScene>
 #include <QScreen>
 #include <QGuiApplication>
+#include <QDesktopWidget>
+
+#include "stylesheet.h"
 
 using namespace std;
 
+MainWindow::~MainWindow(){ delete ui; }
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
-    setAttribute(Qt::WA_TranslucentBackground, true);
-    setWindowFlags(Qt::FramelessWindowHint);
-
     ui->setupUi(this);
     inits();
-}
-
-MainWindow::~MainWindow(){
-    delete ui;
 }
 
 void MainWindow::mousePressEvent(QMouseEvent* event){
     mouse_x = event->x();
     mouse_y = event->y();
 
-    qDebug() << event->pos();
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
     move(event->globalX() - mouse_x,
          event->globalY() - mouse_y);
+}
+
+void MainWindow::resizeEvent(QResizeEvent* event){
+    QMainWindow::resizeEvent(event);
+
+    // TESTING
 }
 
 void MainWindow::setShadow(QColor c, int offset, int blur_radius){
@@ -42,19 +44,20 @@ void MainWindow::setShadow(QColor c, int offset, int blur_radius){
 }
 
 void MainWindow::setBorderRadius(int r){
-    string tmp = string("border-radius: ") + to_string(r) + string("px; background-color: rgba(10,196,149,0.45);");
+    string tmp = string("border-radius: ") + to_string(r) + string("px; ")
+               + string("background-color: rgba(10,196,149,0.45); ");
 
     ui->frame->setStyleSheet(tmp.c_str());
 }
 
-void MainWindow::setFullScreenMode(){
+void MainWindow::goFullScreenMode(){
     setBorderRadius(0);
     setShadow(QColor(0,0,0,0), 0, 0);
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
     this->setWindowState(Qt::WindowFullScreen);
 }
 
-void MainWindow::setWindowMode(){
+void MainWindow::goWindowMode(){
     // LATER  CHANGE WINDOW  DEFAULT VALUES TO
     // USER DEFAULTS THAT ARE STORED IN A FILE
 
@@ -65,10 +68,21 @@ void MainWindow::setWindowMode(){
 }
 
 void MainWindow::inits(){
+    // LOCATE/MLOCATE → time locate file -e -l 10 -q
+
+    setAttribute(Qt::WA_TranslucentBackground, true);
+    setWindowFlags(Qt::FramelessWindowHint);
+
     effect = new QGraphicsDropShadowEffect();
 
     // DEFINE A DEFAULT SHADOW
     setShadow(QColor(0,0,0,255), 3, 15);
 
     //ui->frame->setGraphicsEffect(new QGraphicsBlurEffect);
+
+    // CENTER WINDOW
+    QDesktopWidget widget;
+    QRect screen = widget.availableGeometry(widget.primaryScreen());
+    this->move(screen.width()/2  - this->width()/2,
+               screen.height()/2 - this->height()/2);
 }

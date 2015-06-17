@@ -7,7 +7,9 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QPoint>
+#include <QRect>
 #include <QGraphicsScene>
+#include <QResizeEvent>
 
 namespace Ui {
     class MainWindow;
@@ -29,8 +31,8 @@ class MainWindow : public QMainWindow{
         void inits();
         void setBorderRadius(int r);
         void setShadow(QColor c, int offset, int blur_radius);
-        void setFullScreenMode();
-        void setWindowMode();
+        void goFullScreenMode();
+        void goWindowMode();
 
     private:
         Ui::MainWindow *ui;
@@ -38,6 +40,7 @@ class MainWindow : public QMainWindow{
     protected:
         void mousePressEvent(QMouseEvent* event);
         void mouseMoveEvent(QMouseEvent* event);
+        void resizeEvent(QResizeEvent* event);
 
 };
 
