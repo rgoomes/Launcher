@@ -43,7 +43,7 @@ void MainWindow::setShadow(QColor c, int offset, int blur_radius){
 }
 
 void MainWindow::setBorderRadius(int r){
-    ss->update_style("border-radius", QString::number(r) + "px;");
+    ss->update_style("border-radius", QString::number(r) + "px;", true);
     ui->frame->setStyleSheet(ss->get_stylesheet());
 }
 
@@ -83,11 +83,9 @@ void MainWindow::inits(){
     this->move(screen.width()/2  - this->width()/2,
                screen.height()/2 - this->height()/2);
 
-    // POPULATE STYLES
+    // HASH TABLE FOR STYLESHEET
     ss = new Style();
-    QStringList style_list = ui->frame->styleSheet().split(QRegExp("[\n]"),QString::SkipEmptyParts);
-    for(auto s : style_list){
-        QStringList s_str = s.split(QRegExp("[:]"), QString::SkipEmptyParts);
-        ss->update_style(*s_str.begin(), *++s_str.begin());
-    }
+
+    // POPULATE USER STYLES
+    ui->frame->setStyleSheet(ss->get_stylesheet());
 }

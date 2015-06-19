@@ -3,10 +3,6 @@
 
 #include <QMap>
 
-#include <unordered_map>
-
-using namespace std;
-
 class Style {
     QMap <QString, QString > styles;
 
@@ -15,7 +11,9 @@ class Style {
         ~Style();
 
     public:
-        void update_style(QString key, QString value);
+        void update_file();
+        void load_user_preferences();
+        void update_style(QString , QString , bool );
         QString get_stylesheet();
 };
 

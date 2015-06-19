@@ -31,8 +31,8 @@ class MainWindow : public QMainWindow{
 
     public:
         void inits();
-        void setBorderRadius(int r);
-        void setShadow(QColor c, int offset, int blur_radius);
+        void setBorderRadius(int );
+        void setShadow(QColor , int , int );
         void goFullScreenMode();
         void goWindowMode();
 
