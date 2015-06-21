@@ -2,14 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
 #include <QGraphicsBlurEffect>
+#include <QGraphicsScene>
+#include <QDesktopWidget>
+#include <QResizeEvent>
 #include <QMouseEvent>
 #include <QDebug>
-#include <QPoint>
 #include <QRect>
-#include <QGraphicsScene>
-#include <QResizeEvent>
 
 #include "stylesheet.h"
 
@@ -23,7 +22,7 @@ class MainWindow : public QMainWindow{
     int mouse_x;
     int mouse_y;
 
-    QGraphicsDropShadowEffect* effect;
+    QGraphicsDropShadowEffect* shadow;
 
     public:
         explicit MainWindow(QWidget *parent = 0);

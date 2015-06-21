@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    stylesheet.cpp
+    stylesheet.cpp \
+    shadoweffect.cpp
 
 HEADERS  += mainwindow.h \
-    stylesheet.h
+    stylesheet.h \
+    shadoweffect.h
 
 FORMS    += mainwindow.ui
 

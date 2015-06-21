@@ -1,16 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <string>
-
-#include <QPixmap>
-#include <QGraphicsScene>
-#include <QScreen>
-#include <QGuiApplication>
-#include <QDesktopWidget>
-
 #include "stylesheet.h"
-
-using namespace std;
+#include "shadoweffect.h"
 
 MainWindow::~MainWindow(){ delete ui; }
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
@@ -34,12 +25,14 @@ void MainWindow::resizeEvent(QResizeEvent* event){
     // TESTING
 }
 
-void MainWindow::setShadow(QColor c, int offset, int blur_radius){
-    effect->setColor(c);
-    effect->setOffset(offset);
-    effect->setBlurRadius(blur_radius);
+void MainWindow::setShadow(QColor c, int scale, int blur_radius){
+    ShadowEffect *shadow_body = new ShadowEffect();
 
-    ui->frame->setGraphicsEffect(effect);
+    shadow_body->setColor(c);
+    shadow_body->setDistance(scale);
+    shadow_body->setBlurRadius(blur_radius);
+
+    ui->frame->setGraphicsEffect(shadow_body);
 }
 
 void MainWindow::setBorderRadius(int r){
@@ -70,7 +63,7 @@ void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint);
 
-    effect = new QGraphicsDropShadowEffect();
+    shadow = new QGraphicsDropShadowEffect();
 
     // DEFINE A DEFAULT SHADOW
     setShadow(QColor(0,0,0,255), 3, 15);
