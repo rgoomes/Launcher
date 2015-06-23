@@ -9,6 +9,23 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     inits();
 }
 
+bool fullscreen = false;
+void MainWindow::keyPressEvent(QKeyEvent *event){
+    // QUIT FOR TESTING, LATER CHANGE TO this->hide()
+    if(event->key() == Qt::Key_Escape)
+        QApplication::quit();
+
+    // FULLSCREEN TEST KEY F1
+    if(event->key() == Qt::Key_F1){
+        if(fullscreen)
+            goWindowMode();
+        else
+            goFullScreenMode();
+
+        fullscreen = !fullscreen;
+    }
+}
+
 void MainWindow::mousePressEvent(QMouseEvent* event){
     mouse_x = event->x();
     mouse_y = event->y();
@@ -33,26 +50,24 @@ void MainWindow::setShadow(QColor c, int scale, int blur_radius){
     ui->frame->setGraphicsEffect(shadow);
 }
 
-void MainWindow::setBorderRadius(int r){
-    ss->update_style("border-radius", QString::number(r) + "px", true);
+void MainWindow::setBorderRadius(int r, bool to_update){
+    ss->update_style("border-radius", QString::number(r) + "px", to_update);
     ui->frame->setStyleSheet(ss->get_stylesheet());
 }
 
 void MainWindow::goFullScreenMode(){
-    setBorderRadius(0);
+    setBorderRadius(0, false);
     setShadow(QColor(0,0,0,0), 0, 0);
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
-    this->setWindowState(Qt::WindowFullScreen);
+    this->showFullScreen();
 }
 
 void MainWindow::goWindowMode(){
     // LATER  CHANGE WINDOW  DEFAULT VALUES TO
     // USER DEFAULTS THAT ARE STORED IN A FILE
-
-    setBorderRadius(15);
     setShadow(QColor(0,0,0,255), 3, 15);
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
-    this->setWindowState(windowState() ^ Qt::WindowFullScreen);
+    this->showNormal();
 }
 
 void MainWindow::inits(){

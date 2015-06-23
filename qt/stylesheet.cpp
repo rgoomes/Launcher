@@ -33,6 +33,8 @@ void Style::update_style(QString key, QString value, bool to_update){
         this->update_file();
 }
 
+QString Style::get_style(QString key){ return styles[key]; }
+
 QString Style::get_stylesheet(){
     QString style_sheet;
 
@@ -66,6 +68,5 @@ void Style::load_user_preferences(){
         }
     }
 
-    this->update_file();
     file.close();
 }
