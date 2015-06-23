@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     stylesheet.cpp \
-    shadoweffect.cpp
+    shadoweffect.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
     stylesheet.h \
-    shadoweffect.h
+    shadoweffect.h \
+    utils.h
 
 FORMS    += mainwindow.ui
 

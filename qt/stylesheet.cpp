@@ -12,8 +12,8 @@ Style::~Style(){}
 QMap <QString, QString > get_default_style(){
     QMap <QString, QString > default_styles;
 
-    default_styles["border-radius"] = "20px;";
-    default_styles["background-color"] = "rgba(255, 255, 255, 1);";
+    default_styles["border-radius"] = "20px";
+    default_styles["background-color"] = "rgba(255, 255, 255, 1)";
 
     return default_styles;
 }
@@ -38,7 +38,7 @@ QString Style::get_stylesheet(){
 
     QMap<QString, QString>::const_iterator it = styles.begin();
     while (it != styles.end()) {
-        style_sheet += it.key() + ":" + it.value() + "\n";
+        style_sheet += it.key() + ":" + it.value() + ";\n";
         ++it;
     }
 
@@ -62,7 +62,7 @@ void Style::load_user_preferences(){
             if(spref.count() <= 1)
                 continue;
 
-            this->update_style((*spref.begin()).remove(QChar(':')), *++spref.begin(), false);
+            this->update_style((*spref.begin()).remove(QChar(':')), (*++spref.begin()).remove(QChar(';')), false);
         }
     }
 

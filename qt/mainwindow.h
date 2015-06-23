@@ -11,6 +11,7 @@
 #include <QRect>
 
 #include "stylesheet.h"
+#include "shadoweffect.h"
 
 namespace Ui {
     class MainWindow;
@@ -22,7 +23,7 @@ class MainWindow : public QMainWindow{
     int mouse_x;
     int mouse_y;
 
-    QGraphicsDropShadowEffect* shadow;
+    ShadowEffect* shadow;
 
     public:
         explicit MainWindow(QWidget *parent = 0);

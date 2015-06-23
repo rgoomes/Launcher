@@ -26,17 +26,15 @@ void MainWindow::resizeEvent(QResizeEvent* event){
 }
 
 void MainWindow::setShadow(QColor c, int scale, int blur_radius){
-    ShadowEffect *shadow_body = new ShadowEffect();
+    shadow->setColor(c);
+    shadow->setDistance(scale);
+    shadow->setBlurRadius(blur_radius);
 
-    shadow_body->setColor(c);
-    shadow_body->setDistance(scale);
-    shadow_body->setBlurRadius(blur_radius);
-
-    ui->frame->setGraphicsEffect(shadow_body);
+    ui->frame->setGraphicsEffect(shadow);
 }
 
 void MainWindow::setBorderRadius(int r){
-    ss->update_style("border-radius", QString::number(r) + "px;", true);
+    ss->update_style("border-radius", QString::number(r) + "px", true);
     ui->frame->setStyleSheet(ss->get_stylesheet());
 }
 
@@ -63,12 +61,9 @@ void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint);
 
-    shadow = new QGraphicsDropShadowEffect();
-
     // DEFINE A DEFAULT SHADOW
+    shadow = new ShadowEffect();
     setShadow(QColor(0,0,0,255), 3, 15);
-
-    //ui->frame->setGraphicsEffect(new QGraphicsBlurEffect);
 
     // CENTER WINDOW
     QDesktopWidget widget;
