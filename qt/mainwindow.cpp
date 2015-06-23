@@ -36,6 +36,13 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event){
          event->globalY() - mouse_y);
 }
 
+void MainWindow::mouseReleaseEvent(QMouseEvent* event){
+    QMainWindow::mouseReleaseEvent(event);
+
+    controller->set_option("x", QString::number(this->x()), false);
+    controller->set_option("y", QString::number(this->y()), true);
+}
+
 void MainWindow::resizeEvent(QResizeEvent* event){
     QMainWindow::resizeEvent(event);
 
@@ -63,32 +70,43 @@ void MainWindow::goFullScreenMode(){
 }
 
 void MainWindow::goWindowMode(){
-    // LATER  CHANGE WINDOW  DEFAULT VALUES TO
-    // USER DEFAULTS THAT ARE STORED IN A FILE
-    setShadow(QColor(0,0,0,255), 3, 15);
+    // RELOAD OLD USER STYLESHEET
+    ss->load_user_preferences();
+    ui->frame->setStyleSheet(ss->get_stylesheet());
+
+    setShadow(QColor(0,0,0,controller->get_option("shadow_alpha").toInt()), 3,
+              controller->get_option("shadow_blur_radius").toInt());
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
     this->showNormal();
 }
 
-void MainWindow::inits(){
-    // LOCATE/MLOCATE → time locate file -e -l 10 -q
-
-    setAttribute(Qt::WA_TranslucentBackground, true);
-    setWindowFlags(Qt::FramelessWindowHint);
-
-    // DEFINE A DEFAULT SHADOW
-    shadow = new ShadowEffect();
-    setShadow(QColor(0,0,0,255), 3, 15);
-
-    // CENTER WINDOW
+void MainWindow::center_window(){
     QDesktopWidget widget;
     QRect screen = widget.availableGeometry(widget.primaryScreen());
     this->move(screen.width()/2  - this->width()/2,
                screen.height()/2 - this->height()/2);
 
-    // HASH TABLE FOR STYLESHEET
-    ss = new Style();
+    controller->set_option("x", QString::number(this->x()), false);
+    controller->set_option("y", QString::number(this->y()), true);
+}
 
-    // POPULATE USER STYLES
+void MainWindow::inits(){
+    setAttribute(Qt::WA_TranslucentBackground, true);
+    setWindowFlags(Qt::FramelessWindowHint);
+
+    // WINDOW OPTIONS
+    controller = new WindowController();
+
+    // MOVE WINDOW
+    this->move(controller->get_option("x").toInt(),
+               controller->get_option("y").toInt());
+
+    // DRAW SHADOW
+    shadow = new ShadowEffect();
+    setShadow(QColor(0,0,0,controller->get_option("shadow_alpha").toInt()), 3,
+              controller->get_option("shadow_blur_radius").toInt());
+
+    // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
+    ss = new Style();
     ui->frame->setStyleSheet(ss->get_stylesheet());
 }

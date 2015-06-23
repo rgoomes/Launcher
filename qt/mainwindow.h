@@ -12,6 +12,7 @@
 
 #include "stylesheet.h"
 #include "shadoweffect.h"
+#include "windowcontroller.h"
 
 namespace Ui {
     class MainWindow;
@@ -35,12 +36,15 @@ class MainWindow : public QMainWindow{
         void setShadow(QColor , int , int );
         void goFullScreenMode();
         void goWindowMode();
+        void center_window();
 
     private:
+        WindowController *controller;
         Ui::MainWindow *ui;
         Style *ss;
 
     protected:
+        void mouseReleaseEvent(QMouseEvent *event);
         void mousePressEvent(QMouseEvent* event);
         void mouseMoveEvent(QMouseEvent* event);
         void resizeEvent(QResizeEvent* event);
