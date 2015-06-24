@@ -7,3 +7,7 @@ explorer/explorer
 # IGNORE QT USER PRO AND BUILD DIR
 qt/Launcher.pro.user
 build-Launcher-Desktop_Qt_Qt_Version_GCC_64bit-Debug/
+
+#IGNORE USER STYLESHEET AND WINDOW PREFERENCES
+User/stylesheet.user
+User/window.user
