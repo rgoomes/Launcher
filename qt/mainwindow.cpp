@@ -5,7 +5,6 @@
 #include "stylesheet.h"
 #include "shadoweffect.h"
 
-#define MOVE_GAP 0 // FIX LATER
 #define RESIZE_TIMEINTERVAL 500
 
 MainWindow::~MainWindow(){ delete ui; }
@@ -28,6 +27,13 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     }
 }
 
+void MainWindow::storeWindowPosition(int win_gap){
+    double dpi = 1.0; // TODO FIX
+
+    controller->set_option("x", QString::number(this->x() + int(win_gap * dpi)), false);
+    controller->set_option("y", QString::number(this->y() + int(win_gap * dpi)), true);
+}
+
 void MainWindow::mousePressEvent(QMouseEvent* event){
     mouse_x = event->x();
     mouse_y = event->y();
@@ -40,14 +46,13 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event){
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event){
     QMainWindow::mouseReleaseEvent(event);
-
-    controller->set_option("x", QString::number(this->x() + MOVE_GAP), false);
-    controller->set_option("y", QString::number(this->y() + MOVE_GAP), true);
+    this->storeWindowPosition(10);
 }
 
 void MainWindow::request_resize(){
     controller->set_option("width", QString::number(this->width()), false);
-    controller->set_option("height", QString::number(this->height()), true);
+    controller->set_option("height", QString::number(this->height()), false);
+    this->storeWindowPosition(10);
 
     resizing = false;
 }
@@ -55,7 +60,7 @@ void MainWindow::request_resize(){
 void MainWindow::resizeEvent(QResizeEvent* event){
     QMainWindow::resizeEvent(event);
 
-    if(!resizing && !this->in_fullscreen()){
+    if(!resizing && !this->in_fullscreen() && event->spontaneous()){
         resizing = true;
         QTimer::singleShot(RESIZE_TIMEINTERVAL, this, SLOT(request_resize()));
     }
@@ -107,13 +112,12 @@ void MainWindow::center_window(){
     this->move(screen.width()/2  - this->width()/2,
                screen.height()/2 - this->height()/2);
 
-    controller->set_option("x", QString::number(this->x()), false);
-    controller->set_option("y", QString::number(this->y()), true);
+    this->storeWindowPosition(10);
 }
 
 void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
-    setWindowFlags(Qt::FramelessWindowHint);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     // WINDOW OPTIONS
     controller = new WindowController();

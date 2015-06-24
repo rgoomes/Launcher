@@ -9,6 +9,20 @@
 WindowController::WindowController(){ this->load_user_window_options(); }
 WindowController::~WindowController(){}
 
+QMap <QString, QString > get_default_options(){
+    QMap <QString, QString > default_options;
+
+    default_options["x"] = "100";
+    default_options["y"] = "100";
+    default_options["shadow_alpha"] = "255";
+    default_options["shadow_blur_radius"] = "15";
+    default_options["height"] = "90";
+    default_options["width"] = "600";
+    default_options["fullscreen"] = "0";
+
+    return default_options;
+}
+
 void WindowController::update_file(){
     QString window_options = this->get_all_options();
     std::ofstream file("../User/window.user");
@@ -41,7 +55,10 @@ QString WindowController::get_all_options(){
 void WindowController::load_user_window_options(){
     std::ifstream file("../User/window.user");
 
-    if(file.good()){
+    if(!file.good()){
+        this->options = get_default_options();
+        this->update_file();
+    } else {
         std::string opt;
         while(std::getline(file, opt)){
             if(!opt.length())

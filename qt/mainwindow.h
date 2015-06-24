@@ -40,6 +40,7 @@ class MainWindow : public QMainWindow{
         void goFullScreenMode();
         void goWindowMode();
         void center_window();
+        void storeWindowPosition(int );
         bool in_fullscreen();
 
     public slots:
