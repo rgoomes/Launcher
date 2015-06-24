@@ -1,7 +1,11 @@
+#include <QTimer>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "stylesheet.h"
 #include "shadoweffect.h"
+
+#define RESIZE_TIMEINTERVAL 500
 
 MainWindow::~MainWindow(){ delete ui; }
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
@@ -43,10 +47,21 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event){
     controller->set_option("y", QString::number(this->y()), true);
 }
 
+bool in_task = false;
+void MainWindow::resize_task(){
+    controller->set_option("width", QString::number(this->width()), false);
+    controller->set_option("height", QString::number(this->height()), true);
+
+    in_task = false;
+}
+
 void MainWindow::resizeEvent(QResizeEvent* event){
     QMainWindow::resizeEvent(event);
 
-    // TESTING
+    if(!in_task){
+        in_task = true;
+        QTimer::singleShot(RESIZE_TIMEINTERVAL, this, SLOT(resize_task()));
+    }
 }
 
 void MainWindow::setShadow(QColor c, int scale, int blur_radius){
@@ -96,8 +111,8 @@ void MainWindow::inits(){
 
     // WINDOW OPTIONS
     controller = new WindowController();
-
-    // MOVE WINDOW
+    this->resize(controller->get_option("width").toInt(),
+                 controller->get_option("height").toInt());
     this->move(controller->get_option("x").toInt(),
                controller->get_option("y").toInt());
 

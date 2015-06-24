@@ -38,6 +38,9 @@ class MainWindow : public QMainWindow{
         void goWindowMode();
         void center_window();
 
+    public slots:
+        void resize_task();
+
     private:
         WindowController *controller;
         Ui::MainWindow *ui;
