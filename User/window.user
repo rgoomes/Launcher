@@ -1,6 +1,7 @@
+fullscreen:0;
 height:90;
 shadow_alpha: 255;
 shadow_blur_radius: 15;
 width:510;
-x:406;
-y:212;
+x:466;
+y:284;

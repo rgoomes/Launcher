@@ -5,6 +5,7 @@
 #include "stylesheet.h"
 #include "shadoweffect.h"
 
+#define MOVE_GAP 0 // FIX LATER
 #define RESIZE_TIMEINTERVAL 500
 
 MainWindow::~MainWindow(){ delete ui; }
@@ -13,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     inits();
 }
 
-bool fullscreen = false;
 void MainWindow::keyPressEvent(QKeyEvent *event){
     // QUIT FOR TESTING, LATER CHANGE TO this->hide()
     if(event->key() == Qt::Key_Escape)
@@ -21,12 +21,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 
     // FULLSCREEN TEST KEY F1
     if(event->key() == Qt::Key_F1){
-        if(fullscreen)
+        if(this->in_fullscreen())
             goWindowMode();
         else
             goFullScreenMode();
-
-        fullscreen = !fullscreen;
     }
 }
 
@@ -43,24 +41,23 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event){
 void MainWindow::mouseReleaseEvent(QMouseEvent* event){
     QMainWindow::mouseReleaseEvent(event);
 
-    controller->set_option("x", QString::number(this->x()), false);
-    controller->set_option("y", QString::number(this->y()), true);
+    controller->set_option("x", QString::number(this->x() + MOVE_GAP), false);
+    controller->set_option("y", QString::number(this->y() + MOVE_GAP), true);
 }
 
-bool in_task = false;
-void MainWindow::resize_task(){
+void MainWindow::request_resize(){
     controller->set_option("width", QString::number(this->width()), false);
     controller->set_option("height", QString::number(this->height()), true);
 
-    in_task = false;
+    resizing = false;
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event){
     QMainWindow::resizeEvent(event);
 
-    if(!in_task){
-        in_task = true;
-        QTimer::singleShot(RESIZE_TIMEINTERVAL, this, SLOT(resize_task()));
+    if(!resizing && !this->in_fullscreen()){
+        resizing = true;
+        QTimer::singleShot(RESIZE_TIMEINTERVAL, this, SLOT(request_resize()));
     }
 }
 
@@ -77,10 +74,17 @@ void MainWindow::setBorderRadius(int r, bool to_update){
     ui->frame->setStyleSheet(ss->get_stylesheet());
 }
 
+bool MainWindow::in_fullscreen(){
+    return (windowState() == Qt::WindowFullScreen)
+         | (controller->get_option("fullscreen").toInt()); // SANITY TEST
+}
+
 void MainWindow::goFullScreenMode(){
     setBorderRadius(0, false);
     setShadow(QColor(0,0,0,0), 0, 0);
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
+    controller->set_option("fullscreen", "1", true);
+
     this->showFullScreen();
 }
 
@@ -92,6 +96,8 @@ void MainWindow::goWindowMode(){
     setShadow(QColor(0,0,0,controller->get_option("shadow_alpha").toInt()), 3,
               controller->get_option("shadow_blur_radius").toInt());
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
+    controller->set_option("fullscreen", "0", true);
+
     this->showNormal();
 }
 
@@ -111,10 +117,8 @@ void MainWindow::inits(){
 
     // WINDOW OPTIONS
     controller = new WindowController();
-    this->resize(controller->get_option("width").toInt(),
-                 controller->get_option("height").toInt());
-    this->move(controller->get_option("x").toInt(),
-               controller->get_option("y").toInt());
+    this->move(controller->get_option("x").toInt(), controller->get_option("y").toInt());
+    this->resize(controller->get_option("width").toInt(), controller->get_option("height").toInt());
 
     // DRAW SHADOW
     shadow = new ShadowEffect();
@@ -124,4 +128,8 @@ void MainWindow::inits(){
     // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
     ss = new Style();
     ui->frame->setStyleSheet(ss->get_stylesheet());
+
+    // STORED WINDOW STATE
+    if(controller->get_option("fullscreen").toInt())
+        goFullScreenMode();
 }

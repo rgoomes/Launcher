@@ -9,6 +9,7 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QRect>
+#include <QTimer>
 
 #include "stylesheet.h"
 #include "shadoweffect.h"
@@ -26,6 +27,8 @@ class MainWindow : public QMainWindow{
 
     ShadowEffect* shadow;
 
+    bool resizing = false;
+
     public:
         explicit MainWindow(QWidget *parent = 0);
         ~MainWindow();
@@ -37,9 +40,10 @@ class MainWindow : public QMainWindow{
         void goFullScreenMode();
         void goWindowMode();
         void center_window();
+        bool in_fullscreen();
 
     public slots:
-        void resize_task();
+        void request_resize();
 
     private:
         WindowController *controller;
