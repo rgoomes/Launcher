@@ -16,13 +16,16 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     stylesheet.cpp \
     shadoweffect.cpp \
-    utils.cpp
+    utils.cpp \
+    windowcontroller.cpp
 
 HEADERS  += mainwindow.h \
     stylesheet.h \
     shadoweffect.h \
-    utils.h
+    utils.h \
+    windowcontroller.h
 
 FORMS    += mainwindow.ui
 
-QMAKE_CXXFLAGS += -std=c++11 -O3
+QMAKE_CXXFLAGS += -std=c++11 \
+                  -O3

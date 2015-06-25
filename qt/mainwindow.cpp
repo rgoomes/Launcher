@@ -1,12 +1,37 @@
+#include <QTimer>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "stylesheet.h"
 #include "shadoweffect.h"
 
+#define RESIZE_TIMEINTERVAL 500
+
 MainWindow::~MainWindow(){ delete ui; }
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
     inits();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event){
+    // QUIT FOR TESTING, LATER CHANGE TO this->hide()
+    if(event->key() == Qt::Key_Escape)
+        QApplication::quit();
+
+    // FULLSCREEN TEST KEY F1
+    if(event->key() == Qt::Key_F1){
+        if(this->in_fullscreen())
+            goWindowMode();
+        else
+            goFullScreenMode();
+    }
+}
+
+void MainWindow::storeWindowPosition(int win_gap){
+    double dpi = 1.0; // TODO FIX
+
+    controller->set_option("x", QString::number(this->x() + int(win_gap * dpi)), false);
+    controller->set_option("y", QString::number(this->y() + int(win_gap * dpi)), true);
 }
 
 void MainWindow::mousePressEvent(QMouseEvent* event){
@@ -19,10 +44,26 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event){
          event->globalY() - mouse_y);
 }
 
+void MainWindow::mouseReleaseEvent(QMouseEvent* event){
+    QMainWindow::mouseReleaseEvent(event);
+    this->storeWindowPosition(10);
+}
+
+void MainWindow::request_resize(){
+    controller->set_option("width", QString::number(this->width()), false);
+    controller->set_option("height", QString::number(this->height()), false);
+    this->storeWindowPosition(10);
+
+    resizing = false;
+}
+
 void MainWindow::resizeEvent(QResizeEvent* event){
     QMainWindow::resizeEvent(event);
 
-    // TESTING
+    if(!resizing && !this->in_fullscreen() && event->spontaneous()){
+        resizing = true;
+        QTimer::singleShot(RESIZE_TIMEINTERVAL, this, SLOT(request_resize()));
+    }
 }
 
 void MainWindow::setShadow(QColor c, int scale, int blur_radius){
@@ -33,48 +74,67 @@ void MainWindow::setShadow(QColor c, int scale, int blur_radius){
     ui->frame->setGraphicsEffect(shadow);
 }
 
-void MainWindow::setBorderRadius(int r){
-    ss->update_style("border-radius", QString::number(r) + "px", true);
+void MainWindow::setBorderRadius(int r, bool to_update){
+    ss->update_style("border-radius", QString::number(r) + "px", to_update);
     ui->frame->setStyleSheet(ss->get_stylesheet());
 }
 
+bool MainWindow::in_fullscreen(){
+    return (windowState() == Qt::WindowFullScreen)
+         | (controller->get_option("fullscreen").toInt()); // SANITY TEST
+}
+
 void MainWindow::goFullScreenMode(){
-    setBorderRadius(0);
+    setBorderRadius(0, false);
     setShadow(QColor(0,0,0,0), 0, 0);
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
-    this->setWindowState(Qt::WindowFullScreen);
+    controller->set_option("fullscreen", "1", true);
+
+    this->showFullScreen();
 }
 
 void MainWindow::goWindowMode(){
-    // LATER  CHANGE WINDOW  DEFAULT VALUES TO
-    // USER DEFAULTS THAT ARE STORED IN A FILE
+    // RELOAD OLD USER STYLESHEET
+    ss->load_user_preferences();
+    ui->frame->setStyleSheet(ss->get_stylesheet());
 
-    setBorderRadius(15);
-    setShadow(QColor(0,0,0,255), 3, 15);
+    setShadow(QColor(0,0,0,controller->get_option("shadow_alpha").toInt()), 3,
+              controller->get_option("shadow_blur_radius").toInt());
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
-    this->setWindowState(windowState() ^ Qt::WindowFullScreen);
+    controller->set_option("fullscreen", "0", true);
+
+    this->showNormal();
 }
 
-void MainWindow::inits(){
-    // LOCATE/MLOCATE → time locate file -e -l 10 -q
-
-    setAttribute(Qt::WA_TranslucentBackground, true);
-    setWindowFlags(Qt::FramelessWindowHint);
-
-    // DEFINE A DEFAULT SHADOW
-    shadow = new ShadowEffect();
-    setShadow(QColor(0,0,0,255), 3, 15);
-    layout()->addWidget(ui->lineEdit);
-
-    // CENTER WINDOW
+void MainWindow::center_window(){
     QDesktopWidget widget;
     QRect screen = widget.availableGeometry(widget.primaryScreen());
     this->move(screen.width()/2  - this->width()/2,
                screen.height()/2 - this->height()/2);
 
-    // HASH TABLE FOR STYLESHEET
-    ss = new Style();
+    this->storeWindowPosition(10);
+}
 
-    // POPULATE USER STYLES
+void MainWindow::inits(){
+    setAttribute(Qt::WA_TranslucentBackground, true);
+    setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+
+    // WINDOW OPTIONS
+    controller = new WindowController();
+    this->move(controller->get_option("x").toInt(), controller->get_option("y").toInt());
+    this->resize(controller->get_option("width").toInt(), controller->get_option("height").toInt());
+
+    // DRAW SHADOW
+    shadow = new ShadowEffect();
+    setShadow(QColor(0,0,0,controller->get_option("shadow_alpha").toInt()), 3,
+              controller->get_option("shadow_blur_radius").toInt());
+    layout()->addWidget(ui->lineEdit);
+
+    // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
+    ss = new Style();
     ui->frame->setStyleSheet(ss->get_stylesheet());
+
+    // STORED WINDOW STATE
+    if(controller->get_option("fullscreen").toInt())
+        goFullScreenMode();
 }

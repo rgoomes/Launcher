@@ -15,6 +15,7 @@ class Style {
         void load_user_preferences();
         void update_style(QString , QString , bool );
         QString get_stylesheet();
+        QString get_style(QString );
 };
 
 #endif // STYLESHEET_H

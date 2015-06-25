@@ -33,6 +33,8 @@ void Style::update_style(QString key, QString value, bool to_update){
         this->update_file();
 }
 
+QString Style::get_style(QString key){ return styles[key]; }
+
 QString Style::get_stylesheet(){
     QString style_sheet;
 
@@ -48,9 +50,10 @@ QString Style::get_stylesheet(){
 void Style::load_user_preferences(){
     std::ifstream file("../User/stylesheet.user");
 
-    if(!file.good())
+    if(!file.good()){
         this->styles = get_default_style();
-    else {
+        this->update_file();
+    } else {
         std::string pref;
         while(std::getline(file, pref)){
             if(!pref.length())
@@ -66,6 +69,5 @@ void Style::load_user_preferences(){
         }
     }
 
-    this->update_file();
     file.close();
 }

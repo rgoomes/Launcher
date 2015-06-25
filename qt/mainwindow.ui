@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
+    <width>510</width>
     <height>90</height>
    </rect>
   </property>
@@ -22,7 +22,7 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QHBoxLayout">
     <property name="leftMargin">
      <number>5</number>
     </property>
