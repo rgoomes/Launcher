@@ -40,7 +40,7 @@ void ShadowEffect::draw(QPainter* painter){
     QImage blurred(tmp.size(), QImage::Format_ARGB32_Premultiplied);
     blurred.fill(0);
     QPainter blurPainter(&blurred);
-    qt_blurImage(&blurPainter, tmp, blurRadius(), false, true);
+    qt_blurImage(&blurPainter, tmp, blurRadius(), true, true);
     blurPainter.end();
 
     tmp = blurred;

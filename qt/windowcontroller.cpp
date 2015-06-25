@@ -58,7 +58,6 @@ void WindowController::load_user_window_options(){
     if(!file.good()){
         this->options = get_default_options();
         this->update_file();
-        qDebug() << "erro";
     } else {
         std::string opt;
         while(std::getline(file, opt)){
