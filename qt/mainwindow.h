@@ -45,6 +45,7 @@ class MainWindow : public QMainWindow{
 
     public slots:
         void request_resize();
+        void text_changed(QString );
 
     private:
         WindowController *controller;

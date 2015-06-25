@@ -25,6 +25,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
         else
             goFullScreenMode();
     }
+
+    // AUTOCOMPLETE
+    if(event->key() == Qt::Key_Tab){;}
 }
 
 void MainWindow::storeWindowPosition(int win_gap){
@@ -115,9 +118,16 @@ void MainWindow::center_window(){
     this->storeWindowPosition(10);
 }
 
+void MainWindow::text_changed(QString text){
+    qDebug() << text;
+}
+
 void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+
+    // FRAME CSS CLASS
+    ui->frame->setObjectName("Frame");
 
     // WINDOW OPTIONS
     controller = new WindowController();
@@ -128,7 +138,7 @@ void MainWindow::inits(){
     shadow = new ShadowEffect();
     setShadow(QColor(0,0,0,controller->get_option("shadow_alpha").toInt()), 3,
               controller->get_option("shadow_blur_radius").toInt());
-    layout()->addWidget(ui->lineEdit);
+
 
     // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
     ss = new Style();
@@ -137,4 +147,7 @@ void MainWindow::inits(){
     // STORED WINDOW STATE
     if(controller->get_option("fullscreen").toInt())
         goFullScreenMode();
+
+    // LINE EDIT TEXT CHANGE
+    connect(ui->searchBox, SIGNAL(textChanged(QString )), this, SLOT(text_changed(QString )));
 }

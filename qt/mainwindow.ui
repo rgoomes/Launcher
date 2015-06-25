@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>510</width>
-    <height>90</height>
+    <width>600</width>
+    <height>200</height>
    </rect>
   </property>
   <property name="font">
@@ -39,33 +39,48 @@
      <widget class="QFrame" name="frame">
       <property name="minimumSize">
        <size>
-        <width>500</width>
-        <height>80</height>
+        <width>200</width>
+        <height>65</height>
        </size>
       </property>
       <property name="styleSheet">
        <string notr="true">border-radius: 20px;
 background-color: rgba(255, 255, 255, 1);</string>
       </property>
-      <widget class="QLineEdit" name="lineEdit">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>10</y>
-         <width>551</width>
-         <height>51</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>28</pointsize>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgba(255,255,255,0);
-border: none;</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLineEdit" name="searchBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>40</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>20</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">border-radius: 0px;
+background-color: rgba(255, 255, 255, 0);</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="results"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>

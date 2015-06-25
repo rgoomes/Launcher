@@ -44,7 +44,7 @@ QString Style::get_stylesheet(){
         ++it;
     }
 
-    return style_sheet;
+    return "#Frame {\n" + style_sheet + "}";
 }
 
 void Style::load_user_preferences(){
