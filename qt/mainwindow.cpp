@@ -64,6 +64,7 @@ void MainWindow::inits(){
     // DEFINE A DEFAULT SHADOW
     shadow = new ShadowEffect();
     setShadow(QColor(0,0,0,255), 3, 15);
+    layout()->addWidget(ui->lineEdit);
 
     // CENTER WINDOW
     QDesktopWidget widget;
