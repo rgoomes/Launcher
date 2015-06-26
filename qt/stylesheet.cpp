@@ -6,8 +6,8 @@
 
 #include "stylesheet.h"
 
-Style::Style(){ this->load_user_preferences(); }
 Style::~Style(){}
+Style::Style(std::string path){ this->path = path; this->load_user_preferences(); }
 
 QMap <QString, QString > get_default_style(){
     QMap <QString, QString > default_styles;
@@ -19,23 +19,17 @@ QMap <QString, QString > get_default_style(){
 }
 
 void Style::update_file(){
-    QString style_sheet = this->get_stylesheet();
-    std::ofstream file("../User/stylesheet.user");
+    QString style_sheet = this->stylesheet("");
+    std::ofstream file(this->path);
 
     file << style_sheet.toUtf8().constData();
     file.close();
 }
 
-void Style::update_style(QString key, QString value, bool to_update){
-    styles[key] = value;
-
-    if(to_update)
-        this->update_file();
-}
-
+void Style::set_style(QString key, QString value){ styles[key] = value; }
 QString Style::get_style(QString key){ return styles[key]; }
 
-QString Style::get_stylesheet(){
+QString Style::stylesheet(QString obj_name){
     QString style_sheet;
 
     QMap<QString, QString>::const_iterator it = styles.begin();
@@ -44,11 +38,14 @@ QString Style::get_stylesheet(){
         ++it;
     }
 
-    return "#Frame {\n" + style_sheet + "}";
+    if(!obj_name.length())
+        return style_sheet;
+
+    return "#" + obj_name + "{" + style_sheet + "}";
 }
 
 void Style::load_user_preferences(){
-    std::ifstream file("../User/stylesheet.user");
+    std::ifstream file(this->path);
 
     if(!file.good()){
         this->styles = get_default_style();
@@ -65,7 +62,7 @@ void Style::load_user_preferences(){
             if(spref.count() <= 1)
                 continue;
 
-            this->update_style((*spref.begin()).remove(QChar(':')), (*++spref.begin()).remove(QChar(';')), false);
+            this->set_style((*spref.begin()).remove(QChar(':')), (*++spref.begin()).remove(QChar(';')));
         }
     }
 

@@ -5,17 +5,18 @@
 
 class WindowController {
     QMap <QString, QString > options;
+    std::string path;
 
     public:
-        WindowController();
+        WindowController(std::string );
         ~WindowController();
 
     public:
         void update_file();
         void load_user_window_options();
-        void set_option(QString , QString , bool );
+        void set_option(QString , QString );
         QString get_option(QString );
-        QString get_all_options();
+        QString windowoptions();
 };
 
 #endif // WINDOWCONTROLLER_H

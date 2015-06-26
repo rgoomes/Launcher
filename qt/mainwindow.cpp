@@ -33,8 +33,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 void MainWindow::storeWindowPosition(int win_gap){
     double dpi = 1.0; // TODO FIX
 
-    controller->set_option("x", QString::number(this->x() + int(win_gap * dpi)), false);
-    controller->set_option("y", QString::number(this->y() + int(win_gap * dpi)), true);
+    controller->set_option("x", QString::number(this->x() + int(win_gap * dpi)));
+    controller->set_option("y", QString::number(this->y() + int(win_gap * dpi)));
+    controller->update_file();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent* event){
@@ -53,8 +54,8 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event){
 }
 
 void MainWindow::request_resize(){
-    controller->set_option("width", QString::number(this->width()), false);
-    controller->set_option("height", QString::number(this->height()), false);
+    controller->set_option("width", QString::number(this->width()));
+    controller->set_option("height", QString::number(this->height()));
     this->storeWindowPosition(10);
 
     resizing = false;
@@ -77,9 +78,9 @@ void MainWindow::setShadow(QColor c, int scale, int blur_radius){
     ui->frame->setGraphicsEffect(shadow);
 }
 
-void MainWindow::setBorderRadius(int r, bool to_update){
-    ss->update_style("border-radius", QString::number(r) + "px", to_update);
-    ui->frame->setStyleSheet(ss->get_stylesheet());
+void MainWindow::setBorderRadius(int r){
+    ss->set_style("border-radius", QString::number(r) + "px");
+    ui->frame->setStyleSheet(ss->stylesheet("Frame"));
 }
 
 bool MainWindow::in_fullscreen(){
@@ -88,10 +89,11 @@ bool MainWindow::in_fullscreen(){
 }
 
 void MainWindow::goFullScreenMode(){
-    setBorderRadius(0, false);
+    setBorderRadius(0);
     setShadow(QColor(0,0,0,0), 0, 0);
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
-    controller->set_option("fullscreen", "1", true);
+    controller->set_option("fullscreen", "1");
+    controller->update_file();
 
     this->showFullScreen();
 }
@@ -99,12 +101,13 @@ void MainWindow::goFullScreenMode(){
 void MainWindow::goWindowMode(){
     // RELOAD OLD USER STYLESHEET
     ss->load_user_preferences();
-    ui->frame->setStyleSheet(ss->get_stylesheet());
+    ui->frame->setStyleSheet(ss->stylesheet("Frame"));
 
     setShadow(QColor(0,0,0,controller->get_option("shadow_alpha").toInt()), 3,
               controller->get_option("shadow_blur_radius").toInt());
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
-    controller->set_option("fullscreen", "0", true);
+    controller->set_option("fullscreen", "0");
+    controller->update_file();
 
     this->showNormal();
 }
@@ -130,7 +133,7 @@ void MainWindow::inits(){
     ui->frame->setObjectName("Frame");
 
     // WINDOW OPTIONS
-    controller = new WindowController();
+    controller = new WindowController("../User/window.user");
     this->move(controller->get_option("x").toInt(), controller->get_option("y").toInt());
     this->resize(controller->get_option("width").toInt(), controller->get_option("height").toInt());
 
@@ -141,8 +144,8 @@ void MainWindow::inits(){
 
 
     // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
-    ss = new Style();
-    ui->frame->setStyleSheet(ss->get_stylesheet());
+    ss = new Style("../User/stylesheet.user");
+    ui->frame->setStyleSheet(ss->stylesheet("Frame"));
 
     // STORED WINDOW STATE
     if(controller->get_option("fullscreen").toInt())

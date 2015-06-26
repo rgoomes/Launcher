@@ -35,7 +35,7 @@ class MainWindow : public QMainWindow{
 
     public:
         void inits();
-        void setBorderRadius(int , bool);
+        void setBorderRadius(int );
         void setShadow(QColor , int , int );
         void goFullScreenMode();
         void goWindowMode();

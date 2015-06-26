@@ -6,7 +6,7 @@
 
 #include "windowcontroller.h"
 
-WindowController::WindowController(){ this->load_user_window_options(); }
+WindowController::WindowController(std::string path){ this->path = path; this->load_user_window_options(); }
 WindowController::~WindowController(){}
 
 QMap <QString, QString > get_default_options(){
@@ -16,31 +16,25 @@ QMap <QString, QString > get_default_options(){
     default_options["y"] = "100";
     default_options["shadow_alpha"] = "255";
     default_options["shadow_blur_radius"] = "15";
-    default_options["height"] = "90";
-    default_options["width"] = "600";
+    default_options["height"] = "120"; // TODO: LATER MULTIPLY BY DPI
+    default_options["width"] = "600";  // TODO: LATER MULTIPLY BY DPI
     default_options["fullscreen"] = "0";
 
     return default_options;
 }
 
 void WindowController::update_file(){
-    QString window_options = this->get_all_options();
-    std::ofstream file("../User/window.user");
+    QString window_options = this->windowoptions();
+    std::ofstream file(this->path);
 
     file << window_options.toUtf8().constData();
     file.close();
 }
 
-void WindowController::set_option(QString key, QString option, bool to_update){
-    options[key] = option;
-
-    if(to_update)
-        this->update_file();
-}
-
+void WindowController::set_option(QString key, QString option){ options[key] = option; }
 QString WindowController::get_option(QString key){ return options[key]; }
 
-QString WindowController::get_all_options(){
+QString WindowController::windowoptions(){
     QString window_options;
 
     QMap<QString, QString>::const_iterator it = options.begin();
@@ -53,7 +47,7 @@ QString WindowController::get_all_options(){
 }
 
 void WindowController::load_user_window_options(){
-    std::ifstream file("../User/window.user");
+    std::ifstream file(this->path);
 
     if(!file.good()){
         this->options = get_default_options();
@@ -70,7 +64,7 @@ void WindowController::load_user_window_options(){
             if(sopt.count() <= 1)
                 continue;
 
-            this->set_option((*sopt.begin()).remove(QChar(':')), (*++sopt.begin()).remove(QChar(';')), false);
+            this->set_option((*sopt.begin()).remove(QChar(':')), (*++sopt.begin()).remove(QChar(';')));
         }
     }
 
