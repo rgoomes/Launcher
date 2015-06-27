@@ -31,7 +31,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 }
 
 void MainWindow::storeWindowPosition(int win_gap){
-    double dpi = 1.0; // TODO FIX
+    double dpi = controller->get_option("dpi").toDouble();
 
     controller->set_option("x", QString::number(this->x() + int(win_gap * dpi)));
     controller->set_option("y", QString::number(this->y() + int(win_gap * dpi)));
@@ -44,8 +44,8 @@ void MainWindow::mousePressEvent(QMouseEvent* event){
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
-    move(event->globalX() - mouse_x,
-         event->globalY() - mouse_y);
+    if(!this->in_fullscreen())
+        move(event->globalX() - mouse_x, event->globalY() - mouse_y);
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event){
@@ -54,8 +54,10 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* event){
 }
 
 void MainWindow::request_resize(){
-    controller->set_option("width", QString::number(this->width()));
-    controller->set_option("height", QString::number(this->height()));
+    double dpi = controller->get_option("dpi").toDouble();
+
+    controller->set_option("width",  QString::number(int(this->width()  / dpi)));
+    controller->set_option("height", QString::number(int(this->height() / dpi)));
     this->storeWindowPosition(10);
 
     resizing = false;
@@ -125,6 +127,17 @@ void MainWindow::text_changed(QString text){
     qDebug() << text;
 }
 
+void MainWindow::change_dpi(double new_dpi){
+    controller->set_option("dpi", QString::number(new_dpi));
+
+    this->resize(int(controller->get_option("width").toInt()  * new_dpi),
+                 int(controller->get_option("height").toInt() * new_dpi));
+    this->request_resize();
+
+    ui->searchBox->setMinimumHeight(int(controller->get_option("search_height").toInt() * new_dpi));
+    ui->searchBox->setFont(QFont(controller->get_option("font"), int(controller->get_option("font_size").toInt() * new_dpi)));
+}
+
 void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -134,14 +147,16 @@ void MainWindow::inits(){
 
     // WINDOW OPTIONS
     controller = new WindowController("../User/window.user");
+    double dpi = controller->get_option("dpi").toDouble();
     this->move(controller->get_option("x").toInt(), controller->get_option("y").toInt());
-    this->resize(controller->get_option("width").toInt(), controller->get_option("height").toInt());
+    this->resize(int(controller->get_option("width").toInt() * dpi), int(controller->get_option("height").toInt() * dpi));
+    ui->searchBox->setMinimumHeight(int(controller->get_option("search_height").toInt() * dpi));
+    ui->searchBox->setFont(QFont(controller->get_option("font"), controller->get_option("font_size").toInt()));
 
     // DRAW SHADOW
     shadow = new ShadowEffect();
     setShadow(QColor(0,0,0,controller->get_option("shadow_alpha").toInt()), 3,
               controller->get_option("shadow_blur_radius").toInt());
-
 
     // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
     ss = new Style("../User/stylesheet.user");

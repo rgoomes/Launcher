@@ -22,11 +22,8 @@ namespace Ui {
 class MainWindow : public QMainWindow{
     Q_OBJECT
 
-    int mouse_x;
-    int mouse_y;
-
     ShadowEffect* shadow;
-
+    int mouse_x, mouse_y;
     bool resizing = false;
 
     public:
@@ -41,6 +38,7 @@ class MainWindow : public QMainWindow{
         void goWindowMode();
         void center_window();
         void storeWindowPosition(int );
+        void change_dpi(double );
         bool in_fullscreen();
 
     public slots:

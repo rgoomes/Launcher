@@ -27,5 +27,6 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-QMAKE_CXXFLAGS += -std=c++11 \
-                  -O3
+QMAKE_CXXFLAGS += -std=c++11
+
+QMAKE_CFLAGS_RELEASE = -O3 -march=native
