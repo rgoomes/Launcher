@@ -22,7 +22,7 @@ QMap <QString, QString > get_default_options(){
     default_options["dpi"] = "1.0";
     default_options["search_height"] = "50";
     default_options["font_size"] = "20";
-    default_options["font"] = "Ubuntu";
+    default_options["font"] = "Liberation Mono";
 
     return default_options;
 }

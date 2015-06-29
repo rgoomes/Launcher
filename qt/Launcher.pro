@@ -25,7 +25,8 @@ HEADERS  += mainwindow.h \
     utils.h \
     windowcontroller.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    settings.ui
 
 QMAKE_CXXFLAGS += -std=c++11
 

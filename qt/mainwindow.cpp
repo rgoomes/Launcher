@@ -142,7 +142,7 @@ void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
-    // FRAME CSS CLASS
+    // ALL CSS CLASS NAMES
     ui->frame->setObjectName("Frame");
 
     // WINDOW OPTIONS
