@@ -56,8 +56,13 @@ void MainWindow::mousePressEvent(QMouseEvent* event){
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
-    if(!this->in_fullscreen());
-//        move(event->globalX() - mouse_x, event->globalY() - mouse_y);
+    // DISABLE WARNINGS
+    QMainWindow::mouseMoveEvent(event);
+
+    /*
+    if(!this->in_fullscreen())
+        move(event->globalX() - mouse_x, event->globalY() - mouse_y);
+    */
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event){

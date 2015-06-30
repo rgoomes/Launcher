@@ -41,8 +41,6 @@ QString Style::stylesheet(QString obj_name){
     if(!obj_name.length())
         return style_sheet;
 
-    qDebug() << style_sheet;
-
     return "#" + obj_name + "{" + style_sheet + "}";
 }
 
