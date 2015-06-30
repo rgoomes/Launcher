@@ -1,9 +1,8 @@
 #include <QTimer>
+#include <QThread>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "stylesheet.h"
-#include "shadoweffect.h"
 
 #define RESIZE_TIMEINTERVAL 500
 
@@ -11,7 +10,20 @@ MainWindow::~MainWindow(){ delete ui; }
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
     inits();
+    setupWorker();
 }
+
+void MainWindow::setupWorker(){
+    QThread* thread = new QThread;
+    worker = new Worker();
+    worker->moveToThread(thread);
+    connect(thread, &QThread::started, worker, &Worker::process );
+    connect(worker, &Worker::finished, thread, &QThread::quit );
+    connect(worker, &Worker::finished, worker, &Worker::deleteLater );
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater );
+    thread->start();
+}
+
 
 void MainWindow::keyPressEvent(QKeyEvent *event){
     // QUIT FOR TESTING, LATER CHANGE TO this->hide()
@@ -32,7 +44,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
 
 void MainWindow::storeWindowPosition(int win_gap){
     double dpi = controller->get_option("dpi").toDouble();
-
+    win_gap = 0;
     controller->set_option("x", QString::number(this->x() + int(win_gap * dpi)));
     controller->set_option("y", QString::number(this->y() + int(win_gap * dpi)));
     controller->update_file();
@@ -44,8 +56,8 @@ void MainWindow::mousePressEvent(QMouseEvent* event){
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
-    if(!this->in_fullscreen())
-        move(event->globalX() - mouse_x, event->globalY() - mouse_y);
+    if(!this->in_fullscreen());
+//        move(event->globalX() - mouse_x, event->globalY() - mouse_y);
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event){

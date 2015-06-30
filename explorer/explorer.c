@@ -10,16 +10,27 @@ char search[256];
 int cdir;
 int steps=0;
 
-const char* exclude_prefix[] = {"//proc", "//dev", "//usr/lib", "//usr/lib64", "//usr/share", "."};
+const char* include_prefix[] = {"//usr", "//home", "//mnt"};
+const char* exclude_prefix[] = {"//usr/lib", "//usr/lib64", "//usr/share", "//usr/include"};
 
-int check_dir(char *dir){
-   int l = strlen(dir), i;
-   for(i=0; i<sizeof(exclude_prefix)/sizeof(char*); i++){
+int exclude_dir(char* dir){
+   int l = strlen(dir);
+   for(int i=0; i<sizeof(exclude_prefix)/sizeof(char*); i++){
       if(strlen(exclude_prefix[i]) <= l && strncmp(dir, exclude_prefix[i], l) == 0)
          return false;
-
    }
    return true;
+}
+
+int check_dir(char *dir){
+   int i;
+   for(i=0; i<sizeof(include_prefix)/sizeof(char*); i++){
+      int l = strlen(include_prefix[i]);
+      if(strncmp(dir, include_prefix[i], l) == 0)
+         return exclude_dir(dir);
+
+   }
+   return false;
 }
 
 void dfs(char* dir_name, int depth){

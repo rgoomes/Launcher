@@ -14,6 +14,7 @@
 #include "stylesheet.h"
 #include "shadoweffect.h"
 #include "windowcontroller.h"
+#include "worker.h"
 
 namespace Ui {
     class MainWindow;
@@ -41,6 +42,8 @@ class MainWindow : public QMainWindow{
         void change_dpi(double );
         bool in_fullscreen();
 
+        void setupWorker();
+
     public slots:
         void request_resize();
         void text_changed(QString );
@@ -49,6 +52,7 @@ class MainWindow : public QMainWindow{
         WindowController *controller;
         Ui::MainWindow *ui;
         Style *ss;
+        Worker* worker;
 
     protected:
         void mouseReleaseEvent(QMouseEvent *event);

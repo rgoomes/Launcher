@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <QDir>
 
+#include "NcFramelessHelper.h"
+
 #define USER_FOLDER "../User"
 
 int main(int argc, char *argv[]){
@@ -12,6 +14,8 @@ int main(int argc, char *argv[]){
 
     QApplication a(argc, argv);
     MainWindow w;
+    NcFramelessHelper fh;
+    fh.activateOn(&w);
     w.show();
 
     return a.exec();

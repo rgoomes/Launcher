@@ -17,13 +17,17 @@ SOURCES += main.cpp\
     stylesheet.cpp \
     shadoweffect.cpp \
     utils.cpp \
-    windowcontroller.cpp
+    windowcontroller.cpp \
+    worker.cpp \
+    NcFramelessHelper.cpp
 
 HEADERS  += mainwindow.h \
     stylesheet.h \
     shadoweffect.h \
     utils.h \
-    windowcontroller.h
+    windowcontroller.h \
+    worker.h \
+    NcFramelessHelper.h
 
 FORMS    += mainwindow.ui \
     settings.ui
