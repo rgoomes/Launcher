@@ -32,7 +32,7 @@ void WindowController::update_file(){
     QString window_options = this->windowoptions();
     std::ofstream file(this->path);
 
-    file << window_options.toUtf8(  ).constData();
+    file << window_options.toUtf8().constData();
     file.close();
 }
 
