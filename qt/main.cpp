@@ -14,8 +14,8 @@ int main(int argc, char *argv[]){
 
     QApplication a(argc, argv);
     MainWindow w;
-    NcFramelessHelper fh;
-    fh.activateOn(&w);
+    /*NcFramelessHelper fh;
+    fh.activateOn(&w);*/
     w.show();
 
     return a.exec();

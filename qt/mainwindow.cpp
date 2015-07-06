@@ -53,16 +53,15 @@ void MainWindow::storeWindowPosition(int win_gap){
 void MainWindow::mousePressEvent(QMouseEvent* event){
     mouse_x = event->x();
     mouse_y = event->y();
+
+
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
-    // DISABLE WARNINGS
-    QMainWindow::mouseMoveEvent(event);
 
-    /*
     if(!this->in_fullscreen())
         move(event->globalX() - mouse_x, event->globalY() - mouse_y);
-    */
+
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event){
