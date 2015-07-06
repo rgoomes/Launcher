@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     utils.cpp \
     windowcontroller.cpp \
     worker.cpp \
-    NcFramelessHelper.cpp
+    NcFramelessHelper.cpp \
+    settingswindow.cpp
 
 HEADERS  += mainwindow.h \
     stylesheet.h \
@@ -27,10 +28,11 @@ HEADERS  += mainwindow.h \
     utils.h \
     windowcontroller.h \
     worker.h \
-    NcFramelessHelper.h
+    NcFramelessHelper.h \
+    settingswindow.h
 
 FORMS    += mainwindow.ui \
-    settings.ui
+    settingswindow.ui
 
 QMAKE_CXXFLAGS += -std=c++11
 

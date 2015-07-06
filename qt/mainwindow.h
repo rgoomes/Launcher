@@ -11,6 +11,7 @@
 #include <QRect>
 #include <QTimer>
 
+#include "settingswindow.h"
 #include "stylesheet.h"
 #include "shadoweffect.h"
 #include "windowcontroller.h"
@@ -51,7 +52,7 @@ class MainWindow : public QMainWindow{
     private:
         WindowController *controller;
         Ui::MainWindow *ui;
-        //Ui::SettingsWindow *uiSettings;
+        SettingsWindow *settingsWindow;
         Style *ss;
         Worker* worker;
 

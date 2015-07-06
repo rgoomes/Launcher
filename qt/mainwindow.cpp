@@ -38,6 +38,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
             goFullScreenMode();
     }
 
+    // SHOW SETTINGS
+    if(event->key() == Qt::Key_F2){
+        settingsWindow = new SettingsWindow();
+        settingsWindow->show();
+    }
+
     // AUTOCOMPLETE
     if(event->key() == Qt::Key_Tab){;}
 }
@@ -53,8 +59,6 @@ void MainWindow::storeWindowPosition(int win_gap){
 void MainWindow::mousePressEvent(QMouseEvent* event){
     mouse_x = event->x();
     mouse_y = event->y();
-
-
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
