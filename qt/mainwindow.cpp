@@ -185,7 +185,7 @@ void MainWindow::inits(){
     ui->searchBox->setMinimumHeight(int(controller->get_option("search_height").toInt() * dpi));
 
     this->setFont(controller->get_option("font"), controller->get_option("font_size"));
-    this->setFontColor(controller->get_option("font-color").toUtf8().constData());
+    this->setFontColor(controller->get_option("font_color").toUtf8().constData());
 
     // DRAW SHADOW
     shadow = new ShadowEffect();
