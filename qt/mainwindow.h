@@ -17,6 +17,8 @@
 #include "windowcontroller.h"
 #include "worker.h"
 
+#include <string>
+
 namespace Ui {
     class MainWindow;
 }
@@ -41,6 +43,8 @@ class MainWindow : public QMainWindow{
         void center_window();
         void storeWindowPosition(int );
         void change_dpi(double );
+        void setFontColor(std::string );
+        void setFont(QString, QString);
         bool in_fullscreen();
 
         void setupWorker();

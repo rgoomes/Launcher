@@ -4,6 +4,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+using namespace std;
+
 #define RESIZE_TIMEINTERVAL 500
 
 MainWindow::~MainWindow(){ delete ui; }
@@ -62,10 +64,8 @@ void MainWindow::mousePressEvent(QMouseEvent* event){
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
-
     if(!this->in_fullscreen())
         move(event->globalX() - mouse_x, event->globalY() - mouse_y);
-
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event){
@@ -158,12 +158,24 @@ void MainWindow::change_dpi(double new_dpi){
     ui->searchBox->setFont(QFont(controller->get_option("font"), int(controller->get_option("font_size").toInt() * new_dpi)));
 }
 
+void MainWindow::setFont(QString font, QString size){
+    ui->searchBox->setFont(QFont(font, size.toInt()));
+}
+
+void MainWindow::setFontColor(string color){
+    string c = string("#Sbox { color:") + color
+             + string("; border-radius: 0px; background-color: rgba(255, 255, 255, 0);}"); // DEFAULTS
+
+    ui->searchBox->setStyleSheet(c.c_str());
+}
+
 void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     // ALL CSS CLASS NAMES
     ui->frame->setObjectName("Frame");
+    ui->searchBox->setObjectName("Sbox");
 
     // WINDOW OPTIONS
     controller = new WindowController("../User/window.user");
@@ -171,7 +183,9 @@ void MainWindow::inits(){
     this->move(controller->get_option("x").toInt(), controller->get_option("y").toInt());
     this->resize(int(controller->get_option("width").toInt() * dpi), int(controller->get_option("height").toInt() * dpi));
     ui->searchBox->setMinimumHeight(int(controller->get_option("search_height").toInt() * dpi));
-    ui->searchBox->setFont(QFont(controller->get_option("font"), controller->get_option("font_size").toInt()));
+
+    this->setFont(controller->get_option("font"), controller->get_option("font_size"));
+    this->setFontColor(controller->get_option("font-color").toUtf8().constData());
 
     // DRAW SHADOW
     shadow = new ShadowEffect();
