@@ -51,6 +51,7 @@ class MainWindow : public QMainWindow{
     private:
         WindowController *controller;
         Ui::MainWindow *ui;
+        //Ui::SettingsWindow *uiSettings;
         Style *ss;
         Worker* worker;
 

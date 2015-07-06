@@ -21,8 +21,9 @@ QMap <QString, QString > get_default_options(){
     default_options["fullscreen"] = "0";
     default_options["dpi"] = "1.0";
     default_options["search_height"] = "50";
-    default_options["font_size"] = "20";
     default_options["font"] = "Liberation Mono";
+    default_options["font_size"] = "20";
+    default_options["font_color"] = "#000000";
 
     return default_options;
 }
@@ -31,7 +32,7 @@ void WindowController::update_file(){
     QString window_options = this->windowoptions();
     std::ofstream file(this->path);
 
-    file << window_options.toUtf8().constData();
+    file << window_options.toUtf8(  ).constData();
     file.close();
 }
 
