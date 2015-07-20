@@ -41,11 +41,13 @@ class MainWindow : public QMainWindow{
         void goFullScreenMode();
         void goWindowMode();
         void center_window();
-        void storeWindowPosition(int );
+        void storeWindowPosition();
         void change_dpi(double );
         void setFontColor(std::string );
         void setFont(QString, QString);
         bool in_fullscreen();
+        int toDpi(QString );
+        int toPx(int );
 
         void setupWorker();
 
@@ -54,7 +56,7 @@ class MainWindow : public QMainWindow{
         void text_changed(QString );
 
     private:
-        WindowController *controller;
+        WindowController *ctrl;
         Ui::MainWindow *ui;
         SettingsWindow *settingsWindow;
         Style *ss;

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-#define RESIZE_TIMEINTERVAL 500
+#define WAIT_TIME 500
 
 MainWindow::~MainWindow(){ delete ui; }
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
@@ -25,7 +25,6 @@ void MainWindow::setupWorker(){
     connect(thread, &QThread::finished, thread, &QThread::deleteLater );
     thread->start();
 }
-
 
 void MainWindow::keyPressEvent(QKeyEvent *event){
     // QUIT FOR TESTING, LATER CHANGE TO this->hide()
@@ -50,12 +49,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     if(event->key() == Qt::Key_Tab){;}
 }
 
-void MainWindow::storeWindowPosition(int win_gap){
-    double dpi = controller->get_option("dpi").toDouble();
-    win_gap = 0;
-    controller->set_option("x", QString::number(this->x() + int(win_gap * dpi)));
-    controller->set_option("y", QString::number(this->y() + int(win_gap * dpi)));
-    controller->update_file();
+int MainWindow::toDpi(QString px){ return int(px.toInt() * ctrl->get_option("dpi").toDouble()); }
+int MainWindow::toPx(int px){  return int(px / ctrl->get_option("dpi").toDouble()); }
+
+void MainWindow::storeWindowPosition(){
+    QString win_gap = "0"; // TODO: CALCULATE WINDOW MANAGER RESIZE PX
+    ctrl->set_option("x", QString::number(this->x() + toDpi(win_gap)));
+    ctrl->set_option("y", QString::number(this->y() + toDpi(win_gap)));
+    ctrl->update_file();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent* event){
@@ -70,15 +71,13 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event){
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event){
     QMainWindow::mouseReleaseEvent(event);
-    this->storeWindowPosition(10);
+    this->storeWindowPosition();
 }
 
 void MainWindow::request_resize(){
-    double dpi = controller->get_option("dpi").toDouble();
-
-    controller->set_option("width",  QString::number(int(this->width()  / dpi)));
-    controller->set_option("height", QString::number(int(this->height() / dpi)));
-    this->storeWindowPosition(10);
+    ctrl->set_option("width",  QString::number(toPx(this->width())));
+    ctrl->set_option("height", QString::number(toPx(this->height())));
+    this->storeWindowPosition();
 
     resizing = false;
 }
@@ -88,7 +87,7 @@ void MainWindow::resizeEvent(QResizeEvent* event){
 
     if(!resizing && !this->in_fullscreen() && event->spontaneous()){
         resizing = true;
-        QTimer::singleShot(RESIZE_TIMEINTERVAL, this, SLOT(request_resize()));
+        QTimer::singleShot(WAIT_TIME, this, SLOT(request_resize()));
     }
 }
 
@@ -107,15 +106,15 @@ void MainWindow::setBorderRadius(int r){
 
 bool MainWindow::in_fullscreen(){
     return (windowState() == Qt::WindowFullScreen)
-         | (controller->get_option("fullscreen").toInt()); // SANITY TEST
+         | (ctrl->get_option("fullscreen").toInt()); // SANITY TEST
 }
 
 void MainWindow::goFullScreenMode(){
     setBorderRadius(0);
     setShadow(QColor(0,0,0,0), 0, 0);
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
-    controller->set_option("fullscreen", "1");
-    controller->update_file();
+    ctrl->set_option("fullscreen", "1");
+    ctrl->update_file();
 
     this->showFullScreen();
 }
@@ -125,11 +124,11 @@ void MainWindow::goWindowMode(){
     ss->load_user_preferences();
     ui->frame->setStyleSheet(ss->stylesheet("Frame"));
 
-    setShadow(QColor(0,0,0,controller->get_option("shadow_alpha").toInt()), 3,
-              controller->get_option("shadow_blur_radius").toInt());
+    setShadow(QColor(0,0,0,ctrl->get_option("shadow_alpha").toInt()), 3,
+              ctrl->get_option("shadow_blur_radius").toInt());
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
-    controller->set_option("fullscreen", "0");
-    controller->update_file();
+    ctrl->set_option("fullscreen", "0");
+    ctrl->update_file();
 
     this->showNormal();
 }
@@ -140,7 +139,7 @@ void MainWindow::center_window(){
     this->move(screen.width()/2  - this->width()/2,
                screen.height()/2 - this->height()/2);
 
-    this->storeWindowPosition(10);
+    this->storeWindowPosition();
 }
 
 void MainWindow::text_changed(QString text){
@@ -148,18 +147,21 @@ void MainWindow::text_changed(QString text){
 }
 
 void MainWindow::change_dpi(double new_dpi){
-    controller->set_option("dpi", QString::number(new_dpi));
+    ctrl->set_option("dpi", QString::number(new_dpi));
 
-    this->resize(int(controller->get_option("width").toInt()  * new_dpi),
-                 int(controller->get_option("height").toInt() * new_dpi));
+    this->resize(toDpi(ctrl->get_option("width")), toDpi(ctrl->get_option("height")));
     this->request_resize();
 
-    ui->searchBox->setMinimumHeight(int(controller->get_option("search_height").toInt() * new_dpi));
-    ui->searchBox->setFont(QFont(controller->get_option("font"), int(controller->get_option("font_size").toInt() * new_dpi)));
+    ui->searchBox->setMinimumHeight(toDpi(ctrl->get_option("search_height")));
+    this->setFont(ctrl->get_option("font"), ctrl->get_option("font_size"));
 }
 
 void MainWindow::setFont(QString font, QString size){
-    ui->searchBox->setFont(QFont(font, size.toInt()));
+    ui->searchBox->setFont(QFont(font, toDpi(size)));
+
+    ctrl->set_option("font", font);
+    ctrl->set_option("font_size", size);
+    ctrl->update_file();
 }
 
 void MainWindow::setFontColor(string color){
@@ -167,6 +169,8 @@ void MainWindow::setFontColor(string color){
              + string("; border-radius: 0px; background-color: rgba(255, 255, 255, 0);}"); // DEFAULTS
 
     ui->searchBox->setStyleSheet(c.c_str());
+    ctrl->set_option("font_color", QString::fromStdString(color));
+    ctrl->update_file();
 }
 
 void MainWindow::inits(){
@@ -178,26 +182,25 @@ void MainWindow::inits(){
     ui->searchBox->setObjectName("Sbox");
 
     // WINDOW OPTIONS
-    controller = new WindowController("../User/window.user");
-    double dpi = controller->get_option("dpi").toDouble();
-    this->move(controller->get_option("x").toInt(), controller->get_option("y").toInt());
-    this->resize(int(controller->get_option("width").toInt() * dpi), int(controller->get_option("height").toInt() * dpi));
-    ui->searchBox->setMinimumHeight(int(controller->get_option("search_height").toInt() * dpi));
+    ctrl = new WindowController("../User/window.user");
+    this->move(ctrl->get_option("x").toInt(), ctrl->get_option("y").toInt());
+    this->resize(toDpi(ctrl->get_option("width")), toDpi(ctrl->get_option("height")));
+    ui->searchBox->setMinimumHeight(toDpi(ctrl->get_option("search_height")));
 
-    this->setFont(controller->get_option("font"), controller->get_option("font_size"));
-    this->setFontColor(controller->get_option("font_color").toUtf8().constData());
+    this->setFont(ctrl->get_option("font"), ctrl->get_option("font_size"));
+    this->setFontColor(ctrl->get_option("font_color").toUtf8().constData());
 
     // DRAW SHADOW
     shadow = new ShadowEffect();
-    setShadow(QColor(0,0,0,controller->get_option("shadow_alpha").toInt()), 3,
-              controller->get_option("shadow_blur_radius").toInt());
+    setShadow(QColor(0,0,0,ctrl->get_option("shadow_alpha").toInt()), 3,
+              ctrl->get_option("shadow_blur_radius").toInt());
 
     // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
     ss = new Style("../User/stylesheet.user");
     ui->frame->setStyleSheet(ss->stylesheet("Frame"));
 
     // STORED WINDOW STATE
-    if(controller->get_option("fullscreen").toInt())
+    if(ctrl->get_option("fullscreen").toInt())
         goFullScreenMode();
 
     // LINE EDIT TEXT CHANGE
