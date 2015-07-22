@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     windowcontroller.cpp \
     worker.cpp \
     NcFramelessHelper.cpp \
-    settingswindow.cpp
+    settingswindow.cpp \
+    stylecontainer.cpp
 
 HEADERS  += mainwindow.h \
     stylesheet.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     windowcontroller.h \
     worker.h \
     NcFramelessHelper.h \
-    settingswindow.h
+    settingswindow.h \
+    stylecontainer.hpp
 
 FORMS    += mainwindow.ui \
     settingswindow.ui

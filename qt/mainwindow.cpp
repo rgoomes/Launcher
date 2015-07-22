@@ -91,17 +91,24 @@ void MainWindow::resizeEvent(QResizeEvent* event){
     }
 }
 
-void MainWindow::setShadow(QColor c, int scale, int blur_radius){
+void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool to_update){
     shadow->setColor(c);
     shadow->setDistance(scale);
     shadow->setBlurRadius(blur_radius);
-
     ui->frame->setGraphicsEffect(shadow);
+
+    if(to_update){
+        ctrl->set_option("shadow-scale", QString::number(scale));
+        ctrl->set_option("shadow-alpha", QString::number(c.alpha()));
+        ctrl->set_option("shadow-blur-radius", QString::number(blur_radius));
+        ctrl->update_file();
+    }
 }
 
-void MainWindow::setBorderRadius(int r){
-    ss->set_style("border-radius", QString::number(r) + "px");
-    ui->frame->setStyleSheet(ss->stylesheet("Frame"));
+void MainWindow::setBorderRadius(int r, bool to_update){
+    cc->setStyle("border-radius", QString::number(r) + "px", FRAME);
+    ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
+    if(to_update) cc->update_file();
 }
 
 bool MainWindow::in_fullscreen(){
@@ -110,8 +117,8 @@ bool MainWindow::in_fullscreen(){
 }
 
 void MainWindow::goFullScreenMode(){
-    setBorderRadius(0);
-    setShadow(QColor(0,0,0,0), 0, 0);
+    setBorderRadius(0, false);
+    setShadow(QColor(0,0,0,0), 0, 0, false);
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
     ctrl->set_option("fullscreen", "1");
     ctrl->update_file();
@@ -121,11 +128,13 @@ void MainWindow::goFullScreenMode(){
 
 void MainWindow::goWindowMode(){
     // RELOAD OLD USER STYLESHEET
-    ss->load_user_preferences();
-    ui->frame->setStyleSheet(ss->stylesheet("Frame"));
+    cc->reload(FRAME);
+    ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
 
-    setShadow(QColor(0,0,0,ctrl->get_option("shadow_alpha").toInt()), 3,
-              ctrl->get_option("shadow_blur_radius").toInt());
+    setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
+              ctrl->get_option("shadow-scale").toInt(),
+              ctrl->get_option("shadow-blur-radius").toInt(), false);
+
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
     ctrl->set_option("fullscreen", "0");
     ctrl->update_file();
@@ -152,25 +161,22 @@ void MainWindow::change_dpi(double new_dpi){
     this->resize(toDpi(ctrl->get_option("width")), toDpi(ctrl->get_option("height")));
     this->request_resize();
 
-    ui->searchBox->setMinimumHeight(toDpi(ctrl->get_option("search_height")));
-    this->setFont(ctrl->get_option("font"), ctrl->get_option("font_size"));
+    ui->searchBox->setMinimumHeight(toDpi(ctrl->get_option("search-height")));
+    this->setFont(ctrl->get_option("font"), ctrl->get_option("font-size"));
 }
 
 void MainWindow::setFont(QString font, QString size){
     ui->searchBox->setFont(QFont(font, toDpi(size)));
 
     ctrl->set_option("font", font);
-    ctrl->set_option("font_size", size);
+    ctrl->set_option("font-size", size);
     ctrl->update_file();
 }
 
 void MainWindow::setFontColor(string color){
-    string c = string("#Sbox { color:") + color
-             + string("; border-radius: 0px; background-color: rgba(255, 255, 255, 0);}"); // DEFAULTS
-
-    ui->searchBox->setStyleSheet(c.c_str());
-    ctrl->set_option("font_color", QString::fromStdString(color));
-    ctrl->update_file();
+    cc->setStyle("color", QString::fromStdString(color), SBOX);
+    ui->searchBox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
+    cc->update_file();
 }
 
 void MainWindow::inits(){
@@ -181,23 +187,24 @@ void MainWindow::inits(){
     ui->frame->setObjectName("Frame");
     ui->searchBox->setObjectName("Sbox");
 
+    // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
+    cc = new Container("../User/stylesheet.user");
+    ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
+
     // WINDOW OPTIONS
     ctrl = new WindowController("../User/window.user");
     this->move(ctrl->get_option("x").toInt(), ctrl->get_option("y").toInt());
     this->resize(toDpi(ctrl->get_option("width")), toDpi(ctrl->get_option("height")));
-    ui->searchBox->setMinimumHeight(toDpi(ctrl->get_option("search_height")));
+    ui->searchBox->setMinimumHeight(toDpi(ctrl->get_option("search-height")));
 
-    this->setFont(ctrl->get_option("font"), ctrl->get_option("font_size"));
-    this->setFontColor(ctrl->get_option("font_color").toUtf8().constData());
+    this->setFont(ctrl->get_option("font"), ctrl->get_option("font-size"));
+    this->setFontColor(cc->getStyle("color", SBOX).toUtf8().constData());
 
     // DRAW SHADOW
     shadow = new ShadowEffect();
-    setShadow(QColor(0,0,0,ctrl->get_option("shadow_alpha").toInt()), 3,
-              ctrl->get_option("shadow_blur_radius").toInt());
-
-    // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
-    ss = new Style("../User/stylesheet.user");
-    ui->frame->setStyleSheet(ss->stylesheet("Frame"));
+    setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
+              ctrl->get_option("shadow-scale").toInt(),
+              ctrl->get_option("shadow-blur-radius").toInt(), false);
 
     // STORED WINDOW STATE
     if(ctrl->get_option("fullscreen").toInt())

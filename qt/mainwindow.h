@@ -13,6 +13,7 @@
 
 #include "settingswindow.h"
 #include "stylesheet.h"
+#include "stylecontainer.hpp"
 #include "shadoweffect.h"
 #include "windowcontroller.h"
 #include "worker.h"
@@ -30,14 +31,17 @@ class MainWindow : public QMainWindow{
     int mouse_x, mouse_y;
     bool resizing = false;
 
+    const int FRAME = 0;
+    const int SBOX  = 1;
+
     public:
         explicit MainWindow(QWidget *parent = 0);
         ~MainWindow();
 
     public:
         void inits();
-        void setBorderRadius(int );
-        void setShadow(QColor , int , int );
+        void setBorderRadius(int , bool );
+        void setShadow(QColor , int , int , bool);
         void goFullScreenMode();
         void goWindowMode();
         void center_window();
@@ -59,7 +63,7 @@ class MainWindow : public QMainWindow{
         WindowController *ctrl;
         Ui::MainWindow *ui;
         SettingsWindow *settingsWindow;
-        Style *ss;
+        Container *cc;
         Worker* worker;
 
     protected:

@@ -14,16 +14,16 @@ QMap <QString, QString > get_default_options(){
 
     default_options["x"] = "100";
     default_options["y"] = "100";
-    default_options["shadow_alpha"] = "255";
-    default_options["shadow_blur_radius"] = "15";
+    default_options["shadow-scale"] = "3";
+    default_options["shadow-alpha"] = "255";
+    default_options["shadow-blur-radius"] = "15";
     default_options["height"] = "120";
     default_options["width"] = "600";
     default_options["fullscreen"] = "0";
     default_options["dpi"] = "1.0";
-    default_options["search_height"] = "50";
+    default_options["search-height"] = "50";
     default_options["font"] = "Liberation Mono";
-    default_options["font_size"] = "20";
-    default_options["font_color"] = "#000000";
+    default_options["font-size"] = "20";
 
     return default_options;
 }
