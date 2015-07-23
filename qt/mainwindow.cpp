@@ -119,6 +119,16 @@ void MainWindow::setBackgroundColor(QColor color, bool random){
     cc->update_file();
 }
 
+void MainWindow::setBorderVisibility(){
+    std::string color = cc->getStyle("border", SBOX).toStdString();
+    std::string alpha = color.substr(color.find_last_of(" ")+1);
+    QString border = !alpha.compare("solid") ? "1px transparent" : "1px solid";
+
+    cc->setStyle("border", border, SBOX);
+    ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
+    cc->update_file();
+}
+
 void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool to_update){
     shadow->setColor(c);
     shadow->setDistance(scale);

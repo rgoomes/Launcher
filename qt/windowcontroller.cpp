@@ -17,8 +17,8 @@ QMap <QString, QString > get_default_options(){
     default_options["shadow-scale"] = "3";
     default_options["shadow-alpha"] = "255";
     default_options["shadow-blur-radius"] = "15";
-    default_options["height"] = "120";
-    default_options["width"] = "600";
+    default_options["height"] = "200";
+    default_options["width"] = "500";
     default_options["fullscreen"] = "0";
     default_options["dpi"] = "1.0";
     default_options["search-height"] = "50";

@@ -69,10 +69,6 @@ background-color: rgba(255, 255, 255, 1);</string>
              <pointsize>20</pointsize>
             </font>
            </property>
-           <property name="styleSheet">
-            <string notr="true">border-radius: 0px;
-background-color: rgba(255, 255, 255, 0);</string>
-           </property>
           </widget>
          </item>
          <item>

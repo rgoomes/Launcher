@@ -16,7 +16,7 @@ QMap <QString, QString > frameDefaultStyle(){
     QMap <QString, QString > default_styles;
 
     default_styles["border-radius"] = "20px";
-    default_styles["background-color"] = "rgba(255,255,255,1)";
+    default_styles["background-color"] = "rgba(0,125,255,0.4)";
 
     return default_styles;
 }
@@ -24,9 +24,11 @@ QMap <QString, QString > frameDefaultStyle(){
 QMap <QString, QString > sboxDefaultStyle(){
     QMap <QString, QString > default_styles;
 
-    default_styles["color"] = "#000000";
-    default_styles["border-radius"] = "0px";
-    default_styles["background-color"] = "rgba(255,255,255,0)";
+    default_styles["color"] = "#ffffff";
+    default_styles["border"] = "1px solid";
+    default_styles["border-radius"] = "7px";
+    default_styles["border-color"] = "#ffffff";
+    default_styles["background"] = "transparent";
 
     return default_styles;
 }

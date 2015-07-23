@@ -43,6 +43,7 @@ class MainWindow : public QMainWindow{
         void setBorderRadius(int , bool );
         void setShadow(QColor , int , int , bool);
         void setBackgroundColor(QColor, bool);
+        void setBorderVisibility();
         void goFullScreenMode();
         void goWindowMode();
         void center_window();
