@@ -51,7 +51,7 @@ background-color: rgba(255, 255, 255, 1);</string>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QLineEdit" name="searchBox">
+          <widget class="QLineEdit" name="sbox">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>

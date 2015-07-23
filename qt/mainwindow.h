@@ -42,6 +42,7 @@ class MainWindow : public QMainWindow{
         void inits();
         void setBorderRadius(int , bool );
         void setShadow(QColor , int , int , bool);
+        void setBackgroundColor(QColor, bool);
         void goFullScreenMode();
         void goWindowMode();
         void center_window();
@@ -50,6 +51,7 @@ class MainWindow : public QMainWindow{
         void setFontColor(std::string );
         void setFont(QString, QString);
         bool in_fullscreen();
+        double getBackgroundAlpha();
         int toDpi(QString );
         int toPx(int );
 

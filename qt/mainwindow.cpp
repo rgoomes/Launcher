@@ -1,6 +1,7 @@
 #include <QTimer>
 #include <QThread>
 
+#include "utils.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -91,6 +92,33 @@ void MainWindow::resizeEvent(QResizeEvent* event){
     }
 }
 
+double MainWindow::getBackgroundAlpha(){
+    const char *color = cc->getStyle("background-color", FRAME).toStdString().c_str();
+
+    double alpha;
+    sscanf(color, "rgba(%*d,%*d,%*d,%lf)", &alpha);
+
+    return alpha;
+}
+
+void MainWindow::setBackgroundColor(QColor color, bool random){
+    QString c;
+
+    if(random)
+        c = rand_color(this->getBackgroundAlpha());
+    else {
+        c = "rgba("
+          + QString::number(color.red())   + ","
+          + QString::number(color.green()) + ","
+          + QString::number(color.blue())  + ","
+          + QString::number(color.alpha()) + ")";
+    }
+
+    cc->setStyle("background-color", c, FRAME);
+    ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
+    cc->update_file();
+}
+
 void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool to_update){
     shadow->setColor(c);
     shadow->setDistance(scale);
@@ -106,9 +134,14 @@ void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool to_update)
 }
 
 void MainWindow::setBorderRadius(int r, bool to_update){
+    int old_radius = cc->getStyle("border-radius", FRAME).mid(0, 2).toInt();
     cc->setStyle("border-radius", QString::number(r) + "px", FRAME);
     ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
-    if(to_update) cc->update_file();
+
+    if(to_update)
+        cc->update_file();
+    else
+        cc->setStyle("border-radius", QString::number(old_radius) + "px", FRAME);
 }
 
 bool MainWindow::in_fullscreen(){
@@ -161,12 +194,12 @@ void MainWindow::change_dpi(double new_dpi){
     this->resize(toDpi(ctrl->get_option("width")), toDpi(ctrl->get_option("height")));
     this->request_resize();
 
-    ui->searchBox->setMinimumHeight(toDpi(ctrl->get_option("search-height")));
+    ui->sbox->setMinimumHeight(toDpi(ctrl->get_option("search-height")));
     this->setFont(ctrl->get_option("font"), ctrl->get_option("font-size"));
 }
 
 void MainWindow::setFont(QString font, QString size){
-    ui->searchBox->setFont(QFont(font, toDpi(size)));
+    ui->sbox->setFont(QFont(font, toDpi(size)));
 
     ctrl->set_option("font", font);
     ctrl->set_option("font-size", size);
@@ -175,7 +208,7 @@ void MainWindow::setFont(QString font, QString size){
 
 void MainWindow::setFontColor(string color){
     cc->setStyle("color", QString::fromStdString(color), SBOX);
-    ui->searchBox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
+    ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
     cc->update_file();
 }
 
@@ -185,18 +218,18 @@ void MainWindow::inits(){
 
     // ALL CSS CLASS NAMES
     ui->frame->setObjectName("Frame");
-    ui->searchBox->setObjectName("Sbox");
+    ui->sbox->setObjectName("Sbox");
 
     // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
     cc = new Container("../User/stylesheet.user");
+    ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
     ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
 
     // WINDOW OPTIONS
     ctrl = new WindowController("../User/window.user");
+    ui->sbox->setMinimumHeight(toDpi(ctrl->get_option("search-height")));
     this->move(ctrl->get_option("x").toInt(), ctrl->get_option("y").toInt());
     this->resize(toDpi(ctrl->get_option("width")), toDpi(ctrl->get_option("height")));
-    ui->searchBox->setMinimumHeight(toDpi(ctrl->get_option("search-height")));
-
     this->setFont(ctrl->get_option("font"), ctrl->get_option("font-size"));
     this->setFontColor(cc->getStyle("color", SBOX).toUtf8().constData());
 
@@ -211,5 +244,5 @@ void MainWindow::inits(){
         goFullScreenMode();
 
     // LINE EDIT TEXT CHANGE
-    connect(ui->searchBox, SIGNAL(textChanged(QString )), this, SLOT(text_changed(QString )));
+    connect(ui->sbox, SIGNAL(textChanged(QString )), this, SLOT(text_changed(QString )));
 }
