@@ -55,8 +55,8 @@ int MainWindow::toPx(int px){  return int(px / ctrl->get_option("dpi").toDouble(
 
 void MainWindow::storeWindowPosition(){
     QString win_gap = "0"; // TODO: CALCULATE WINDOW MANAGER RESIZE PX
-    ctrl->set_option("x", QString::number(this->x() + toDpi(win_gap)));
-    ctrl->set_option("y", QString::number(this->y() + toDpi(win_gap)));
+    ctrl->set_option("x", QString::number(max(this->x(), 0) + toDpi(win_gap)));
+    ctrl->set_option("y", QString::number(max(this->y(), 0) + toDpi(win_gap)));
     ctrl->update_file();
 }
 
@@ -163,6 +163,7 @@ void MainWindow::goFullScreenMode(){
     setBorderRadius(0, false);
     setShadow(QColor(0,0,0,0), 0, 0, false);
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
+    ui->frameLayout->layout()->setContentsMargins(0, 15, 0, 0);
     ctrl->set_option("fullscreen", "1");
     ctrl->update_file();
 
@@ -179,6 +180,7 @@ void MainWindow::goWindowMode(){
               ctrl->get_option("shadow-blur-radius").toInt(), false);
 
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
+    ui->frameLayout->layout()->setContentsMargins(0, 0, 0, 0);
     ctrl->set_option("fullscreen", "0");
     ctrl->update_file();
 

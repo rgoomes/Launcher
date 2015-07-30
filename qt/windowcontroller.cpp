@@ -21,7 +21,7 @@ QMap <QString, QString > get_default_options(){
     default_options["width"] = "500";
     default_options["fullscreen"] = "0";
     default_options["dpi"] = "1.0";
-    default_options["search-height"] = "50";
+    default_options["search-height"] = "45";
     default_options["font"] = "Liberation Mono";
     default_options["font-size"] = "20";
 
