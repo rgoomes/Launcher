@@ -5,9 +5,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#define fmax(x, y) (((x) > (y)) ? (x) : (y))
+#define fmin(x, y) (((x) < (y)) ? (x) : (y))
+
 using namespace std;
 
-#define WAIT_TIME 500
+#define WAIT_TIME 100
+#define GRIP_SIZE 5
 
 MainWindow::~MainWindow(){ delete ui; }
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
@@ -79,6 +83,7 @@ void MainWindow::request_resize(){
     ctrl->set_option("width",  QString::number(toPx(this->width())));
     ctrl->set_option("height", QString::number(toPx(this->height())));
     this->storeWindowPosition();
+    this->setSboxHeight(0);
 
     resizing = false;
 }
@@ -224,6 +229,48 @@ void MainWindow::setFontColor(string color){
     cc->update_file();
 }
 
+void MainWindow::setSboxHeight(double diff){
+    double height = fmax(ctrl->get_option("search-height").toInt() + diff,
+                         ctrl->get_option("font-size").toInt());
+
+    height = fmax(height, 0); // SANITY TEST;
+    height = fmin(height, ctrl->get_option("height").toInt() - 30);
+
+    ui->sbox->setMinimumHeight(toDpi(QString::number(height)));
+    ctrl->set_option("search-height", QString::number(height));
+    ctrl->update_file();
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event){
+    QMainWindow::eventFilter(obj, event);
+
+    const QMouseEvent* me = static_cast<const QMouseEvent*>(event);
+    QPoint cur = me->pos();
+
+    if(scaling && event->type() == QEvent::MouseMove){
+        double diff = 0;
+        if(cur.y() > mpos.y())
+            diff += cur.y() - mpos.y();
+        else if(cur.y() < mpos.y())
+            diff -= mpos.y() - cur.y();
+
+        mpos = cur;
+        setSboxHeight(diff);
+    }
+
+    if(event->type() == QEvent::MouseButtonRelease)
+        scaling = false;
+    if(event->type() == QEvent::MouseButtonPress){
+        int border_y = ctrl->get_option("search-height").toInt();
+        if(abs(border_y - cur.y()) < GRIP_SIZE){
+            scaling = true;
+            mpos = cur;
+        }
+    }
+
+    return false;
+}
+
 void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -257,4 +304,7 @@ void MainWindow::inits(){
 
     // LINE EDIT TEXT CHANGE
     connect(ui->sbox, SIGNAL(textChanged(QString )), this, SLOT(text_changed(QString )));
+
+    // LIDE EDIT EVENT FILTER
+    ui->sbox->installEventFilter(this);
 }

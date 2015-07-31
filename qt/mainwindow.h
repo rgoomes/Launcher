@@ -29,7 +29,10 @@ class MainWindow : public QMainWindow{
 
     ShadowEffect* shadow;
     int mouse_x, mouse_y;
+    QPoint mpos;
+
     bool resizing = false;
+    bool scaling  = false;
 
     const int FRAME = 0;
     const int SBOX  = 1;
@@ -43,6 +46,7 @@ class MainWindow : public QMainWindow{
         void setBorderRadius(int , bool );
         void setShadow(QColor , int , int , bool);
         void setBackgroundColor(QColor, bool);
+        void setSboxHeight(double );
         void setBorderVisibility();
         void goFullScreenMode();
         void goWindowMode();
@@ -52,6 +56,7 @@ class MainWindow : public QMainWindow{
         void setFontColor(std::string );
         void setFont(QString, QString);
         bool in_fullscreen();
+        bool eventFilter(QObject *, QEvent *);
         double getBackgroundAlpha();
         int toDpi(QString );
         int toPx(int );
