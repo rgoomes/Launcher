@@ -238,7 +238,6 @@ void MainWindow::setSboxHeight(double diff){
 
     ui->sbox->setMinimumHeight(toDpi(QString::number(height)));
     ctrl->set_option("search-height", QString::number(height));
-    ctrl->update_file();
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event){
@@ -258,8 +257,10 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
         setSboxHeight(diff);
     }
 
-    if(event->type() == QEvent::MouseButtonRelease)
+    if(event->type() == QEvent::MouseButtonRelease){
+        ctrl->update_file();
         scaling = false;
+    }
     if(event->type() == QEvent::MouseButtonPress){
         int border_y = ctrl->get_option("search-height").toInt();
         if(abs(border_y - cur.y()) < GRIP_SIZE){
