@@ -243,33 +243,31 @@ void MainWindow::setSboxHeight(double diff){
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event){
     QMainWindow::eventFilter(obj, event);
+    QPoint cur = static_cast<const QMouseEvent*>(event)->pos();
 
-    const QMouseEvent* me = static_cast<const QMouseEvent*>(event);
-    QPoint cur = me->pos();
+    if(abs(ctrl->get_option("search-height").toInt() - cur.y()) <= GRIP_SIZE)
+        QApplication::setOverrideCursor(Qt::SplitVCursor);
+    else if(cur.y() && !scaling)
+        QApplication::setOverrideCursor(Qt::IBeamCursor);
+    if(event->type() == QEvent::MouseButtonRelease)
+        if(abs(ctrl->get_option("search-height").toInt() - cur.y()) > GRIP_SIZE)
+            QApplication::setOverrideCursor(Qt::IBeamCursor);
+    if(event->type() == QEvent::Leave)
+        QApplication::setOverrideCursor(Qt::ArrowCursor);
 
-    if(scaling && event->type() == QEvent::MouseMove){
-        double diff = 0;
-        if(cur.y() > mpos.y())
-            diff += cur.y() - mpos.y();
-        else if(cur.y() < mpos.y())
-            diff -= mpos.y() - cur.y();
+    /////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////
 
+    if(scaling && event->type() == QEvent::MouseMove)
+        setSboxHeight(abs(cur.y() - mpos.y()) * (cur.y() > mpos.y() ? 1 : -1));
+    if(event->type() == QEvent::MouseMove)
         mpos = cur;
-        setSboxHeight(diff);
-    }
-
+    if(event->type() == QEvent::MouseButtonPress)
+        if(abs(ctrl->get_option("search-height").toInt() - cur.y()) <= GRIP_SIZE)
+            scaling = true;
     if(event->type() == QEvent::MouseButtonRelease){
-        QApplication::restoreOverrideCursor();
         ctrl->update_file();
         scaling = false;
-    }
-    if(event->type() == QEvent::MouseButtonPress){
-        int border_y = ctrl->get_option("search-height").toInt();
-        if(abs(border_y - cur.y()) <= GRIP_SIZE){
-            QApplication::setOverrideCursor(Qt::SplitVCursor);
-            scaling = true;
-            mpos = cur;
-        }
     }
 
     return false;
