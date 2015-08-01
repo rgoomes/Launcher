@@ -10,6 +10,7 @@
 
 using namespace std;
 
+#define MARGIN_SIZE 30
 #define WAIT_TIME 100
 #define GRIP_SIZE 5
 
@@ -231,10 +232,10 @@ void MainWindow::setFontColor(string color){
 
 void MainWindow::setSboxHeight(double diff){
     double height = fmax(ctrl->get_option("search-height").toInt() + diff,
-                         ctrl->get_option("font-size").toInt());
+                         ctrl->get_option("font-size").toInt() + MARGIN_SIZE);
 
-    height = fmax(height, 0); // SANITY TEST;
-    height = fmin(height, ctrl->get_option("height").toInt() - 30);
+    height = fmax(height, 0);
+    height = fmin(height, ctrl->get_option("height").toInt() - MARGIN_SIZE);
 
     ui->sbox->setMinimumHeight(toDpi(QString::number(height)));
     ctrl->set_option("search-height", QString::number(height));
@@ -258,12 +259,14 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
     }
 
     if(event->type() == QEvent::MouseButtonRelease){
+        QApplication::restoreOverrideCursor();
         ctrl->update_file();
         scaling = false;
     }
     if(event->type() == QEvent::MouseButtonPress){
         int border_y = ctrl->get_option("search-height").toInt();
-        if(abs(border_y - cur.y()) < GRIP_SIZE){
+        if(abs(border_y - cur.y()) <= GRIP_SIZE){
+            QApplication::setOverrideCursor(Qt::SplitVCursor);
             scaling = true;
             mpos = cur;
         }
