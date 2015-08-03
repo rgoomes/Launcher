@@ -65,6 +65,7 @@ class MainWindow : public QMainWindow{
 
     public slots:
         void request_resize();
+        void selection_changed();
         void text_changed(QString );
 
     private:

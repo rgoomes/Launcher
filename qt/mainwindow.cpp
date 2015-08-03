@@ -231,26 +231,33 @@ void MainWindow::setFontColor(string color){
 }
 
 void MainWindow::setSboxHeight(double diff){
-    double height = fmax(ctrl->get_option("search-height").toInt() + diff,
-                         ctrl->get_option("font-size").toInt() + MARGIN_SIZE);
+    double height = fmax(ctrl->get_option("search-height").toInt() + toPx(diff),
+                         ctrl->get_option("font-size").toInt() + toPx(MARGIN_SIZE));
 
+    height = fmin(height, ctrl->get_option("height").toInt() - toPx(MARGIN_SIZE));
     height = fmax(height, 0);
-    height = fmin(height, ctrl->get_option("height").toInt() - MARGIN_SIZE);
 
     ui->sbox->setMinimumHeight(toDpi(QString::number(height)));
     ctrl->set_option("search-height", QString::number(height));
+}
+
+void MainWindow::selection_changed(){
+    if(scaling){
+        ui->sbox->deselect();
+        ui->sbox->setCursorPosition(ui->sbox->text().length());
+    }
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event){
     QMainWindow::eventFilter(obj, event);
     QPoint cur = static_cast<const QMouseEvent*>(event)->pos();
 
-    if(abs(ctrl->get_option("search-height").toInt() - cur.y()) <= GRIP_SIZE)
+    if(abs(toDpi(ctrl->get_option("search-height")) - cur.y()) <= GRIP_SIZE)
         QApplication::setOverrideCursor(Qt::SplitVCursor);
     else if(cur.y() && !scaling)
         QApplication::setOverrideCursor(Qt::IBeamCursor);
     if(event->type() == QEvent::MouseButtonRelease)
-        if(abs(ctrl->get_option("search-height").toInt() - cur.y()) > GRIP_SIZE)
+        if(abs(toDpi(ctrl->get_option("search-height")) - cur.y()) > GRIP_SIZE)
             QApplication::setOverrideCursor(Qt::IBeamCursor);
     if(event->type() == QEvent::Leave)
         QApplication::setOverrideCursor(Qt::ArrowCursor);
@@ -259,11 +266,11 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
     /////////////////////////////////////////////////////
 
     if(scaling && event->type() == QEvent::MouseMove)
-        setSboxHeight(abs(cur.y() - mpos.y()) * (cur.y() > mpos.y() ? 1 : -1));
+        setSboxHeight(cur.y() - mpos.y());
     if(event->type() == QEvent::MouseMove)
         mpos = cur;
     if(event->type() == QEvent::MouseButtonPress)
-        if(abs(ctrl->get_option("search-height").toInt() - cur.y()) <= GRIP_SIZE)
+        if(abs(toDpi(ctrl->get_option("search-height")) - cur.y()) <= GRIP_SIZE)
             scaling = true;
     if(event->type() == QEvent::MouseButtonRelease){
         ctrl->update_file();
@@ -304,9 +311,8 @@ void MainWindow::inits(){
     if(ctrl->get_option("fullscreen").toInt())
         goFullScreenMode();
 
-    // LINE EDIT TEXT CHANGE
-    connect(ui->sbox, SIGNAL(textChanged(QString )), this, SLOT(text_changed(QString )));
-
-    // LIDE EDIT EVENT FILTER
+    // LINE EDIT EVENT FILTERS
     ui->sbox->installEventFilter(this);
+    connect(ui->sbox, SIGNAL(textChanged(QString )), this, SLOT(text_changed(QString )));
+    connect(ui->sbox, SIGNAL(selectionChanged()), this, SLOT(selection_changed()));
 }
