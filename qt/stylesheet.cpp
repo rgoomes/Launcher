@@ -17,11 +17,8 @@ QString Style::get_objname(){ return QString::fromStdString(this->obj); }
 QString Style::stylesheet(QString obj){
     QString ss;
 
-    QMap<QString, QString>::const_iterator it = styles.begin();
-    while (it != styles.end()) {
-        ss += it.key() + ":" + it.value() + ";\n";
-        ++it;
-    }
+    for(auto key : styles.keys())
+        ss += key + ":" + styles[key] + ";\n";
 
     return obj.length() ? "#" + obj + "{" + ss + "}" : ss;
 }

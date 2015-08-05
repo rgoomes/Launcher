@@ -42,11 +42,8 @@ QString WindowController::get_option(QString key){ return options[key]; }
 QString WindowController::windowoptions(){
     QString window_options;
 
-    QMap<QString, QString>::const_iterator it = options.begin();
-    while (it != options.end()) {
-        window_options += it.key() + ":" + it.value() + ";\n";
-        ++it;
-    }
+    for(auto key : options.keys())
+        window_options += key + ":" + options[key] + ";\n";
 
     return window_options;
 }

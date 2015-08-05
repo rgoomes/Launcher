@@ -27,13 +27,6 @@ namespace Ui {
 class MainWindow : public QMainWindow{
     Q_OBJECT
 
-    ShadowEffect* shadow;
-    int mouse_x, mouse_y;
-    QPoint mpos;
-
-    bool resizing = false;
-    bool scaling  = false;
-
     const int FRAME = 0;
     const int SBOX  = 1;
 
@@ -74,6 +67,10 @@ class MainWindow : public QMainWindow{
         SettingsWindow *settingsWindow;
         Container *cc;
         Worker* worker;
+        QPoint mpos;
+
+        bool resizing = false;
+        bool scaling  = false;
 
     protected:
         void mouseReleaseEvent(QMouseEvent *event);

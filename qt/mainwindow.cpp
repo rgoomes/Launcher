@@ -59,20 +59,19 @@ int MainWindow::toDpi(QString px){ return int(px.toInt() * ctrl->get_option("dpi
 int MainWindow::toPx(int px){  return int(px / ctrl->get_option("dpi").toDouble()); }
 
 void MainWindow::storeWindowPosition(){
-    QString win_gap = "0"; // TODO: CALCULATE WINDOW MANAGER RESIZE PX
+    QString win_gap = "0"; // TODO: CALCULATE OS THEME RESIZE MARGIN PX
     ctrl->set_option("x", QString::number(max(this->x(), 0) + toDpi(win_gap)));
     ctrl->set_option("y", QString::number(max(this->y(), 0) + toDpi(win_gap)));
     ctrl->update_file();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent* event){
-    mouse_x = event->x();
-    mouse_y = event->y();
+    mpos = event->pos();
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
-    if(!this->in_fullscreen())
-        move(event->globalX() - mouse_x, event->globalY() - mouse_y);
+    if(!this->in_fullscreen() && !scaling)
+        move(event->globalPos() - mpos);
 }
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event){
@@ -136,6 +135,8 @@ void MainWindow::setBorderVisibility(){
 }
 
 void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool to_update){
+    ShadowEffect* shadow = new ShadowEffect();
+
     shadow->setColor(c);
     shadow->setDistance(scale);
     shadow->setBlurRadius(blur_radius);
@@ -194,8 +195,7 @@ void MainWindow::goWindowMode(){
 }
 
 void MainWindow::center_window(){
-    QDesktopWidget widget;
-    QRect screen = widget.availableGeometry(widget.primaryScreen());
+    QRect screen = QApplication::desktop()->screenGeometry();
     this->move(screen.width()/2  - this->width()/2,
                screen.height()/2 - this->height()/2);
 
@@ -209,11 +209,15 @@ void MainWindow::text_changed(QString text){
 void MainWindow::change_dpi(double new_dpi){
     ctrl->set_option("dpi", QString::number(new_dpi));
 
+    this->setSboxHeight(0);
+    this->setFont(ctrl->get_option("font"), ctrl->get_option("font-size"));
+    this->move(ctrl->get_option("x").toInt(), ctrl->get_option("y").toInt());
+
+    if(this->in_fullscreen())
+        return;
+
     this->resize(toDpi(ctrl->get_option("width")), toDpi(ctrl->get_option("height")));
     this->request_resize();
-
-    ui->sbox->setMinimumHeight(toDpi(ctrl->get_option("search-height")));
-    this->setFont(ctrl->get_option("font"), ctrl->get_option("font-size"));
 }
 
 void MainWindow::setFont(QString font, QString size){
@@ -234,7 +238,8 @@ void MainWindow::setSboxHeight(double diff){
     double height = fmax(ctrl->get_option("search-height").toInt() + toPx(diff),
                          ctrl->get_option("font-size").toInt() + toPx(MARGIN_SIZE));
 
-    height = fmin(height, ctrl->get_option("height").toInt() - toPx(MARGIN_SIZE));
+    height = fmin(height, -toPx(MARGIN_SIZE) + (!in_fullscreen() ? ctrl->get_option("height").toInt()
+           : QApplication::desktop()->screenGeometry().height()));
     height = fmax(height, 0);
 
     ui->sbox->setMinimumHeight(toDpi(QString::number(height)));
@@ -295,19 +300,15 @@ void MainWindow::inits(){
 
     // WINDOW OPTIONS
     ctrl = new WindowController("../User/window.user");
-    ui->sbox->setMinimumHeight(toDpi(ctrl->get_option("search-height")));
-    this->move(ctrl->get_option("x").toInt(), ctrl->get_option("y").toInt());
-    this->resize(toDpi(ctrl->get_option("width")), toDpi(ctrl->get_option("height")));
-    this->setFont(ctrl->get_option("font"), ctrl->get_option("font-size"));
+    this->change_dpi(ctrl->get_option("dpi").toDouble());
     this->setFontColor(cc->getStyle("color", SBOX).toUtf8().constData());
 
     // DRAW SHADOW
-    shadow = new ShadowEffect();
     setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
               ctrl->get_option("shadow-scale").toInt(),
               ctrl->get_option("shadow-blur-radius").toInt(), false);
 
-    // STORED WINDOW STATE
+    // FULLSCREEN STATE
     if(ctrl->get_option("fullscreen").toInt())
         goFullScreenMode();
 
