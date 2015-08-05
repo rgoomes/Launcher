@@ -76,7 +76,9 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event){
 
 void MainWindow::mouseReleaseEvent(QMouseEvent* event){
     QMainWindow::mouseReleaseEvent(event);
-    this->storeWindowPosition();
+
+    if(!this->in_fullscreen())
+        storeWindowPosition();
 }
 
 void MainWindow::request_resize(){
@@ -192,30 +194,39 @@ void MainWindow::goWindowMode(){
     ctrl->update_file();
 
     this->showNormal();
+
+    // CHANGING DPI'S IN FULLSCREEN WILL NOT AFFECT MANY THINGS LIKE WINDOW SIZE
+    // BECAUSE WE'RE IN FULLSCREEN, SO WHEN WE CHANGE THE WINDOW STATE TO WINDOW
+    // MODE WE NEED TO RESTORE THOSE THINGS TO THE CORRECT VALUES, TO MATCH THE
+    // CURRENT DPI'S. SOLUTION: CALL AGAIN CHANGE_DPI WHEN WE GO WINDOW MODE
+    change_dpi(ctrl->get_option("dpi").toDouble(), false);
 }
 
 void MainWindow::center_window(){
+    if(this->in_fullscreen())
+        return;
+
     QRect screen = QApplication::desktop()->screenGeometry();
     this->move(screen.width()/2  - this->width()/2,
                screen.height()/2 - this->height()/2);
 
-    this->storeWindowPosition();
+    storeWindowPosition();
 }
 
 void MainWindow::text_changed(QString text){
     qDebug() << text;
 }
 
-void MainWindow::change_dpi(double new_dpi){
+void MainWindow::change_dpi(double new_dpi, bool fullscreen_on){
     ctrl->set_option("dpi", QString::number(new_dpi));
 
     this->setSboxHeight(0);
     this->setFont(ctrl->get_option("font"), ctrl->get_option("font-size"));
-    this->move(ctrl->get_option("x").toInt(), ctrl->get_option("y").toInt());
 
-    if(this->in_fullscreen())
+    if(fullscreen_on)
         return;
 
+    this->move(ctrl->get_option("x").toInt(), ctrl->get_option("y").toInt());
     this->resize(toDpi(ctrl->get_option("width")), toDpi(ctrl->get_option("height")));
     this->request_resize();
 }
@@ -300,7 +311,7 @@ void MainWindow::inits(){
 
     // WINDOW OPTIONS
     ctrl = new WindowController("../User/window.user");
-    this->change_dpi(ctrl->get_option("dpi").toDouble());
+    this->change_dpi(ctrl->get_option("dpi").toDouble(), false);
     this->setFontColor(cc->getStyle("color", SBOX).toUtf8().constData());
 
     // DRAW SHADOW

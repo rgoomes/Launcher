@@ -45,7 +45,7 @@ class MainWindow : public QMainWindow{
         void goWindowMode();
         void center_window();
         void storeWindowPosition();
-        void change_dpi(double );
+        void change_dpi(double , bool);
         void setFontColor(std::string );
         void setFont(QString, QString);
         bool in_fullscreen();
