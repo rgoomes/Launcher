@@ -204,6 +204,8 @@ void MainWindow::center_window(){
 
 void MainWindow::text_changed(QString text){
     qDebug() << text;
+    worker->updateWork(text);
+
 }
 
 void MainWindow::change_dpi(double new_dpi){
