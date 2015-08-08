@@ -2,10 +2,17 @@
 #include <QThread>
 #include <QIcon>
 #include <QToolButton>
+#include <mutex>
 
 #include "utils.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "cleaner.h"
+
+#if defined(__linux) || defined(__unix)
+    #include <signal.h>
+    #define SIGNALS
+#endif
 
 #define fmax(x, y) (((x) > (y)) ? (x) : (y))
 #define fmin(x, y) (((x) < (y)) ? (x) : (y))
@@ -17,9 +24,12 @@ using namespace std;
 #define GRIP_SIZE 5
 #define PADDING 5
 
+std::mutex mtx;
+
 MainWindow::~MainWindow(){ delete ui; }
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
+    mtx.lock();
     inits();
     setupWorker();
 }
@@ -35,10 +45,18 @@ void MainWindow::setupWorker(){
     thread->start();
 }
 
+void MainWindow::setupCleaner(){
+    QThread *thread = new QThread;
+    Cleaner *cleaner = new Cleaner(&mtx, ctrl, cc);
+    cleaner->moveToThread(thread);
+    connect(thread, &QThread::started, cleaner, &Cleaner::cleanExit);
+    thread->start();
+}
+
 void MainWindow::keyPressEvent(QKeyEvent *event){
     // QUIT FOR TESTING, LATER CHANGE TO this->hide()
     if(event->key() == Qt::Key_Escape)
-        QApplication::quit();
+        mtx.unlock(); // FREE LOCK IN CLEANER
 
     // FULLSCREEN TEST KEY F1
     if(event->key() == Qt::Key_F1){
@@ -63,9 +81,9 @@ int MainWindow::toPx(int px){  return int(px / ctrl->get_option("dpi").toDouble(
 
 void MainWindow::storeWindowPosition(){
     QString win_gap = "0"; // TODO: CALCULATE OS THEME RESIZE MARGIN PX
+
     ctrl->set_option("x", QString::number(max(this->x(), 0) + toDpi(win_gap)));
     ctrl->set_option("y", QString::number(max(this->y(), 0) + toDpi(win_gap)));
-    ctrl->update_file();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent* event){
@@ -126,7 +144,6 @@ void MainWindow::setBackgroundColor(QColor color, bool random){
 
     cc->setStyle("background-color", c, FRAME);
     ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
-    cc->update_file();
 }
 
 void MainWindow::setBorderVisibility(){
@@ -136,10 +153,9 @@ void MainWindow::setBorderVisibility(){
 
     cc->setStyle("border", border, SBOX);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
-    cc->update_file();
 }
 
-void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool to_update){
+void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool fullscreen_on){
     ShadowEffect* shadow = new ShadowEffect();
 
     shadow->setColor(c);
@@ -147,22 +163,19 @@ void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool to_update)
     shadow->setBlurRadius(blur_radius);
     ui->frame->setGraphicsEffect(shadow);
 
-    if(to_update){
+    if(fullscreen_on){
         ctrl->set_option("shadow-scale", QString::number(scale));
         ctrl->set_option("shadow-alpha", QString::number(c.alpha()));
         ctrl->set_option("shadow-blur-radius", QString::number(blur_radius));
-        ctrl->update_file();
     }
 }
 
-void MainWindow::setBorderRadius(int r, bool to_update){
+void MainWindow::setBorderRadius(int r, bool going_fullscreen){
     int old_radius = cc->getStyle("border-radius", FRAME).mid(0, 2).toInt();
     cc->setStyle("border-radius", QString::number(r) + "px", FRAME);
     ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
 
-    if(to_update)
-        cc->update_file();
-    else
+    if(going_fullscreen)
         cc->setStyle("border-radius", QString::number(old_radius) + "px", FRAME);
 }
 
@@ -172,12 +185,11 @@ bool MainWindow::in_fullscreen(){
 }
 
 void MainWindow::goFullScreenMode(){
-    setBorderRadius(0, false);
+    setBorderRadius(0, true);
     setShadow(QColor(0,0,0,0), 0, 0, false);
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
     ui->frameLayout->layout()->setContentsMargins(0, 15, 0, 0);
     ctrl->set_option("fullscreen", "1");
-    ctrl->update_file();
 
     this->showFullScreen();
 }
@@ -189,12 +201,11 @@ void MainWindow::goWindowMode(){
 
     setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
               ctrl->get_option("shadow-scale").toInt(),
-              ctrl->get_option("shadow-blur-radius").toInt(), false);
+              ctrl->get_option("shadow-blur-radius").toInt(), true);
 
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
     ui->frameLayout->layout()->setContentsMargins(0, 0, 0, 0);
     ctrl->set_option("fullscreen", "0");
-    ctrl->update_file();
 
     this->showNormal();
 
@@ -242,13 +253,11 @@ void MainWindow::setFont(QString font, QString size){
 
     ctrl->set_option("font", font);
     ctrl->set_option("font-size", size);
-    ctrl->update_file();
 }
 
 void MainWindow::setFontColor(string color){
     cc->setStyle("color", QString::fromStdString(color), SBOX);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
-    cc->update_file();
 }
 
 void MainWindow::changeIconPos(bool keep){
@@ -257,10 +266,7 @@ void MainWindow::changeIconPos(bool keep){
     if(!keep){
         cc->setStyle("padding-left", on_left ? "0px" : "30px", SBOX);
         cc->setStyle("padding-right", on_left ? "30px" : "0px", SBOX);
-        cc->update_file();
-
         ctrl->set_option("search-icon-pos", QString::number(!on_left));
-        ctrl->update_file();
     }
 
     int icon_width = icon->iconSize().width();
@@ -318,12 +324,21 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
     if(event->type() == QEvent::MouseButtonPress)
         if(abs(toDpi(ctrl->get_option("search-height")) - cur.y()) <= GRIP_SIZE)
             scaling = true;
-    if(event->type() == QEvent::MouseButtonRelease){
-        ctrl->update_file();
+    if(event->type() == QEvent::MouseButtonRelease)
         scaling = false;
-    }
 
     return false;
+}
+
+void MainWindow::signals_handler(){
+    #ifdef SIGNALS
+        std::vector<int> quit_signals = {SIGINT, SIGQUIT, SIGTERM};
+    #else
+        std::vector<int> quit_signals = std::vector<int>();
+    #endif
+
+    for(int sig : quit_signals)
+        signal(sig, [](int ) { mtx.unlock(); });
 }
 
 void MainWindow::inits(){
@@ -360,6 +375,10 @@ void MainWindow::inits(){
     // FULLSCREEN STATE
     if(ctrl->get_option("fullscreen").toInt())
         goFullScreenMode();
+
+    // UNIX SIGNALS HANDLER AND CLEANER
+    setupCleaner();
+    signals_handler();
 
     // LINE EDIT EVENT FILTERS
     ui->sbox->installEventFilter(this);

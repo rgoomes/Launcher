@@ -56,6 +56,8 @@ class MainWindow : public QMainWindow{
         int toDpi(QString );
         int toPx(int );
         void setupWorker();
+        void setupCleaner();
+        void signals_handler();
 
     public slots:
         void clear_trigged();
