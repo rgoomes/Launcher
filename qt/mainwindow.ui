@@ -15,12 +15,6 @@
     <pointsize>40</pointsize>
    </font>
   </property>
-  <property name="windowTitle">
-   <string>MainWindow</string>
-  </property>
-  <property name="styleSheet">
-   <string notr="true"/>
-  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout">
     <property name="leftMargin">
@@ -52,12 +46,6 @@ background-color: rgba(255, 255, 255, 1);</string>
         <layout class="QVBoxLayout" name="frameLayout">
          <item>
           <widget class="QLineEdit" name="sbox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
            <property name="minimumSize">
             <size>
              <width>0</width>

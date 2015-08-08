@@ -1,5 +1,7 @@
 #include <QTimer>
 #include <QThread>
+#include <QIcon>
+#include <QToolButton>
 
 #include "utils.h"
 #include "mainwindow.h"
@@ -13,6 +15,7 @@ using namespace std;
 #define MARGIN_SIZE 30
 #define WAIT_TIME 100
 #define GRIP_SIZE 5
+#define PADDING 5
 
 MainWindow::~MainWindow(){ delete ui; }
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
@@ -214,6 +217,9 @@ void MainWindow::center_window(){
 }
 
 void MainWindow::text_changed(QString text){
+    QPixmap pixmap(text.compare("") ? "../qt/icons/clear.svg" : "../qt/icons/search.svg");
+    icon->setIcon(QIcon(pixmap));
+
     qDebug() << text;
 }
 
@@ -245,9 +251,27 @@ void MainWindow::setFontColor(string color){
     cc->update_file();
 }
 
+void MainWindow::changeIconPos(bool keep){
+    int on_left = ctrl->get_option("search-icon-pos").toInt();
+
+    if(!keep){
+        cc->setStyle("padding-left", on_left ? "0px" : "30px", SBOX);
+        cc->setStyle("padding-right", on_left ? "30px" : "0px", SBOX);
+        cc->update_file();
+
+        ctrl->set_option("search-icon-pos", QString::number(!on_left));
+        ctrl->update_file();
+    }
+
+    int icon_width = icon->iconSize().width();
+    int width = (on_left ^ !keep) ? PADDING : ctrl->get_option("width").toInt() - MARGIN_SIZE-PADDING*2 - icon_width;
+    icon->move(width, toDpi(ctrl->get_option("search-height"))/2 - icon_width/2);
+    ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
+}
+
 void MainWindow::setSboxHeight(double diff){
     double height = fmax(ctrl->get_option("search-height").toInt() + toPx(diff),
-                         ctrl->get_option("font-size").toInt() + toPx(MARGIN_SIZE));
+                         ctrl->get_option("font-size").toInt() + toPx(MARGIN_SIZE/2));
 
     height = fmin(height, -toPx(MARGIN_SIZE) + (!in_fullscreen() ? ctrl->get_option("height").toInt()
            : QApplication::desktop()->screenGeometry().height()));
@@ -255,6 +279,8 @@ void MainWindow::setSboxHeight(double diff){
 
     ui->sbox->setMinimumHeight(toDpi(QString::number(height)));
     ctrl->set_option("search-height", QString::number(height));
+
+    changeIconPos(true);
 }
 
 void MainWindow::selection_changed(){
@@ -262,6 +288,10 @@ void MainWindow::selection_changed(){
         ui->sbox->deselect();
         ui->sbox->setCursorPosition(ui->sbox->text().length());
     }
+}
+
+void MainWindow::clear_trigged(){
+    ui->sbox->setText("");
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event){
@@ -300,14 +330,22 @@ void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
+    // LINE EDIT DEFAULT ICON
+    QPixmap pixmap("../qt/icons/search.svg");
+    icon = new QToolButton(ui->sbox);
+    icon->setIcon(QIcon(pixmap));
+    icon->setIconSize(pixmap.size());
+
     // ALL CSS CLASS NAMES
     ui->frame->setObjectName("Frame");
     ui->sbox->setObjectName("Sbox");
+    icon->setObjectName("Icon");
 
     // HASH TABLE FOR STYLESHEET, POPULATE USER STYLES
     cc = new Container("../User/stylesheet.user");
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
     ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
+    icon->setStyleSheet(cc->getStylesheet("Icon", ICON));
 
     // WINDOW OPTIONS
     ctrl = new WindowController("../User/window.user");
@@ -325,6 +363,7 @@ void MainWindow::inits(){
 
     // LINE EDIT EVENT FILTERS
     ui->sbox->installEventFilter(this);
+    connect(icon, SIGNAL(clicked()), this, SLOT(clear_trigged()));
     connect(ui->sbox, SIGNAL(textChanged(QString )), this, SLOT(text_changed(QString )));
     connect(ui->sbox, SIGNAL(selectionChanged()), this, SLOT(selection_changed()));
 }

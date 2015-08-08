@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QRect>
 #include <QTimer>
+#include <QToolButton>
 
 #include "settingswindow.h"
 #include "stylesheet.h"
@@ -29,6 +30,7 @@ class MainWindow : public QMainWindow{
 
     const int FRAME = 0;
     const int SBOX  = 1;
+    const int ICON  = 2;
 
     public:
         explicit MainWindow(QWidget *parent = 0);
@@ -48,15 +50,15 @@ class MainWindow : public QMainWindow{
         void change_dpi(double , bool);
         void setFontColor(std::string );
         void setFont(QString, QString);
+        void changeIconPos(bool );
         bool in_fullscreen();
-        bool eventFilter(QObject *, QEvent *);
         double getBackgroundAlpha();
         int toDpi(QString );
         int toPx(int );
-
         void setupWorker();
 
     public slots:
+        void clear_trigged();
         void request_resize();
         void selection_changed();
         void text_changed(QString );
@@ -67,12 +69,14 @@ class MainWindow : public QMainWindow{
         SettingsWindow *settingsWindow;
         Container *cc;
         Worker* worker;
+        QToolButton *icon;
         QPoint mpos;
 
         bool resizing = false;
         bool scaling  = false;
 
     protected:
+        bool eventFilter(QObject *, QEvent *);
         void mouseReleaseEvent(QMouseEvent *event);
         void mousePressEvent(QMouseEvent* event);
         void mouseMoveEvent(QMouseEvent* event);

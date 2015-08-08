@@ -8,5 +8,6 @@ QString rand_color(double alpha);
 
 QMap<QString, QString > frameDefaultStyle();
 QMap<QString, QString > sboxDefaultStyle();
+QMap<QString, QString > iconDefaultStyle();
 
 #endif // UTILS_H

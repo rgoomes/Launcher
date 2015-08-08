@@ -13,7 +13,7 @@ class WindowController {
 
     public:
         void update_file();
-        void load_user_window_options();
+        void load_options();
         void set_option(QString , QString );
         QString get_option(QString );
         QString windowoptions();

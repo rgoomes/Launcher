@@ -29,7 +29,17 @@ QMap <QString, QString > sboxDefaultStyle(){
     default_styles["border-radius"] = "7px";
     default_styles["border-color"] = "#ffffff";
     default_styles["background"] = "transparent";
+    default_styles["padding-left"] = "30px";
+    default_styles["padding-right"] = "0px";
 
     return default_styles;
 }
 
+QMap <QString, QString > iconDefaultStyle(){
+    QMap <QString, QString > default_styles;
+
+    default_styles["border"] = "none";
+    default_styles["padding"] = "0px";
+
+    return default_styles;
+}
