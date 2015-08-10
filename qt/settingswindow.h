@@ -27,9 +27,12 @@ class SettingsWindow : public QMainWindow{
         void checkbox_toggled(bool );
         void new_bordersize(int );
         void font_sizechange(const QString& );
+        void font_familychange(const QString& );
         void change_windowstate();
         void change_shadowstate();
         void random_color();
+        void change_backcolor();
+        void change_textcolor();
 
     private:
         Ui::SettingsWindow *ui;
