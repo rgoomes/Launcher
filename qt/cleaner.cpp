@@ -1,18 +1,16 @@
 #include "cleaner.h"
 
 Cleaner::~Cleaner(){}
-Cleaner::Cleaner(std::mutex *mtx, WindowController *ctrl, Container *cc){
+Cleaner::Cleaner(MainWindow *w, std::mutex *mtx){
     this->mtx = mtx;
-    this->ctrl = ctrl;
-    this->cc = cc;
+    this->w = w;
 }
 
 void Cleaner::cleanExit(){
     mtx->lock();
 
     // UPDATE ALL CHANGES
-    cc->update_file();
-    ctrl->update_file();
+    w->update();
 
     // TODO: LATER CLEAN ALL THE STUFF
 

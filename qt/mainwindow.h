@@ -52,12 +52,19 @@ class MainWindow : public QMainWindow{
         void setFont(QString, QString);
         void changeIconPos(bool );
         bool in_fullscreen();
+        bool borderIsVisible();
+        bool isShadowVisible();
         double getBackgroundAlpha();
+        int getBorderRadius();
+        int iconOnLeft();
         int toDpi(QString );
         int toPx(int );
         void setupWorker();
         void setupCleaner();
         void signals_handler();
+        void update();
+        vector<QString> getFont();
+        QString getBackgroundColor();
 
     public slots:
         void clear_trigged();
@@ -66,9 +73,9 @@ class MainWindow : public QMainWindow{
         void text_changed(QString );
 
     private:
+        class SettingsWindow *settingsWindow;
         WindowController *ctrl;
         Ui::MainWindow *ui;
-        SettingsWindow *settingsWindow;
         Container *cc;
         Worker* worker;
         QToolButton *icon;
@@ -80,6 +87,7 @@ class MainWindow : public QMainWindow{
     protected:
         bool eventFilter(QObject *, QEvent *);
         void mouseReleaseEvent(QMouseEvent *event);
+        void mouseDoubleClickEvent(QMouseEvent *event);
         void mousePressEvent(QMouseEvent* event);
         void mouseMoveEvent(QMouseEvent* event);
         void resizeEvent(QResizeEvent* event);

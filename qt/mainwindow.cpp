@@ -47,7 +47,7 @@ void MainWindow::setupWorker(){
 
 void MainWindow::setupCleaner(){
     QThread *thread = new QThread;
-    Cleaner *cleaner = new Cleaner(&mtx, ctrl, cc);
+    Cleaner *cleaner = new Cleaner(this, &mtx);
     cleaner->moveToThread(thread);
     connect(thread, &QThread::started, cleaner, &Cleaner::cleanExit);
     thread->start();
@@ -58,17 +58,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     if(event->key() == Qt::Key_Escape)
         mtx.unlock(); // FREE LOCK IN CLEANER
 
-    // FULLSCREEN TEST KEY F1
-    if(event->key() == Qt::Key_F1){
-        if(this->in_fullscreen())
-            goWindowMode();
-        else
-            goFullScreenMode();
-    }
-
     // SHOW SETTINGS
-    if(event->key() == Qt::Key_F2){
-        settingsWindow = new SettingsWindow();
+    if(event->key() == Qt::Key_F1){
+        settingsWindow = new SettingsWindow(this);
+        settingsWindow->setMainWindow(this);
         settingsWindow->show();
     }
 
@@ -84,6 +77,15 @@ void MainWindow::storeWindowPosition(){
 
     ctrl->set_option("x", QString::number(max(this->x(), 0) + toDpi(win_gap)));
     ctrl->set_option("y", QString::number(max(this->y(), 0) + toDpi(win_gap)));
+}
+
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event){
+    if(event->button() == Qt::LeftButton){
+        if(this->in_fullscreen())
+            goWindowMode();
+        else
+            goFullScreenMode();
+    }
 }
 
 void MainWindow::mousePressEvent(QMouseEvent* event){
@@ -120,6 +122,10 @@ void MainWindow::resizeEvent(QResizeEvent* event){
     }
 }
 
+QString MainWindow::getBackgroundColor(){
+    return cc->getStyle("background-color", FRAME);
+}
+
 double MainWindow::getBackgroundAlpha(){
     const char *color = cc->getStyle("background-color", FRAME).toStdString().c_str();
 
@@ -146,13 +152,22 @@ void MainWindow::setBackgroundColor(QColor color, bool random){
     ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
 }
 
-void MainWindow::setBorderVisibility(){
+bool MainWindow::borderIsVisible(){
     std::string color = cc->getStyle("border", SBOX).toStdString();
     std::string alpha = color.substr(color.find_last_of(" ")+1);
-    QString border = !alpha.compare("solid") ? "1px transparent" : "1px solid";
+
+    return !alpha.compare("solid") ? true : false;
+}
+
+void MainWindow::setBorderVisibility(){
+    QString border = borderIsVisible() ? "1px transparent" : "1px solid";
 
     cc->setStyle("border", border, SBOX);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
+}
+
+bool MainWindow::isShadowVisible(){
+    return ctrl->get_option("shadow-alpha").toInt();
 }
 
 void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool fullscreen_on){
@@ -170,11 +185,16 @@ void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool fullscreen
     }
 }
 
-void MainWindow::setBorderRadius(int r, bool going_fullscreen){
-    int old_radius = cc->getStyle("border-radius", FRAME).mid(0, 2).toInt();
-    cc->setStyle("border-radius", QString::number(r) + "px", FRAME);
-    ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
+int MainWindow::getBorderRadius(){
+    return cc->getStyle("border-radius", FRAME).mid(0, 2).toInt();
+}
 
+void MainWindow::setBorderRadius(int r, bool going_fullscreen){
+    int old_radius = getBorderRadius();
+    cc->setStyle("border-radius", QString::number(r) + "px", FRAME);
+
+    if(!in_fullscreen())
+        ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
     if(going_fullscreen)
         cc->setStyle("border-radius", QString::number(old_radius) + "px", FRAME);
 }
@@ -187,6 +207,8 @@ bool MainWindow::in_fullscreen(){
 void MainWindow::goFullScreenMode(){
     setBorderRadius(0, true);
     setShadow(QColor(0,0,0,0), 0, 0, false);
+    if(settingsWindow) settingsWindow->updateBtnWindowState();
+
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
     ui->frameLayout->layout()->setContentsMargins(0, 15, 0, 0);
     ctrl->set_option("fullscreen", "1");
@@ -199,6 +221,8 @@ void MainWindow::goWindowMode(){
     cc->reload(FRAME);
     ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
 
+    if(settingsWindow) settingsWindow->updateBtnWindowState();
+    setBorderRadius(getBorderRadius(), false);
     setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
               ctrl->get_option("shadow-scale").toInt(),
               ctrl->get_option("shadow-blur-radius").toInt(), true);
@@ -248,7 +272,18 @@ void MainWindow::change_dpi(double new_dpi, bool fullscreen_on){
     this->request_resize();
 }
 
+vector<QString> MainWindow::getFont(){
+    vector<QString> font;
+
+    font.push_back(ctrl->get_option("font"));
+    font.push_back(ctrl->get_option("font-size"));
+    font.push_back(cc->getStyle("color", SBOX));
+
+    return font;
+}
+
 void MainWindow::setFont(QString font, QString size){
+    size = QString::number(fmin(size.toInt(), ctrl->get_option("search-height").toInt()));
     ui->sbox->setFont(QFont(font, toDpi(size)));
 
     ctrl->set_option("font", font);
@@ -260,8 +295,12 @@ void MainWindow::setFontColor(string color){
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
 }
 
+int MainWindow::iconOnLeft(){
+    return ctrl->get_option("search-icon-pos").toInt();
+}
+
 void MainWindow::changeIconPos(bool keep){
-    int on_left = ctrl->get_option("search-icon-pos").toInt();
+    int on_left = iconOnLeft();
 
     if(!keep){
         cc->setStyle("padding-left", on_left ? "0px" : "30px", SBOX);
@@ -271,7 +310,7 @@ void MainWindow::changeIconPos(bool keep){
 
     int icon_width = icon->iconSize().width();
     int width = (on_left ^ !keep) ? PADDING : ctrl->get_option("width").toInt() - MARGIN_SIZE-PADDING*2 - icon_width;
-    icon->move(width, toDpi(ctrl->get_option("search-height"))/2 - icon_width/2);
+    icon->move(width, fmin(toDpi(ctrl->get_option("search-height"))/2 - icon_width/2, toDpi(ctrl->get_option("search-height"))/2));
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
 }
 
@@ -298,6 +337,11 @@ void MainWindow::selection_changed(){
 
 void MainWindow::clear_trigged(){
     ui->sbox->setText("");
+}
+
+void MainWindow::update(){
+    ctrl->update_file();
+    cc->update_file();
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event){

@@ -6,101 +6,440 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>286</height>
+    <width>670</width>
+    <height>326</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Preferences</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QTabWidget" name="tabWidget">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>481</width>
-      <height>287</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="leftMargin">
      <number>0</number>
     </property>
-    <widget class="QWidget" name="tab">
-     <attribute name="title">
-      <string>Appearance</string>
-     </attribute>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>30</y>
-        <width>40</width>
-        <height>16</height>
-       </rect>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
       </property>
-      <property name="text">
-       <string>Font:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
+      <widget class="QWidget" name="apprearenceTab">
+       <attribute name="title">
+        <string>Appearence</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QScrollArea" name="scrollArea">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>630</width>
+             <height>336</height>
+            </rect>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QWidget" name="widget" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>75</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>80</height>
+               </size>
+              </property>
+              <widget class="QLabel" name="label">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>10</y>
+                 <width>67</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Ubuntu Mono</family>
+                 <pointsize>14</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Font</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_3">
+               <property name="geometry">
+                <rect>
+                 <x>30</x>
+                 <y>30</y>
+                 <width>67</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Family:</string>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="fontFamilyCombo">
+               <property name="geometry">
+                <rect>
+                 <x>85</x>
+                 <y>30</y>
+                 <width>151</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="editable">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_4">
+               <property name="geometry">
+                <rect>
+                 <x>280</x>
+                 <y>30</y>
+                 <width>51</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Size:</string>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="fontSizeCombo">
+               <property name="geometry">
+                <rect>
+                 <x>315</x>
+                 <y>30</y>
+                 <width>71</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="editable">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_5">
+               <property name="geometry">
+                <rect>
+                 <x>420</x>
+                 <y>30</y>
+                 <width>67</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Color:</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="fontColorBtn">
+               <property name="geometry">
+                <rect>
+                 <x>470</x>
+                 <y>30</y>
+                 <width>70</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+              <zorder>label</zorder>
+              <zorder>label_3</zorder>
+              <zorder>fontFamilyCombo</zorder>
+              <zorder>label_4</zorder>
+              <zorder>fontSizeCombo</zorder>
+              <zorder>label_5</zorder>
+              <zorder>fontColorBtn</zorder>
+              <zorder>widget_2</zorder>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="widget_2" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>75</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>80</height>
+               </size>
+              </property>
+              <widget class="QLabel" name="label_2">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>10</y>
+                 <width>67</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Ubuntu Mono</family>
+                 <pointsize>14</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Window</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_7">
+               <property name="geometry">
+                <rect>
+                 <x>30</x>
+                 <y>30</y>
+                 <width>101</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Border radius:</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_11">
+               <property name="geometry">
+                <rect>
+                 <x>270</x>
+                 <y>30</y>
+                 <width>131</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Background color:</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="backColorBtn">
+               <property name="geometry">
+                <rect>
+                 <x>400</x>
+                 <y>30</y>
+                 <width>70</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+              <widget class="QSlider" name="borderRadiusSlider">
+               <property name="geometry">
+                <rect>
+                 <x>140</x>
+                 <y>30</y>
+                 <width>91</width>
+                 <height>29</height>
+                </rect>
+               </property>
+               <property name="maximum">
+                <number>30</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="randomBackColor">
+               <property name="geometry">
+                <rect>
+                 <x>480</x>
+                 <y>30</y>
+                 <width>111</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Random Color</string>
+               </property>
+              </widget>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="widget_3" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>75</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>80</height>
+               </size>
+              </property>
+              <widget class="QLabel" name="label_6">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>10</y>
+                 <width>101</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Ubuntu Mono</family>
+                 <pointsize>14</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Search Box</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="borderVisibleCheckBox">
+               <property name="geometry">
+                <rect>
+                 <x>30</x>
+                 <y>30</y>
+                 <width>131</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Border Visible</string>
+               </property>
+              </widget>
+              <widget class="QRadioButton" name="iconLeftRadioButton">
+               <property name="geometry">
+                <rect>
+                 <x>290</x>
+                 <y>20</y>
+                 <width>117</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Left</string>
+               </property>
+              </widget>
+              <widget class="QRadioButton" name="iconRightRadioButton">
+               <property name="geometry">
+                <rect>
+                 <x>290</x>
+                 <y>40</y>
+                 <width>117</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Right</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_8">
+               <property name="geometry">
+                <rect>
+                 <x>190</x>
+                 <y>30</y>
+                 <width>101</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Icon position:</string>
+               </property>
+              </widget>
+             </widget>
+            </item>
+            <item>
+             <widget class="QWidget" name="widget_4" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>75</height>
+               </size>
+              </property>
+              <widget class="QLabel" name="label_9">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>10</y>
+                 <width>67</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Ubuntu Mono</family>
+                 <pointsize>14</pointsize>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Other</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="fullWindowBtn">
+               <property name="geometry">
+                <rect>
+                 <x>30</x>
+                 <y>40</y>
+                 <width>150</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="shadowBtn">
+               <property name="geometry">
+                <rect>
+                 <x>198</x>
+                 <y>40</y>
+                 <width>150</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="searchTab">
+       <attribute name="title">
+        <string>Search</string>
+       </attribute>
+      </widget>
      </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>65</y>
-        <width>40</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Color:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="lineEdit">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>25</y>
-        <width>151</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Liberation Mono</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="lineEdit_2">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>60</y>
-        <width>81</width>
-        <height>28</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>#FFFFFF</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tab_2">
-     <attribute name="title">
-      <string>Search Options</string>
-     </attribute>
-    </widget>
-   </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

@@ -7,16 +7,16 @@
 
 #include "stylecontainer.hpp"
 #include "windowcontroller.h"
+#include "mainwindow.h"
 
 class Cleaner : public QObject {
     Q_OBJECT
 
     std::mutex *mtx;
-    WindowController *ctrl;
-    Container *cc;
+    MainWindow *w;
 
     public:
-        Cleaner(std::mutex* , WindowController* , Container* );
+        Cleaner(MainWindow* , std::mutex* );
         ~Cleaner();
 
     public slots:
