@@ -33,6 +33,8 @@ class SettingsWindow : public QMainWindow{
         void random_color();
         void change_backcolor();
         void change_textcolor();
+        void new_dpi(int );
+        void center();
 
     private:
         Ui::SettingsWindow *ui;

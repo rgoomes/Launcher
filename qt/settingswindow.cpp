@@ -5,6 +5,7 @@
 #include <QRgb>
 
 #define MAKE_EDITABLE "QComboBox { combobox-popup: 0; }"
+std::vector<double> dpis = {0.5, 0.625, 0.75, 0.875, 1.0, 1.12, 1.25, 1.38, 1.5};
 
 SettingsWindow::~SettingsWindow(){ delete ui; }
 SettingsWindow::SettingsWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::SettingsWindow){
@@ -48,6 +49,12 @@ void SettingsWindow::new_bordersize(int new_value){
     w->setBorderRadius(new_value, false);
 }
 
+void SettingsWindow::new_dpi(int pos){
+    w->change_dpi(dpis[pos], w->in_fullscreen());
+    ui->dpiNumberLabel->setText(QString::number(dpis[pos]));
+    ui->dpiNumberLabel->move(QPoint(166+pos*20,ui->dpiNumberLabel->y()));
+}
+
 void SettingsWindow::checkbox_toggled(bool ){
     w->setBorderVisibility();
 }
@@ -66,6 +73,10 @@ void SettingsWindow::font_familychange(const QString &s){
 
 void SettingsWindow::updateBtnWindowState(){
     ui->fullWindowBtn->setText(w->in_fullscreen() ? "Go Fullscreen Mode" : "Go Window Mode");
+}
+
+void SettingsWindow::center(){
+    w->center_window();
 }
 
 void SettingsWindow::change_shadowstate(){
@@ -100,6 +111,10 @@ void SettingsWindow::inits(){
     if(w->borderIsVisible())
         ui->borderVisibleCheckBox->setChecked(true);
 
+    int dist = std::distance(dpis.begin(), std::find(dpis.begin(), dpis.end(), w->curDpi()));
+    ui->dpiSlider->setValue(dist);
+    ui->dpiNumberLabel->move(QPoint(166+dist*20,ui->dpiNumberLabel->y()));
+    ui->dpiNumberLabel->setText(QString::number(w->curDpi()));
     ui->borderRadiusSlider->setValue(w->getBorderRadius());
     ui->fullWindowBtn->setText(w->in_fullscreen() ? "Go Window Mode" : "Go Fullscreen Mode");
     ui->shadowBtn->setText(w->isShadowVisible() ? "Disable Shadow" : "Enable Shadow");
@@ -136,4 +151,6 @@ void SettingsWindow::inits(){
     connect(ui->randomBackColor, SIGNAL(clicked()), this, SLOT(random_color()));
     connect(ui->backColorBtn, SIGNAL(clicked()), this, SLOT(change_backcolor()));
     connect(ui->fontColorBtn, SIGNAL(clicked()), this, SLOT(change_textcolor()));
+    connect(ui->dpiSlider, SIGNAL(valueChanged(int)), this, SLOT(new_dpi(int )));
+    connect(ui->centerBtn, SIGNAL(clicked()), this, SLOT(center()));
 }

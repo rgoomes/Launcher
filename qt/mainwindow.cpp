@@ -71,8 +71,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
     if(event->key() == Qt::Key_Tab){;}
 }
 
-int MainWindow::toDpi(QString px){ return int(px.toInt() * ctrl->get_option("dpi").toDouble()); }
-int MainWindow::toPx(int px){  return int(px / ctrl->get_option("dpi").toDouble()); }
+double MainWindow::curDpi() { return ctrl->get_option("dpi").toDouble(); }
+int MainWindow::toDpi(QString px){ return int(px.toInt() * curDpi()); }
+int MainWindow::toPx(int px){  return int(px / curDpi()); }
 
 void MainWindow::storeWindowPosition(){
     QString win_gap = "0"; // TODO: CALCULATE OS THEME RESIZE MARGIN PX
@@ -314,7 +315,7 @@ void MainWindow::changeIconPos(bool keep){
     int icon_width = icon->iconSize().width();
     int width = (on_left ^ !keep) ? PADDING
               : (in_fullscreen()  ? QApplication::desktop()->screenGeometry().width() - MARGIN_SIZE - icon_width
-              :  ctrl->get_option("width").toInt() - MARGIN_SIZE-PADDING*2 - icon_width);
+              :  toDpi(ctrl->get_option("width")) - MARGIN_SIZE-PADDING*2 - icon_width);
 
     icon->move(width, toDpi(ctrl->get_option("search-height"))/2 - icon_width/2);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));

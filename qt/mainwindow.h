@@ -55,6 +55,7 @@ class MainWindow : public QMainWindow{
         bool borderIsVisible();
         bool isShadowVisible();
         double getBackgroundAlpha();
+        double curDpi();
         int getBorderRadius();
         int iconOnLeft();
         int toDpi(QString );
