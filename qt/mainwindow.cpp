@@ -63,6 +63,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
         settingsWindow = new SettingsWindow(this);
         settingsWindow->setMainWindow(this);
         settingsWindow->show();
+
+        opened = true;
     }
 
     // AUTOCOMPLETE
@@ -207,13 +209,14 @@ bool MainWindow::in_fullscreen(){
 void MainWindow::goFullScreenMode(){
     setBorderRadius(0, true);
     setShadow(QColor(0,0,0,0), 0, 0, false);
-    if(settingsWindow) settingsWindow->updateBtnWindowState();
+    if(opened) settingsWindow->updateBtnWindowState();
 
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
     ui->frameLayout->layout()->setContentsMargins(0, 15, 0, 0);
     ctrl->set_option("fullscreen", "1");
 
     this->showFullScreen();
+    changeIconPos(true);
 }
 
 void MainWindow::goWindowMode(){
@@ -221,7 +224,7 @@ void MainWindow::goWindowMode(){
     cc->reload(FRAME);
     ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
 
-    if(settingsWindow) settingsWindow->updateBtnWindowState();
+    if(opened) settingsWindow->updateBtnWindowState();
     setBorderRadius(getBorderRadius(), false);
     setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
               ctrl->get_option("shadow-scale").toInt(),
@@ -309,8 +312,11 @@ void MainWindow::changeIconPos(bool keep){
     }
 
     int icon_width = icon->iconSize().width();
-    int width = (on_left ^ !keep) ? PADDING : ctrl->get_option("width").toInt() - MARGIN_SIZE-PADDING*2 - icon_width;
-    icon->move(width, fmin(toDpi(ctrl->get_option("search-height"))/2 - icon_width/2, toDpi(ctrl->get_option("search-height"))/2));
+    int width = (on_left ^ !keep) ? PADDING
+              : (in_fullscreen()  ? QApplication::desktop()->screenGeometry().width() - MARGIN_SIZE - icon_width
+              :  ctrl->get_option("width").toInt() - MARGIN_SIZE-PADDING*2 - icon_width);
+
+    icon->move(width, toDpi(ctrl->get_option("search-height"))/2 - icon_width/2);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
 }
 

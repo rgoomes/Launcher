@@ -83,6 +83,7 @@ class MainWindow : public QMainWindow{
 
         bool resizing = false;
         bool scaling  = false;
+        bool opened   = false;
 
     protected:
         bool eventFilter(QObject *, QEvent *);
