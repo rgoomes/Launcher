@@ -74,7 +74,7 @@ void SettingsWindow::radiobtn_toggled(bool ){
 }
 
 void SettingsWindow::font_sizechange(const QString &s){
-    w->setFont(w->getFont()[1], s);
+    w->setFont(w->getFont()[0], s);
 }
 
 void SettingsWindow::font_familychange(const QString &s){

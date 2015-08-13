@@ -2,6 +2,7 @@
 #include <QThread>
 #include <QIcon>
 #include <QToolButton>
+#include <QFontMetrics>
 #include <mutex>
 
 #include "utils.h"
@@ -284,11 +285,16 @@ vector<QString> MainWindow::getFont(){
 }
 
 void MainWindow::setFont(QString font, QString size){
-    size = QString::number(fmin(size.toInt(), ctrl->get_option("search-height").toInt()));
     ui->sbox->setFont(QFont(font, toDpi(size)));
 
     ctrl->set_option("font", font);
     ctrl->set_option("font-size", size);
+
+    // SETTING FONT WITH HIGH SIZE MIGHT EXCEED
+    // SBOX HEIGHT SO WE NEED TO UPDATE IT. ALSO
+    // WE NEED TO MAKE SURE SBOX ICON STAYS ALWAYS
+    // IN THE MIDDLE OF THE SBOX
+    setSboxHeight(0);
 }
 
 void MainWindow::setFontColor(string color){
@@ -319,8 +325,10 @@ void MainWindow::changeIconPos(bool keep){
 }
 
 void MainWindow::setSboxHeight(double diff){
+    QFontMetrics fm(QFont(ctrl->get_option("font"), toDpi(ctrl->get_option("font-size"))));
+
     double height = fmax(ctrl->get_option("search-height").toInt() + toPx(diff),
-                         ctrl->get_option("font-size").toInt() + toPx(MARGIN_SIZE/2));
+                         toDpi(QString::number(fm.height())));
 
     height = fmin(height, -toPx(MARGIN_SIZE) + (!in_fullscreen() ? ctrl->get_option("height").toInt()
            : QApplication::desktop()->screenGeometry().height()));
