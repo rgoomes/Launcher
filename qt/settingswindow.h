@@ -24,7 +24,6 @@ class SettingsWindow : public QMainWindow{
 
     public slots:
         void radiobtn_toggled(bool );
-        void checkbox_toggled(bool );
         void new_bordersize(int );
         void font_sizechange(const QString& );
         void font_familychange(const QString& );
@@ -35,6 +34,8 @@ class SettingsWindow : public QMainWindow{
         void change_textcolor();
         void new_dpi(int );
         void center();
+        void change_bordercolor();
+        void new_borderwidth(int );
 
     private:
         Ui::SettingsWindow *ui;

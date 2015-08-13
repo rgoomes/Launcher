@@ -36,6 +36,15 @@ void SettingsWindow::change_backcolor(){
     ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->isShadowVisible()).c_str());
 }
 
+void SettingsWindow::change_bordercolor(){
+    QColor c = QColorDialog::getColor(QColor(w->getSboxBorderColor()), 0, QString());
+    if(!c.isValid())
+        return;
+
+    w->setSboxBorderColor(c.name().toUtf8().constData());
+    ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false).c_str());
+}
+
 void SettingsWindow::change_textcolor(){
     QColor c = QColorDialog::getColor(QColor(w->getFont()[2]), 0, QString());
     if(!c.isValid())
@@ -49,14 +58,15 @@ void SettingsWindow::new_bordersize(int new_value){
     w->setBorderRadius(new_value, false);
 }
 
+void SettingsWindow::new_borderwidth(int new_value){
+    w->setSboxBorderWidth(new_value);
+}
+
+
 void SettingsWindow::new_dpi(int pos){
     w->change_dpi(dpis[pos], w->in_fullscreen());
     ui->dpiNumberLabel->setText(QString::number(dpis[pos]));
     ui->dpiNumberLabel->move(QPoint(166+pos*20,ui->dpiNumberLabel->y()));
-}
-
-void SettingsWindow::checkbox_toggled(bool ){
-    w->setBorderVisibility();
 }
 
 void SettingsWindow::radiobtn_toggled(bool ){
@@ -72,7 +82,13 @@ void SettingsWindow::font_familychange(const QString &s){
 }
 
 void SettingsWindow::updateBtnWindowState(){
-    ui->fullWindowBtn->setText(w->in_fullscreen() ? "Go Fullscreen Mode" : "Go Window Mode");
+    bool in_full = w->in_fullscreen();
+    ui->fullWindowBtn->setText(in_full ? "Go Fullscreen Mode" : "Go Window Mode");
+
+    if(in_full)
+        ui->shadowBtn->setDisabled(false);
+    else
+        ui->shadowBtn->setDisabled(true);
 }
 
 void SettingsWindow::center(){
@@ -108,9 +124,6 @@ void SettingsWindow::inits(){
     else
         ui->iconRightRadioButton->setChecked(true);
 
-    if(w->borderIsVisible())
-        ui->borderVisibleCheckBox->setChecked(true);
-
     int dist = std::distance(dpis.begin(), std::find(dpis.begin(), dpis.end(), w->curDpi()));
     ui->dpiSlider->setValue(dist);
     ui->dpiNumberLabel->move(QPoint(166+dist*20,ui->dpiNumberLabel->y()));
@@ -140,10 +153,12 @@ void SettingsWindow::inits(){
     ui->fontFamilyCombo->setCurrentText(font[0]);
     ui->fontColorBtn->setStyleSheet(btn_style(font[2], false).c_str());
     ui->backColorBtn->setStyleSheet(btn_style(back_color, w->isShadowVisible()).c_str());
+    ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false).c_str());
+    ui->borderWidthSlider->setValue(w->sboxBorderWidth());
 
     connect(ui->iconLeftRadioButton,  SIGNAL(toggled(bool)), this, SLOT(radiobtn_toggled(bool)));
-    connect(ui->borderVisibleCheckBox, SIGNAL(clicked(bool)), this, SLOT(checkbox_toggled(bool)));
     connect(ui->borderRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(new_bordersize(int )));
+    connect(ui->borderWidthSlider, SIGNAL(valueChanged(int)), this, SLOT(new_borderwidth(int )));
     connect(ui->fontSizeCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(font_sizechange(const QString&)));
     connect(ui->fontFamilyCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(font_familychange(const QString&)));
     connect(ui->fullWindowBtn, SIGNAL(clicked()), this, SLOT(change_windowstate()));
@@ -153,4 +168,5 @@ void SettingsWindow::inits(){
     connect(ui->fontColorBtn, SIGNAL(clicked()), this, SLOT(change_textcolor()));
     connect(ui->dpiSlider, SIGNAL(valueChanged(int)), this, SLOT(new_dpi(int )));
     connect(ui->centerBtn, SIGNAL(clicked()), this, SLOT(center()));
+    connect(ui->borderColorBtn, SIGNAL(clicked()), this, SLOT(change_bordercolor()));
 }

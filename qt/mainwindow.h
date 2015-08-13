@@ -40,9 +40,9 @@ class MainWindow : public QMainWindow{
         void inits();
         void setBorderRadius(int , bool );
         void setShadow(QColor , int , int , bool);
+        void setSboxBorderColor(std::string );
         void setBackgroundColor(QColor, bool);
         void setSboxHeight(double );
-        void setBorderVisibility();
         void goFullScreenMode();
         void goWindowMode();
         void center_window();
@@ -51,11 +51,12 @@ class MainWindow : public QMainWindow{
         void setFontColor(std::string );
         void setFont(QString, QString);
         void changeIconPos(bool );
+        void setSboxBorderWidth(int );
         bool in_fullscreen();
-        bool borderIsVisible();
         bool isShadowVisible();
         double getBackgroundAlpha();
         double curDpi();
+        int sboxBorderWidth();
         int getBorderRadius();
         int iconOnLeft();
         int toDpi(QString );
@@ -66,6 +67,7 @@ class MainWindow : public QMainWindow{
         void update();
         vector<QString> getFont();
         QString getBackgroundColor();
+        QString getSboxBorderColor();
 
     public slots:
         void clear_trigged();

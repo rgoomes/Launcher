@@ -3,8 +3,10 @@
 
 #include <QString>
 #include <QMap>
+#include <QColor>
 
-QString rand_color(double alpha);
+QString rand_color(double );
+QString genColor(QColor, bool , double );
 
 QMap<QString, QString > frameDefaultStyle();
 QMap<QString, QString > sboxDefaultStyle();

@@ -20,7 +20,7 @@
 using namespace std;
 
 #define MARGIN_SIZE 30
-#define WAIT_TIME 100
+#define WAIT_TIME 10
 #define GRIP_SIZE 5
 #define PADDING 5
 
@@ -138,34 +138,32 @@ double MainWindow::getBackgroundAlpha(){
     return alpha;
 }
 
-void MainWindow::setBackgroundColor(QColor color, bool random){
-    QString c;
+QString MainWindow::getSboxBorderColor(){
+    return cc->getStyle("border-color", SBOX);
+}
 
-    if(random)
-        c = rand_color(this->getBackgroundAlpha());
-    else {
-        c = "rgba("
-          + QString::number(color.red())   + ","
-          + QString::number(color.green()) + ","
-          + QString::number(color.blue())  + ","
-          + QString::number(color.alpha()) + ")";
-    }
+void MainWindow::setSboxBorderColor(string color){
+    cc->setStyle("border-color", QString::fromStdString(color), SBOX);
+    ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
+}
+
+void MainWindow::setBackgroundColor(QColor color, bool random){
+    QString c = genColor(color, random, this->getBackgroundAlpha());
 
     cc->setStyle("background-color", c, FRAME);
     ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
 }
 
-bool MainWindow::borderIsVisible(){
-    std::string color = cc->getStyle("border", SBOX).toStdString();
-    std::string alpha = color.substr(color.find_last_of(" ")+1);
+int MainWindow::sboxBorderWidth(){
+    int width;
+    sscanf(cc->getStyle("border-width", SBOX).toUtf8().constData(), "%d%*s", &width);
 
-    return !alpha.compare("solid") ? true : false;
+    return width;
 }
 
-void MainWindow::setBorderVisibility(){
-    QString border = borderIsVisible() ? "1px transparent" : "1px solid";
-
-    cc->setStyle("border", border, SBOX);
+void MainWindow::setSboxBorderWidth(int width){
+    cc->setStyle("border-style", width ? "solid" : "transparent", SBOX);
+    cc->setStyle("border-width", QString::number(width), SBOX);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
 }
 
@@ -189,7 +187,10 @@ void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool fullscreen
 }
 
 int MainWindow::getBorderRadius(){
-    return cc->getStyle("border-radius", FRAME).mid(0, 2).toInt();
+    int radius;
+    sscanf(cc->getStyle("border-radius", FRAME).toUtf8().constData(), "%d%*s", &radius);
+
+    return radius;
 }
 
 void MainWindow::setBorderRadius(int r, bool going_fullscreen){
@@ -215,18 +216,13 @@ void MainWindow::goFullScreenMode(){
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
     ui->frameLayout->layout()->setContentsMargins(0, 15, 0, 0);
     ctrl->set_option("fullscreen", "1");
-
     this->showFullScreen();
+
     changeIconPos(true);
 }
 
 void MainWindow::goWindowMode(){
-    // RELOAD OLD USER STYLESHEET
-    cc->reload(FRAME);
-    ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
-
     if(opened) settingsWindow->updateBtnWindowState();
-    setBorderRadius(getBorderRadius(), false);
     setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
               ctrl->get_option("shadow-scale").toInt(),
               ctrl->get_option("shadow-blur-radius").toInt(), true);
@@ -234,8 +230,9 @@ void MainWindow::goWindowMode(){
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
     ui->frameLayout->layout()->setContentsMargins(0, 0, 0, 0);
     ctrl->set_option("fullscreen", "0");
-
     this->showNormal();
+
+    setBorderRadius(getBorderRadius(), false);
 
     // CHANGING DPI'S IN FULLSCREEN WILL NOT AFFECT MANY THINGS LIKE WINDOW SIZE
     // BECAUSE WE'RE IN FULLSCREEN, SO WHEN WE CHANGE THE WINDOW STATE TO WINDOW
