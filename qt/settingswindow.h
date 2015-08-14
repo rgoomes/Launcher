@@ -40,6 +40,10 @@ class SettingsWindow : public QMainWindow{
 
     private:
         Ui::SettingsWindow *ui;
+
+    protected:
+        void closeEvent(QCloseEvent *event);
+        void keyPressEvent(QKeyEvent* event);
 };
 
 #endif // SETTINGSWINDOW_H

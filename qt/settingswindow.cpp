@@ -25,6 +25,15 @@ void SettingsWindow::setMainWindow(MainWindow *w){
     inits();
 }
 
+void SettingsWindow::closeEvent(QCloseEvent *event) {
+    this->w->settingsOpened = false;
+}
+
+void SettingsWindow::keyPressEvent(QKeyEvent *event){
+    if(event->key() == Qt::Key_Escape)
+        this->close();
+}
+
 void SettingsWindow::change_backcolor(){
     const char *color = w->getBackgroundColor().toStdString().c_str();
     int r,g,b,alpha; sscanf(color, "rgba(%d,%d,%d,%d)", &r,&g,&b,&alpha);
@@ -124,6 +133,9 @@ void SettingsWindow::change_windowstate(){
 }
 
 void SettingsWindow::inits(){
+    //NOT WORKING IN FULLSCREEN MODE
+    this->setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+
     if(w->iconOnLeft())
         ui->iconLeftRadioButton->setChecked(true);
     else

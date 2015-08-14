@@ -71,6 +71,7 @@ class MainWindow : public QMainWindow{
         QString getSboxBorderColor();
         QString getIconTheme();
         QString getSboxText();
+        bool settingsOpened   = false;
 
     public slots:
         void clear_trigged();
@@ -89,7 +90,6 @@ class MainWindow : public QMainWindow{
 
         bool resizing = false;
         bool scaling  = false;
-        bool opened   = false;
 
     protected:
         bool eventFilter(QObject *, QEvent *);

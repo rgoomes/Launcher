@@ -63,12 +63,14 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
         mtx.unlock(); // FREE LOCK IN CLEANER
 
     // SHOW SETTINGS
-    if(event->key() == Qt::Key_F1){
-        settingsWindow = new SettingsWindow(this);
-        settingsWindow->setMainWindow(this);
-        settingsWindow->show();
-
-        opened = true;
+    if(!settingsOpened) {
+        if(event->key() == Qt::Key_F1){
+            settingsWindow = new SettingsWindow(this);
+            settingsWindow->setMainWindow(this);
+            settingsWindow->show();
+            settingsWindow->activateWindow();
+            settingsOpened = true;
+        }
     }
 
     // AUTOCOMPLETE
@@ -216,7 +218,7 @@ bool MainWindow::in_fullscreen(){
 void MainWindow::goFullScreenMode(){
     setBorderRadius(0, true);
     setShadow(QColor(0,0,0,0), 0, 0, false);
-    if(opened) settingsWindow->updateBtnWindowState();
+    if(settingsOpened) settingsWindow->updateBtnWindowState();
 
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
     ui->frameLayout->layout()->setContentsMargins(0, 15, 0, 0);
@@ -227,7 +229,7 @@ void MainWindow::goFullScreenMode(){
 }
 
 void MainWindow::goWindowMode(){
-    if(opened) settingsWindow->updateBtnWindowState();
+    if(settingsOpened) settingsWindow->updateBtnWindowState();
     setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
               ctrl->get_option("shadow-scale").toInt(),
               ctrl->get_option("shadow-blur-radius").toInt(), true);
