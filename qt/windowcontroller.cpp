@@ -25,6 +25,7 @@ QMap <QString, QString > getDefaultOptions(){
     default_options["font"] = "Liberation Mono";
     default_options["font-size"] = "20";
     default_options["search-icon-pos"] = "1";
+    default_options["icon-theme"] = "light";
 
     return default_options;
 }

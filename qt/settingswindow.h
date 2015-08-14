@@ -36,6 +36,7 @@ class SettingsWindow : public QMainWindow{
         void center();
         void change_bordercolor();
         void new_borderwidth(int );
+        void change_icontheme(bool );
 
     private:
         Ui::SettingsWindow *ui;

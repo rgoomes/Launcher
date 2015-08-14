@@ -52,6 +52,7 @@ class MainWindow : public QMainWindow{
         void setFont(QString, QString);
         void changeIconPos(bool );
         void setSboxBorderWidth(int );
+        void updateIcon(QString, QString );
         bool in_fullscreen();
         bool isShadowVisible();
         double getBackgroundAlpha();
@@ -68,6 +69,8 @@ class MainWindow : public QMainWindow{
         vector<QString> getFont();
         QString getBackgroundColor();
         QString getSboxBorderColor();
+        QString getIconTheme();
+        QString getSboxText();
 
     public slots:
         void clear_trigged();

@@ -74,6 +74,10 @@ void SettingsWindow::radiobtn_toggled(bool ){
     w->changeIconPos(false);
 }
 
+void SettingsWindow::change_icontheme(bool ){
+    w->updateIcon(w->getSboxText(), w->getIconTheme().compare("light") ? "light" : "dark");
+}
+
 void SettingsWindow::font_sizechange(const QString &s){
     w->setFont(w->getFont()[0], s);
 }
@@ -125,6 +129,11 @@ void SettingsWindow::inits(){
     else
         ui->iconRightRadioButton->setChecked(true);
 
+    if(w->getIconTheme().compare("light"))
+        ui->darkRadio->setChecked(true);
+    else
+        ui->lightRadio->setChecked(true);
+
     int dist = std::distance(dpis.begin(), std::find(dpis.begin(), dpis.end(), w->curDpi()));
     ui->dpiSlider->setValue(dist);
     ui->dpiNumberLabel->move(QPoint(lpos[dist],ui->dpiNumberLabel->y()));
@@ -157,6 +166,7 @@ void SettingsWindow::inits(){
     ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false).c_str());
     ui->borderWidthSlider->setValue(w->sboxBorderWidth());
 
+    connect(ui->lightRadio,  SIGNAL(toggled(bool)), this, SLOT(change_icontheme(bool)));
     connect(ui->iconLeftRadioButton,  SIGNAL(toggled(bool)), this, SLOT(radiobtn_toggled(bool)));
     connect(ui->borderRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(new_bordersize(int )));
     connect(ui->borderWidthSlider, SIGNAL(valueChanged(int)), this, SLOT(new_borderwidth(int )));

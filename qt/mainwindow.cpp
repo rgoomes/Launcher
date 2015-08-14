@@ -10,6 +10,9 @@
 #include "ui_mainwindow.h"
 #include "cleaner.h"
 
+#define DARK_ICONS_PATH  QString("../qt/icons/dark/")
+#define LIGHT_ICONS_PATH QString("../qt/icons/light/")
+
 #if defined(__linux) || defined(__unix)
     #include <signal.h>
     #define SIGNALS
@@ -254,9 +257,23 @@ void MainWindow::center_window(){
     storeWindowPosition();
 }
 
-void MainWindow::text_changed(QString text){
-    QPixmap pixmap(text.compare("") ? "../qt/icons/clear.svg" : "../qt/icons/search.svg");
+QString MainWindow::getIconTheme(){
+    return ctrl->get_option("icon-theme");
+}
+
+void MainWindow::updateIcon(QString text, QString theme){
+    ctrl->set_option("icon-theme", theme);
+    QPixmap pixmap((theme.compare("dark") ? LIGHT_ICONS_PATH : DARK_ICONS_PATH) +
+                   (text.compare("") ? "clear.svg" : "search.svg"));
     icon->setIcon(QIcon(pixmap));
+}
+
+QString MainWindow::getSboxText(){
+    return ui->sbox->text();
+}
+
+void MainWindow::text_changed(QString text){
+    updateIcon(text, getIconTheme());
 
     qDebug() << text;
 }
@@ -404,10 +421,7 @@ void MainWindow::inits(){
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     // LINE EDIT DEFAULT ICON
-    QPixmap pixmap("../qt/icons/search.svg");
     icon = new QToolButton(ui->sbox);
-    icon->setIcon(QIcon(pixmap));
-    icon->setIconSize(pixmap.size());
 
     // ALL CSS CLASS NAMES
     ui->frame->setObjectName("Frame");
@@ -422,6 +436,12 @@ void MainWindow::inits(){
 
     // WINDOW OPTIONS
     ctrl = new WindowController("../User/window.user");
+
+    // INIT STORED PATH
+    QPixmap pixmap((getIconTheme().compare("dark") ? LIGHT_ICONS_PATH : DARK_ICONS_PATH) + "search.svg");
+    icon->setIcon(QIcon(pixmap));
+    icon->setIconSize(pixmap.size());
+
     this->change_dpi(ctrl->get_option("dpi").toDouble(), false);
     this->setFontColor(cc->getStyle("color", SBOX).toUtf8().constData());
 
