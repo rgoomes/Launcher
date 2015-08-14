@@ -42,7 +42,7 @@ class MainWindow : public QMainWindow{
         void setShadow(QColor , int , int , bool);
         void setSboxBorderColor(std::string );
         void setBackgroundColor(QColor, bool);
-        void setSboxHeight(double );
+        void updateSboxHeight(double );
         void goFullScreenMode();
         void goWindowMode();
         void center_window();

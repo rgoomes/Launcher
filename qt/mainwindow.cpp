@@ -112,7 +112,7 @@ void MainWindow::request_resize(){
     ctrl->set_option("width",  QString::number(toPx(this->width())));
     ctrl->set_option("height", QString::number(toPx(this->height())));
     this->storeWindowPosition();
-    this->setSboxHeight(0);
+    this->updateSboxHeight(0);
 
     resizing = false;
 }
@@ -166,6 +166,7 @@ void MainWindow::setSboxBorderWidth(int width){
     cc->setStyle("border-style", width ? "solid" : "transparent", SBOX);
     cc->setStyle("border-width", QString::number(width), SBOX);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
+    changeIconPos(true);
 }
 
 bool MainWindow::isShadowVisible(){
@@ -263,7 +264,7 @@ void MainWindow::text_changed(QString text){
 void MainWindow::change_dpi(double new_dpi, bool fullscreen_on){
     ctrl->set_option("dpi", QString::number(new_dpi));
 
-    this->setSboxHeight(0);
+    this->updateSboxHeight(0);
     this->setFont(ctrl->get_option("font"), ctrl->get_option("font-size"));
 
     if(fullscreen_on)
@@ -294,7 +295,7 @@ void MainWindow::setFont(QString font, QString size){
     // SBOX HEIGHT SO WE NEED TO UPDATE IT. ALSO
     // WE NEED TO MAKE SURE SBOX ICON STAYS ALWAYS
     // IN THE MIDDLE OF THE SBOX
-    setSboxHeight(0);
+    updateSboxHeight(0);
 }
 
 void MainWindow::setFontColor(string color){
@@ -320,11 +321,12 @@ void MainWindow::changeIconPos(bool keep){
               : (in_fullscreen()  ? QApplication::desktop()->screenGeometry().width() - MARGIN_SIZE - icon_width
               :  toDpi(ctrl->get_option("width")) - MARGIN_SIZE-PADDING*2 - icon_width);
 
-    icon->move(width, toDpi(ctrl->get_option("search-height"))/2 - icon_width/2);
+    icon->move(width + cc->getStyle("border-width", SBOX).toInt() * ((on_left ^ !keep) ? 1 : -1),
+               toDpi(ctrl->get_option("search-height"))/2 - icon_width/2);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
 }
 
-void MainWindow::setSboxHeight(double diff){
+void MainWindow::updateSboxHeight(double diff){
     QFontMetrics fm(QFont(ctrl->get_option("font"), toDpi(ctrl->get_option("font-size"))));
 
     double height = fmax(ctrl->get_option("search-height").toInt() + toPx(diff),
@@ -374,7 +376,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
     /////////////////////////////////////////////////////
 
     if(scaling && event->type() == QEvent::MouseMove)
-        setSboxHeight(cur.y() - mpos.y());
+        updateSboxHeight(cur.y() - mpos.y());
     if(event->type() == QEvent::MouseMove)
         mpos = cur;
     if(event->type() == QEvent::MouseButtonPress)

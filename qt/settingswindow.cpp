@@ -6,6 +6,7 @@
 
 #define MAKE_EDITABLE "QComboBox { combobox-popup: 0; }"
 std::vector<double> dpis = {0.5, 0.625, 0.75, 0.875, 1.0, 1.12, 1.25, 1.38, 1.5};
+std::vector<int> lpos = {166, 177, 199, 214, 246, 255, 269, 290, 312};
 
 SettingsWindow::~SettingsWindow(){ delete ui; }
 SettingsWindow::SettingsWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::SettingsWindow){
@@ -66,7 +67,7 @@ void SettingsWindow::new_borderwidth(int new_value){
 void SettingsWindow::new_dpi(int pos){
     w->change_dpi(dpis[pos], w->in_fullscreen());
     ui->dpiNumberLabel->setText(QString::number(dpis[pos]));
-    ui->dpiNumberLabel->move(QPoint(166+pos*20,ui->dpiNumberLabel->y()));
+    ui->dpiNumberLabel->move(QPoint(lpos[pos],ui->dpiNumberLabel->y()));
 }
 
 void SettingsWindow::radiobtn_toggled(bool ){
@@ -126,7 +127,7 @@ void SettingsWindow::inits(){
 
     int dist = std::distance(dpis.begin(), std::find(dpis.begin(), dpis.end(), w->curDpi()));
     ui->dpiSlider->setValue(dist);
-    ui->dpiNumberLabel->move(QPoint(166+dist*20,ui->dpiNumberLabel->y()));
+    ui->dpiNumberLabel->move(QPoint(lpos[dist],ui->dpiNumberLabel->y()));
     ui->dpiNumberLabel->setText(QString::number(w->curDpi()));
     ui->borderRadiusSlider->setValue(w->getBorderRadius());
     ui->fullWindowBtn->setText(w->in_fullscreen() ? "Go Window Mode" : "Go Fullscreen Mode");
