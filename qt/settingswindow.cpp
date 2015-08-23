@@ -35,8 +35,10 @@ void SettingsWindow::closeEvent(QCloseEvent *) {
 }
 
 void SettingsWindow::keyPressEvent(QKeyEvent *event){
-    if(event->key() == Qt::Key_Escape)
+    if(event->key() == Qt::Key_Escape){
         this->close();
+        delete this;
+    }
 }
 
 void SettingsWindow::change_backcolor(){
