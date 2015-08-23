@@ -345,11 +345,9 @@ void MainWindow::changeIconPos(bool keep){
 void MainWindow::updateSboxHeight(double diff){
     QFontMetrics fm(QFont(ctrl->get_option("font"), toDpi(ctrl->get_option("font-size"))));
 
-    double height = fmax(ctrl->get_option("search-height").toInt() + toPx(diff),
-                         toDpi(QString::number(fm.height())));
-
+    double height = fmax(ctrl->get_option("search-height").toInt() + toPx(diff), toPx(fm.height()));
     height = fmin(height, -toPx(MARGIN_SIZE) + (!in_fullscreen() ? ctrl->get_option("height").toInt()
-           : QApplication::desktop()->screenGeometry().height()));
+           : toPx(QApplication::desktop()->screenGeometry().height())));
     height = fmax(height, 0);
 
     ui->sbox->setMinimumHeight(toDpi(QString::number(height)));
