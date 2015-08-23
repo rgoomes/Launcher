@@ -1,12 +1,17 @@
 #include "settingswindow.h"
 #include "ui_settingswindow.h"
 
+#include <sstream>
 #include <QColorDialog>
 #include <QRgb>
 
+#define LIMIT 128
 #define MAKE_EDITABLE "QComboBox { combobox-popup: 0; }"
+
 std::vector<double> dpis = {0.5, 0.625, 0.75, 0.875, 1.0, 1.12, 1.25, 1.38, 1.5};
 std::vector<int> lpos = {166, 177, 199, 214, 246, 255, 269, 290, 312};
+std::vector<int> font_sizes = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24,
+                               26, 28, 32, 36, 40, 44, 48, 54, 60, 66, 72, 80, 88, 96};
 
 SettingsWindow::~SettingsWindow(){ delete ui; }
 SettingsWindow::SettingsWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::SettingsWindow){
@@ -25,7 +30,7 @@ void SettingsWindow::setMainWindow(MainWindow *w){
     inits();
 }
 
-void SettingsWindow::closeEvent(QCloseEvent *event) {
+void SettingsWindow::closeEvent(QCloseEvent *) {
     this->w->settingsOpened = false;
 }
 
@@ -35,10 +40,15 @@ void SettingsWindow::keyPressEvent(QKeyEvent *event){
 }
 
 void SettingsWindow::change_backcolor(){
-    const char *color = w->getBackgroundColor().toStdString().c_str();
-    int r,g,b,alpha; sscanf(color, "rgba(%d,%d,%d,%d)", &r,&g,&b,&alpha);
+    int r, g, b;
+    std::stringstream ss(w->getBackgroundColor().toStdString());
 
-    QColor c = QColorDialog::getColor(QColor(r,g,b,alpha), 0, QString(), QColorDialog::ShowAlphaChannel);
+    ss.ignore(LIMIT, '(');
+    ss >> r; ss.ignore(LIMIT, ',');
+    ss >> g; ss.ignore(LIMIT, ',');
+    ss >> b;
+
+    QColor c = QColorDialog::getColor(QColor(r,g,b,w->getBackgroundAlpha()), 0, QString(), QColorDialog::ShowAlphaChannel);
     if(!c.isValid())
         return;
 
@@ -133,8 +143,13 @@ void SettingsWindow::change_windowstate(){
 }
 
 void SettingsWindow::inits(){
-    //NOT WORKING IN FULLSCREEN MODE
     this->setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+
+    int dist = std::distance(dpis.begin(), std::find(dpis.begin(), dpis.end(), w->curDpi()));
+
+    QStringList values;
+    for(int size : font_sizes)
+        values << QString::number(size);
 
     if(w->iconOnLeft())
         ui->iconLeftRadioButton->setChecked(true);
@@ -146,35 +161,19 @@ void SettingsWindow::inits(){
     else
         ui->lightRadio->setChecked(true);
 
-    int dist = std::distance(dpis.begin(), std::find(dpis.begin(), dpis.end(), w->curDpi()));
     ui->dpiSlider->setValue(dist);
     ui->dpiNumberLabel->move(QPoint(lpos[dist],ui->dpiNumberLabel->y()));
     ui->dpiNumberLabel->setText(QString::number(w->curDpi()));
     ui->borderRadiusSlider->setValue(w->getBorderRadius());
     ui->fullWindowBtn->setText(w->in_fullscreen() ? "Go Window Mode" : "Go Fullscreen Mode");
     ui->shadowBtn->setText(w->isShadowVisible() ? "Disable Shadow" : "Enable Shadow");
-
-    vector<QString> font = w->getFont();
-    QString back_color = w->getBackgroundColor();
-
-    QStringList comboValues;
-    for(int i = 6; i < 100;){
-        comboValues.append(QStringList() << QString::number(i));
-
-        if(i < 16) i++;
-        else if(i < 28) i+=2;
-        else if(i < 48) i+=4;
-        else if(i < 72) i+=6;
-        else i+=8;
-    }
-
-    ui->fontSizeCombo->addItems(comboValues);
-    ui->fontSizeCombo->setCurrentText(font[1]);
+    ui->fontSizeCombo->addItems(values);
+    ui->fontSizeCombo->setCurrentText(w->getFont()[1]);
     ui->fontSizeCombo->setStyleSheet(MAKE_EDITABLE);
     ui->fontFamilyCombo->setStyleSheet(MAKE_EDITABLE);
-    ui->fontFamilyCombo->setCurrentText(font[0]);
-    ui->fontColorBtn->setStyleSheet(btn_style(font[2], false).c_str());
-    ui->backColorBtn->setStyleSheet(btn_style(back_color, w->isShadowVisible()).c_str());
+    ui->fontFamilyCombo->setCurrentText(w->getFont()[0]);
+    ui->fontColorBtn->setStyleSheet(btn_style(w->getFont()[2], false).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->isShadowVisible()).c_str());
     ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false).c_str());
     ui->borderWidthSlider->setValue(w->sboxBorderWidth());
 

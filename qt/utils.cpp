@@ -4,7 +4,7 @@
 #include <QColor>
 
 // GENERATE RANDOM COLOR
-QString rand_color(double alpha){
+QString rand_color(int alpha){
     return QString("rgba(")
          + QString::number(rand() % 255) + ","
          + QString::number(rand() % 255) + ","
@@ -13,7 +13,7 @@ QString rand_color(double alpha){
          + QString(")");
 }
 
-QString genColor(QColor color, bool random, double alpha){
+QString genColor(QColor color, bool random, int alpha){
     if(random)
         return rand_color(alpha);
     else {
@@ -28,8 +28,8 @@ QString genColor(QColor color, bool random, double alpha){
 QMap <QString, QString > frameDefaultStyle(){
     QMap <QString, QString > default_styles;
 
-    default_styles["border-radius"] = "20px";
-    default_styles["background-color"] = "rgba(0,125,255,0.4)";
+    default_styles["border-radius"] = "20";
+    default_styles["background-color"] = "rgba(0,125,255,100)";
 
     return default_styles;
 }
@@ -39,8 +39,8 @@ QMap <QString, QString > sboxDefaultStyle(){
 
     default_styles["color"] = "#ffffff";
     default_styles["border-style"] = "solid";
-    default_styles["border-width"] = "1px";
-    default_styles["border-radius"] = "7px";
+    default_styles["border-width"] = "1";
+    default_styles["border-radius"] = "7";
     default_styles["border-color"] = "#ffffff";
     default_styles["background"] = "transparent";
     default_styles["padding-left"] = "30px";

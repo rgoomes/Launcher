@@ -5,8 +5,8 @@
 #include <QMap>
 #include <QColor>
 
-QString rand_color(double );
-QString genColor(QColor, bool , double );
+QString rand_color(int );
+QString genColor(QColor, bool , int );
 
 QMap<QString, QString > frameDefaultStyle();
 QMap<QString, QString > sboxDefaultStyle();

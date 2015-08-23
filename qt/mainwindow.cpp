@@ -4,6 +4,7 @@
 #include <QToolButton>
 #include <QFontMetrics>
 #include <mutex>
+#include <sstream>
 
 #include "utils.h"
 #include "mainwindow.h"
@@ -27,6 +28,7 @@ using namespace std;
 #define WAIT_TIME 10
 #define GRIP_SIZE 5
 #define PADDING 5
+#define LIMIT 128
 
 std::mutex mtx;
 
@@ -106,9 +108,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent* event){
         move(event->globalPos() - mpos);
 }
 
-void MainWindow::mouseReleaseEvent(QMouseEvent* event){
-    QMainWindow::mouseReleaseEvent(event);
-
+void MainWindow::mouseReleaseEvent(QMouseEvent* ){
     if(!this->in_fullscreen())
         storeWindowPosition();
 }
@@ -135,11 +135,14 @@ QString MainWindow::getBackgroundColor(){
     return cc->getStyle("background-color", FRAME);
 }
 
-double MainWindow::getBackgroundAlpha(){
-    const char *color = cc->getStyle("background-color", FRAME).toStdString().c_str();
+int MainWindow::getBackgroundAlpha(){
+    int alpha;
+    std::stringstream ss(cc->getStyle("background-color", FRAME).toStdString());
 
-    double alpha;
-    sscanf(color, "rgba(%*d,%*d,%*d,%lf)", &alpha);
+    ss.ignore(LIMIT, ',');
+    ss.ignore(LIMIT, ',');
+    ss.ignore(LIMIT, ',');
+    ss >> alpha;
 
     return alpha;
 }
@@ -161,10 +164,7 @@ void MainWindow::setBackgroundColor(QColor color, bool random){
 }
 
 int MainWindow::sboxBorderWidth(){
-    int width;
-    sscanf(cc->getStyle("border-width", SBOX).toUtf8().constData(), "%d%*s", &width);
-
-    return width;
+    return cc->getStyle("border-width", SBOX).toInt();
 }
 
 void MainWindow::setSboxBorderWidth(int width){
@@ -194,20 +194,17 @@ void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool fullscreen
 }
 
 int MainWindow::getBorderRadius(){
-    int radius;
-    sscanf(cc->getStyle("border-radius", FRAME).toUtf8().constData(), "%d%*s", &radius);
-
-    return radius;
+    return cc->getStyle("border-radius", FRAME).toInt();
 }
 
 void MainWindow::setBorderRadius(int r, bool going_fullscreen){
     int old_radius = getBorderRadius();
-    cc->setStyle("border-radius", QString::number(r) + "px", FRAME);
+    cc->setStyle("border-radius", QString::number(r), FRAME);
 
     if(!in_fullscreen())
         ui->frame->setStyleSheet(cc->getStylesheet("Frame", FRAME));
     if(going_fullscreen)
-        cc->setStyle("border-radius", QString::number(old_radius) + "px", FRAME);
+        cc->setStyle("border-radius", QString::number(old_radius), FRAME);
 }
 
 bool MainWindow::in_fullscreen(){
@@ -340,7 +337,7 @@ void MainWindow::changeIconPos(bool keep){
               : (in_fullscreen()  ? QApplication::desktop()->screenGeometry().width() - MARGIN_SIZE - icon_width
               :  toDpi(ctrl->get_option("width")) - MARGIN_SIZE-PADDING*2 - icon_width);
 
-    icon->move(width + cc->getStyle("border-width", SBOX).toInt() * ((on_left ^ !keep) ? 1 : -1),
+    icon->move(width + sboxBorderWidth() * ((on_left ^ !keep) ? 1 : -1),
                toDpi(ctrl->get_option("search-height"))/2 - icon_width/2);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
 }

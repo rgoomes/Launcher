@@ -55,8 +55,8 @@ class MainWindow : public QMainWindow{
         void updateIcon(QString, QString );
         bool in_fullscreen();
         bool isShadowVisible();
-        double getBackgroundAlpha();
         double curDpi();
+        int getBackgroundAlpha();
         int sboxBorderWidth();
         int getBorderRadius();
         int iconOnLeft();
