@@ -20,23 +20,23 @@ class SettingsWindow : public QMainWindow{
     public:
         void inits();
         void setMainWindow(MainWindow *);
-        void updateBtnWindowState();
+        void updateBtnState();
 
     public slots:
-        void radiobtn_toggled(bool );
-        void new_bordersize(int );
-        void font_sizechange(const QString& );
-        void font_familychange(const QString& );
-        void change_windowstate();
-        void change_shadowstate();
-        void random_color();
-        void change_backcolor();
-        void change_textcolor();
-        void new_dpi(int );
-        void center();
-        void change_bordercolor();
-        void new_borderwidth(int );
-        void change_icontheme(bool );
+        void setFontSize(const QString& );
+        void setFontFamily(const QString& );
+        void changeBackgroundColor();
+        void changeBorderRadius(int );
+        void changeBorderColor();
+        void changeBorderWidth(int );
+        void changeIconTheme(bool );
+        void changeWindowMode();
+        void changeShadowMode();
+        void changeTextColor();
+        void requestDpiChange(int );
+        void centerWindow();
+        void setRandomColor();
+        void onRadioBtnToggled(bool );
 
     private:
         Ui::SettingsWindow *ui;

@@ -41,7 +41,7 @@ void SettingsWindow::keyPressEvent(QKeyEvent *event){
     }
 }
 
-void SettingsWindow::change_backcolor(){
+void SettingsWindow::changeBackgroundColor(){
     int r, g, b;
     std::stringstream ss(w->getBackgroundColor().toStdString());
 
@@ -58,7 +58,7 @@ void SettingsWindow::change_backcolor(){
     ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->isShadowVisible()).c_str());
 }
 
-void SettingsWindow::change_bordercolor(){
+void SettingsWindow::changeBorderColor(){
     QColor c = QColorDialog::getColor(QColor(w->getSboxBorderColor()), 0, QString());
     if(!c.isValid())
         return;
@@ -67,7 +67,7 @@ void SettingsWindow::change_bordercolor(){
     ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false).c_str());
 }
 
-void SettingsWindow::change_textcolor(){
+void SettingsWindow::changeTextColor(){
     QColor c = QColorDialog::getColor(QColor(w->getFont()[2]), 0, QString());
     if(!c.isValid())
         return;
@@ -76,38 +76,37 @@ void SettingsWindow::change_textcolor(){
     ui->fontColorBtn->setStyleSheet(btn_style(w->getFont()[2], false).c_str());
 }
 
-void SettingsWindow::new_bordersize(int new_value){
+void SettingsWindow::changeBorderRadius(int new_value){
     w->setBorderRadius(new_value, false);
 }
 
-void SettingsWindow::new_borderwidth(int new_value){
+void SettingsWindow::changeBorderWidth(int new_value){
     w->setSboxBorderWidth(new_value);
 }
 
-
-void SettingsWindow::new_dpi(int pos){
+void SettingsWindow::requestDpiChange(int pos){
     w->change_dpi(dpis[pos], w->in_fullscreen());
     ui->dpiNumberLabel->setText(QString::number(dpis[pos]));
     ui->dpiNumberLabel->move(QPoint(lpos[pos],ui->dpiNumberLabel->y()));
 }
 
-void SettingsWindow::radiobtn_toggled(bool ){
+void SettingsWindow::onRadioBtnToggled(bool ){
     w->changeIconPos(false);
 }
 
-void SettingsWindow::change_icontheme(bool ){
+void SettingsWindow::changeIconTheme(bool ){
     w->updateIcon(w->getSboxText(), w->getIconTheme().compare("light") ? "light" : "dark");
 }
 
-void SettingsWindow::font_sizechange(const QString &s){
+void SettingsWindow::setFontSize(const QString &s){
     w->setFont(w->getFont()[0], s);
 }
 
-void SettingsWindow::font_familychange(const QString &s){
+void SettingsWindow::setFontFamily(const QString &s){
     w->setFont(s, w->getFont()[1]);
 }
 
-void SettingsWindow::updateBtnWindowState(){
+void SettingsWindow::updateBtnState(){
     bool in_full = w->in_fullscreen();
     ui->fullWindowBtn->setText(in_full ? "Go Fullscreen Mode" : "Go Window Mode");
 
@@ -117,26 +116,26 @@ void SettingsWindow::updateBtnWindowState(){
         ui->shadowBtn->setDisabled(true);
 }
 
-void SettingsWindow::center(){
+void SettingsWindow::centerWindow(){
     w->center_window();
 }
 
-void SettingsWindow::change_shadowstate(){
+void SettingsWindow::changeShadowMode(){
     ui->shadowBtn->setText(w->isShadowVisible() ? "Enable Shadow" : "Disable Shadow");
     w->setShadow(QColor(0, 0, 0, w->isShadowVisible() ? 0 : 255), 3, 15, !w->in_fullscreen());
 
     ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->isShadowVisible()).c_str());
 }
 
-void SettingsWindow::random_color(){
+void SettingsWindow::setRandomColor(){
     w->setBackgroundColor(QColor(), true);
 
     ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->isShadowVisible()).c_str());
 }
 
-void SettingsWindow::change_windowstate(){
+void SettingsWindow::changeWindowMode(){
     bool in_full = w->in_fullscreen();
-    updateBtnWindowState();
+    updateBtnState();
 
     if(in_full)
         w->goWindowMode();
@@ -179,18 +178,18 @@ void SettingsWindow::inits(){
     ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false).c_str());
     ui->borderWidthSlider->setValue(w->sboxBorderWidth());
 
-    connect(ui->lightRadio,  SIGNAL(toggled(bool)), this, SLOT(change_icontheme(bool)));
-    connect(ui->iconLeftRadioButton,  SIGNAL(toggled(bool)), this, SLOT(radiobtn_toggled(bool)));
-    connect(ui->borderRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(new_bordersize(int )));
-    connect(ui->borderWidthSlider, SIGNAL(valueChanged(int)), this, SLOT(new_borderwidth(int )));
-    connect(ui->fontSizeCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(font_sizechange(const QString&)));
-    connect(ui->fontFamilyCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(font_familychange(const QString&)));
-    connect(ui->fullWindowBtn, SIGNAL(clicked()), this, SLOT(change_windowstate()));
-    connect(ui->shadowBtn, SIGNAL(clicked()), this, SLOT(change_shadowstate()));
-    connect(ui->randomBackColor, SIGNAL(clicked()), this, SLOT(random_color()));
-    connect(ui->backColorBtn, SIGNAL(clicked()), this, SLOT(change_backcolor()));
-    connect(ui->fontColorBtn, SIGNAL(clicked()), this, SLOT(change_textcolor()));
-    connect(ui->dpiSlider, SIGNAL(valueChanged(int)), this, SLOT(new_dpi(int )));
-    connect(ui->centerBtn, SIGNAL(clicked()), this, SLOT(center()));
-    connect(ui->borderColorBtn, SIGNAL(clicked()), this, SLOT(change_bordercolor()));
+    connect(ui->lightRadio,  SIGNAL(toggled(bool)), this, SLOT(changeIconTheme(bool)));
+    connect(ui->iconLeftRadioButton,  SIGNAL(toggled(bool)), this, SLOT(onRadioBtnToggled(bool)));
+    connect(ui->borderRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(changeBorderRadius(int )));
+    connect(ui->borderWidthSlider, SIGNAL(valueChanged(int)), this, SLOT(changeBorderWidth(int )));
+    connect(ui->fontSizeCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(setFontSize(const QString&)));
+    connect(ui->fontFamilyCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(setFontFamily(const QString&)));
+    connect(ui->fullWindowBtn, SIGNAL(clicked()), this, SLOT(changeWindowMode()));
+    connect(ui->shadowBtn, SIGNAL(clicked()), this, SLOT(changeShadowMode()));
+    connect(ui->randomBackColor, SIGNAL(clicked()), this, SLOT(setRandomColor()));
+    connect(ui->backColorBtn, SIGNAL(clicked()), this, SLOT(changeBackgroundColor()));
+    connect(ui->fontColorBtn, SIGNAL(clicked()), this, SLOT(changeTextColor()));
+    connect(ui->dpiSlider, SIGNAL(valueChanged(int)), this, SLOT(requestDpiChange(int )));
+    connect(ui->centerBtn, SIGNAL(clicked()), this, SLOT(centerWindow()));
+    connect(ui->borderColorBtn, SIGNAL(clicked()), this, SLOT(changeBorderColor()));
 }
