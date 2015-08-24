@@ -83,11 +83,19 @@ double MainWindow::curDpi() { return ctrl->get_option("dpi").toDouble(); }
 int MainWindow::toDpi(QString px){ return int(px.toInt() * curDpi()); }
 int MainWindow::toPx(int px){  return int(px / curDpi()); }
 
-void MainWindow::storeWindowPosition(){
-    QString win_gap = "0"; // TODO: CALCULATE OS THEME RESIZE MARGIN PX
+int MainWindow::getResizeMargin(){
+    return ctrl->get_option("resize-margin").toInt();
+}
 
-    ctrl->set_option("x", QString::number(max(this->x(), 0) + toDpi(win_gap)));
-    ctrl->set_option("y", QString::number(max(this->y(), 0) + toDpi(win_gap)));
+void MainWindow::setResizeMargin(int margin){
+    ctrl->set_option("resize-margin", QString::number(margin));
+}
+
+void MainWindow::storeWindowPosition(){
+    int win_gap = this->getResizeMargin();
+
+    ctrl->set_option("x", QString::number(max(this->x(), 0) + win_gap));
+    ctrl->set_option("y", QString::number(max(this->y(), 0) + win_gap));
 }
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *event){
@@ -116,8 +124,10 @@ void MainWindow::mouseReleaseEvent(QMouseEvent* ){
 void MainWindow::request_resize(){
     ctrl->set_option("width",  QString::number(toPx(this->width())));
     ctrl->set_option("height", QString::number(toPx(this->height())));
-    this->storeWindowPosition();
+
     this->updateSboxHeight(0);
+    if(resizing)
+        this->storeWindowPosition();
 
     resizing = false;
 }

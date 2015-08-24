@@ -9,7 +9,7 @@
 #define MAKE_EDITABLE "QComboBox { combobox-popup: 0; }"
 
 std::vector<double> dpis = {0.5, 0.625, 0.75, 0.875, 1.0, 1.12, 1.25, 1.38, 1.5};
-std::vector<int> lpos = {166, 177, 199, 214, 246, 255, 269, 290, 312};
+std::vector<int> lpos = {151, 162, 183, 199, 231, 240, 254, 275, 297};
 std::vector<int> font_sizes = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24,
                                26, 28, 32, 36, 40, 44, 48, 54, 60, 66, 72, 80, 88, 96};
 
@@ -106,6 +106,10 @@ void SettingsWindow::setFontFamily(const QString &s){
     w->setFont(s, w->getFont()[1]);
 }
 
+void SettingsWindow::changeResizeMargin(const QString &s){
+    w->setResizeMargin(s.toInt());
+}
+
 void SettingsWindow::updateBtnState(){
     ui->fullWindowBtn->setText(w->in_fullscreen() ? "Go Fullscreen Mode" : "Go Window Mode");
 }
@@ -149,9 +153,11 @@ void SettingsWindow::inits(){
 
     int dist = std::distance(dpis.begin(), std::find(dpis.begin(), dpis.end(), w->curDpi()));
 
-    QStringList values;
+    QStringList values, resize_margins;
     for(int size : font_sizes)
         values << QString::number(size);
+    for(int i = 0; i <= 30; i++)
+        resize_margins << QString::number(i);
 
     if(w->iconOnLeft())
         ui->iconLeftRadioButton->setChecked(true);
@@ -175,6 +181,9 @@ void SettingsWindow::inits(){
     ui->fontSizeCombo->setCurrentText(w->getFont()[1]);
     ui->fontSizeCombo->setStyleSheet(MAKE_EDITABLE);
     ui->fontFamilyCombo->setStyleSheet(MAKE_EDITABLE);
+    ui->resizePxCombo->setStyleSheet(MAKE_EDITABLE);
+    ui->resizePxCombo->addItems(resize_margins);
+    ui->resizePxCombo->setCurrentText(QString::number(w->getResizeMargin()));
     ui->fontFamilyCombo->setCurrentText(w->getFont()[0]);
     ui->fontColorBtn->setStyleSheet(btn_style(w->getFont()[2], false).c_str());
     ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
@@ -187,6 +196,7 @@ void SettingsWindow::inits(){
     connect(ui->borderWidthSlider, SIGNAL(valueChanged(int)), this, SLOT(changeBorderWidth(int )));
     connect(ui->fontSizeCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(setFontSize(const QString&)));
     connect(ui->fontFamilyCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(setFontFamily(const QString&)));
+    connect(ui->resizePxCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(changeResizeMargin(const QString&)));
     connect(ui->fullWindowBtn, SIGNAL(clicked()), this, SLOT(changeWindowMode()));
     connect(ui->randomBackColor, SIGNAL(clicked()), this, SLOT(setRandomColor()));
     connect(ui->backColorBtn, SIGNAL(clicked()), this, SLOT(changeBackgroundColor()));

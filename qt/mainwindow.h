@@ -53,8 +53,10 @@ class MainWindow : public QMainWindow{
         void changeIconPos(bool );
         void setSboxBorderWidth(int );
         void updateIcon(QString, QString );
+        void setResizeMargin(int );
         bool in_fullscreen();
         double curDpi();
+        int getResizeMargin();
         int getBackgroundAlpha();
         int sboxBorderWidth();
         int shadowScale();

@@ -25,6 +25,7 @@ class SettingsWindow : public QMainWindow{
     public slots:
         void setFontSize(const QString& );
         void setFontFamily(const QString& );
+        void changeResizeMargin(const QString& );
         void changeBackgroundColor();
         void changeBorderRadius(int );
         void changeBorderColor();
