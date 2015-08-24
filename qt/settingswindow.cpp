@@ -55,7 +55,7 @@ void SettingsWindow::changeBackgroundColor(){
         return;
 
     w->setBackgroundColor(c, false);
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->isShadowVisible()).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
 }
 
 void SettingsWindow::changeBorderColor(){
@@ -107,30 +107,17 @@ void SettingsWindow::setFontFamily(const QString &s){
 }
 
 void SettingsWindow::updateBtnState(){
-    bool in_full = w->in_fullscreen();
-    ui->fullWindowBtn->setText(in_full ? "Go Fullscreen Mode" : "Go Window Mode");
-
-    if(in_full)
-        ui->shadowBtn->setDisabled(false);
-    else
-        ui->shadowBtn->setDisabled(true);
+    ui->fullWindowBtn->setText(w->in_fullscreen() ? "Go Fullscreen Mode" : "Go Window Mode");
 }
 
 void SettingsWindow::centerWindow(){
     w->center_window();
 }
 
-void SettingsWindow::changeShadowMode(){
-    ui->shadowBtn->setText(w->isShadowVisible() ? "Enable Shadow" : "Disable Shadow");
-    w->setShadow(QColor(0, 0, 0, w->isShadowVisible() ? 0 : 255), 3, 15, !w->in_fullscreen());
-
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->isShadowVisible()).c_str());
-}
-
 void SettingsWindow::setRandomColor(){
     w->setBackgroundColor(QColor(), true);
 
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->isShadowVisible()).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
 }
 
 void SettingsWindow::changeWindowMode(){
@@ -141,6 +128,20 @@ void SettingsWindow::changeWindowMode(){
         w->goWindowMode();
     else
         w->goFullScreenMode();
+}
+
+void SettingsWindow::changeBlurRadius(int new_value){
+    w->setShadow(QColor(0,0,0, w->shadowAlpha()), w->shadowScale(), new_value, w->in_fullscreen());
+}
+
+void SettingsWindow::changeShadowAlpha(int new_value){
+    w->setShadow(QColor(0,0,0, new_value), w->shadowScale(), w->shadowBlurRadius(), w->in_fullscreen());
+
+    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
+}
+
+void SettingsWindow::changeShadowScale(int new_value){
+    w->setShadow(QColor(0,0,0, w->shadowAlpha()), new_value, w->shadowBlurRadius(), w->in_fullscreen());
 }
 
 void SettingsWindow::inits(){
@@ -165,16 +166,18 @@ void SettingsWindow::inits(){
     ui->dpiSlider->setValue(dist);
     ui->dpiNumberLabel->move(QPoint(lpos[dist],ui->dpiNumberLabel->y()));
     ui->dpiNumberLabel->setText(QString::number(w->curDpi()));
+    ui->shadowBlurSlider->setValue(w->shadowBlurRadius());
+    ui->shadowAlphaSlider->setValue(w->shadowAlpha());
+    ui->shadowScaleSlider->setValue(w->shadowScale());
     ui->borderRadiusSlider->setValue(w->getBorderRadius());
     ui->fullWindowBtn->setText(w->in_fullscreen() ? "Go Window Mode" : "Go Fullscreen Mode");
-    ui->shadowBtn->setText(w->isShadowVisible() ? "Disable Shadow" : "Enable Shadow");
     ui->fontSizeCombo->addItems(values);
     ui->fontSizeCombo->setCurrentText(w->getFont()[1]);
     ui->fontSizeCombo->setStyleSheet(MAKE_EDITABLE);
     ui->fontFamilyCombo->setStyleSheet(MAKE_EDITABLE);
     ui->fontFamilyCombo->setCurrentText(w->getFont()[0]);
     ui->fontColorBtn->setStyleSheet(btn_style(w->getFont()[2], false).c_str());
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->isShadowVisible()).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
     ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false).c_str());
     ui->borderWidthSlider->setValue(w->sboxBorderWidth());
 
@@ -185,11 +188,13 @@ void SettingsWindow::inits(){
     connect(ui->fontSizeCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(setFontSize(const QString&)));
     connect(ui->fontFamilyCombo, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(setFontFamily(const QString&)));
     connect(ui->fullWindowBtn, SIGNAL(clicked()), this, SLOT(changeWindowMode()));
-    connect(ui->shadowBtn, SIGNAL(clicked()), this, SLOT(changeShadowMode()));
     connect(ui->randomBackColor, SIGNAL(clicked()), this, SLOT(setRandomColor()));
     connect(ui->backColorBtn, SIGNAL(clicked()), this, SLOT(changeBackgroundColor()));
     connect(ui->fontColorBtn, SIGNAL(clicked()), this, SLOT(changeTextColor()));
     connect(ui->dpiSlider, SIGNAL(valueChanged(int)), this, SLOT(requestDpiChange(int )));
     connect(ui->centerBtn, SIGNAL(clicked()), this, SLOT(centerWindow()));
     connect(ui->borderColorBtn, SIGNAL(clicked()), this, SLOT(changeBorderColor()));
+    connect(ui->shadowAlphaSlider, SIGNAL(valueChanged(int)), this, SLOT(changeShadowAlpha(int )));
+    connect(ui->shadowBlurSlider, SIGNAL(valueChanged(int)), this, SLOT(changeBlurRadius(int )));
+    connect(ui->shadowScaleSlider, SIGNAL(valueChanged(int)), this, SLOT(changeShadowScale(int )));
 }

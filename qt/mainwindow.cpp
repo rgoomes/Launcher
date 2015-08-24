@@ -174,8 +174,16 @@ void MainWindow::setSboxBorderWidth(int width){
     changeIconPos(true);
 }
 
-bool MainWindow::isShadowVisible(){
+int MainWindow::shadowAlpha(){
     return ctrl->get_option("shadow-alpha").toInt();
+}
+
+int MainWindow::shadowScale(){
+    return ctrl->get_option("shadow-scale").toInt();
+}
+
+int MainWindow::shadowBlurRadius(){
+    return ctrl->get_option("shadow-blur-radius").toInt();
 }
 
 void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool fullscreen_on){
@@ -186,7 +194,7 @@ void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool fullscreen
     shadow->setBlurRadius(blur_radius);
     ui->frame->setGraphicsEffect(shadow);
 
-    if(fullscreen_on){
+    if(!fullscreen_on){
         ctrl->set_option("shadow-scale", QString::number(scale));
         ctrl->set_option("shadow-alpha", QString::number(c.alpha()));
         ctrl->set_option("shadow-blur-radius", QString::number(blur_radius));
@@ -214,7 +222,7 @@ bool MainWindow::in_fullscreen(){
 
 void MainWindow::goFullScreenMode(){
     setBorderRadius(0, true);
-    setShadow(QColor(0,0,0,0), 0, 0, false);
+    setShadow(QColor(0,0,0,0), 0, 0, true);
     if(settingsOpened) settingsWindow->updateBtnState();
 
     ui->centralWidget->layout()->setContentsMargins(0, 0, 0, 0);
@@ -229,7 +237,7 @@ void MainWindow::goWindowMode(){
     if(settingsOpened) settingsWindow->updateBtnState();
     setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
               ctrl->get_option("shadow-scale").toInt(),
-              ctrl->get_option("shadow-blur-radius").toInt(), true);
+              ctrl->get_option("shadow-blur-radius").toInt(), false);
 
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
     ui->frameLayout->layout()->setContentsMargins(0, 0, 0, 0);

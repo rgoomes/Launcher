@@ -54,11 +54,13 @@ class MainWindow : public QMainWindow{
         void setSboxBorderWidth(int );
         void updateIcon(QString, QString );
         bool in_fullscreen();
-        bool isShadowVisible();
         double curDpi();
         int getBackgroundAlpha();
         int sboxBorderWidth();
+        int shadowScale();
+        int shadowBlurRadius();
         int getBorderRadius();
+        int shadowAlpha();
         int iconOnLeft();
         int toDpi(QString );
         int toPx(int );

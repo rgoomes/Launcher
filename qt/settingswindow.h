@@ -30,8 +30,10 @@ class SettingsWindow : public QMainWindow{
         void changeBorderColor();
         void changeBorderWidth(int );
         void changeIconTheme(bool );
+        void changeShadowAlpha(int);
+        void changeBlurRadius(int );
+        void changeShadowScale(int );
         void changeWindowMode();
-        void changeShadowMode();
         void changeTextColor();
         void requestDpiChange(int );
         void centerWindow();
