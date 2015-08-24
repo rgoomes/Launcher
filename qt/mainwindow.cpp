@@ -420,6 +420,14 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
     return false;
 }
 
+bool MainWindow::hideOnApp(){
+    return ctrl->get_option("hide-on-app").toInt();
+}
+
+void MainWindow::setHideOnApp(int state){
+    ctrl->set_option("hide-on-app", QString::number(state));
+}
+
 void MainWindow::signals_handler(){
     #ifdef SIGNALS
         std::vector<int> quit_signals = {SIGINT, SIGQUIT, SIGTERM};

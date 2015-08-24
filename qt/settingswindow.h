@@ -26,6 +26,7 @@ class SettingsWindow : public QMainWindow{
         void setFontSize(const QString& );
         void setFontFamily(const QString& );
         void changeResizeMargin(const QString& );
+        void changeHideOnAppState(bool );
         void changeBackgroundColor();
         void changeBorderRadius(int );
         void changeBorderColor();
@@ -40,6 +41,7 @@ class SettingsWindow : public QMainWindow{
         void centerWindow();
         void setRandomColor();
         void onRadioBtnToggled(bool );
+        void showLauncher();
 
     private:
         Ui::SettingsWindow *ui;

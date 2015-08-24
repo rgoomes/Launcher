@@ -54,7 +54,9 @@ class MainWindow : public QMainWindow{
         void setSboxBorderWidth(int );
         void updateIcon(QString, QString );
         void setResizeMargin(int );
+        void setHideOnApp(int );
         bool in_fullscreen();
+        bool hideOnApp();
         double curDpi();
         int getResizeMargin();
         int getBackgroundAlpha();

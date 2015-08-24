@@ -148,6 +148,15 @@ void SettingsWindow::changeShadowScale(int new_value){
     w->setShadow(QColor(0,0,0, w->shadowAlpha()), new_value, w->shadowBlurRadius(), w->in_fullscreen());
 }
 
+void SettingsWindow::changeHideOnAppState(bool state){
+    w->setHideOnApp(state);
+}
+
+void SettingsWindow::showLauncher(){
+    if(!w->isVisible())
+        w->show();
+}
+
 void SettingsWindow::inits(){
     this->setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 
@@ -189,6 +198,7 @@ void SettingsWindow::inits(){
     ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
     ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false).c_str());
     ui->borderWidthSlider->setValue(w->sboxBorderWidth());
+    ui->hideOnAppCheck->setChecked(w->hideOnApp());
 
     connect(ui->lightRadio,  SIGNAL(toggled(bool)), this, SLOT(changeIconTheme(bool)));
     connect(ui->iconLeftRadioButton,  SIGNAL(toggled(bool)), this, SLOT(onRadioBtnToggled(bool)));
@@ -207,4 +217,7 @@ void SettingsWindow::inits(){
     connect(ui->shadowAlphaSlider, SIGNAL(valueChanged(int)), this, SLOT(changeShadowAlpha(int )));
     connect(ui->shadowBlurSlider, SIGNAL(valueChanged(int)), this, SLOT(changeBlurRadius(int )));
     connect(ui->shadowScaleSlider, SIGNAL(valueChanged(int)), this, SLOT(changeShadowScale(int )));
+    connect(ui->hideOnAppCheck, SIGNAL(clicked(bool)), this, SLOT(changeHideOnAppState(bool )));
+    connect(ui->showLauncherBtn, SIGNAL(clicked(bool)), this, SLOT(showLauncher()));
+
 }
