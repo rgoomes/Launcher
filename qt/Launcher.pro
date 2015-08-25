@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     settingswindow.cpp \
     stylecontainer.cpp \
     job.cpp \
-    atomicbool.cpp
+    atomicbool.cpp \
+    resultwidget.cpp
 
 HEADERS  += mainwindow.h \
     stylesheet.h \
@@ -35,10 +36,12 @@ HEADERS  += mainwindow.h \
     settingswindow.h \
     stylecontainer.hpp \
     job.h \
-    atomicbool.h
+    atomicbool.h \
+    resultwidget.h
 
 FORMS    += mainwindow.ui \
-    settingswindow.ui
+    settingswindow.ui \
+    resultwidget.ui
 
 QMAKE_CXXFLAGS += -std=c++11
 

@@ -16,6 +16,7 @@ void Worker::process() {
     qDebug("Hello Thread!");
     while(true){
         hasWork->remove();
+        reset->set(false);
         results->clear();
         qDebug() << "Working";
         search();
@@ -28,15 +29,19 @@ void Worker::search(){
     qDebug() << "Start Work";
     for(int depth=0; depth<10; depth++){
         dfs(depth, &dir);
+        if(reset->get())
+            break;
     }
-    qDebug() << "End Work\nResults:";
-    for(QString s : *results)
-        qDebug() << s;
+    qDebug() << "End Work\n";
+    if(!reset->get()){
+        qDebug() << "Results:";
+        for(QString s : *results)
+            qDebug() << s;
+    }
 }
 
 void Worker::dfs(int depth, QDir *cur){
     if(reset->get()){
-        reset->set(false);
         qDebug() << "Stop Work";
         return;
     }

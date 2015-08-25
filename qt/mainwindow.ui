@@ -124,15 +124,10 @@ background-color: rgba(255, 255, 255, 1);</string>
                 </item>
                </layout>
               </widget>
-              <zorder>widget_2</zorder>
-              <zorder>horizontalLayoutWidget</zorder>
              </widget>
             </item>
             <item>
-             <widget class="QWidget" name="widget_2" native="true">
-              <zorder>widget</zorder>
-              <zorder>widget</zorder>
-             </widget>
+             <widget class="ResultWidget" name="widget_2" native="true"/>
             </item>
            </layout>
           </widget>
@@ -146,6 +141,14 @@ background-color: rgba(255, 255, 255, 1);</string>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ResultWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">resultwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
