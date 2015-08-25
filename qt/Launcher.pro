@@ -43,6 +43,6 @@ FORMS    += mainwindow.ui \
     settingswindow.ui \
     resultwidget.ui
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 -g
 
 QMAKE_CFLAGS_RELEASE = -O3 -march=native

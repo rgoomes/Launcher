@@ -35,8 +35,10 @@ void Worker::search(){
     qDebug() << "End Work\n";
     if(!reset->get()){
         qDebug() << "Results:";
+        resultsLock.lock();
         for(QString s : *results)
             qDebug() << s;
+        resultsLock.unlock();
     }
 }
 
@@ -66,6 +68,7 @@ void Worker::dfs(int depth, QDir *cur){
 
 void Worker::removeUnmatched(){
     qDebug() << "key:" << this->key;
+    resultsLock.lock();
     for(int i = 0; i < results->size(); ){
         if( !results->at(i).toLower().contains(this->key) ){
             results->removeAt(i);
@@ -73,6 +76,7 @@ void Worker::removeUnmatched(){
             i++;
         }
     }
+    resultsLock.unlock();
     qDebug() << "New size" << results->size();
 }
 

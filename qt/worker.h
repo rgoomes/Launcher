@@ -7,6 +7,7 @@
 #include <QString>
 #include <QSemaphore>
 #include <QDebug>
+#include <QtConcurrent/QtConcurrent>
 #include "job.h"
 #include "atomicbool.h"
 
@@ -23,6 +24,8 @@ private:
     QList<QString>* results;
     AtomicBool *reset;
     Job *hasWork;
+    QMutex resultsLock;
+
     void search();
     void dfs(int, QDir*);
     void removeUnmatched();
