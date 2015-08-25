@@ -86,7 +86,7 @@ void Worker::updateWork(QString k){
         this->key = "";
 
         reset->set(true);
-    }else if(k.startsWith(this->key)){
+    }else if(k.contains(this->key)){
         QString curkey = this->key;
         this->key = k;
         removeUnmatched();
