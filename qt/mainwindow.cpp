@@ -196,15 +196,17 @@ int MainWindow::shadowBlurRadius(){
     return ctrl->get_option("shadow-blur-radius").toInt();
 }
 
-void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool fullscreen_on){
-    ShadowEffect* shadow = new ShadowEffect();
+void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool going_fullscreen){
+    if(!in_fullscreen()){
+        ShadowEffect* shadow = new ShadowEffect();
 
-    shadow->setColor(c);
-    shadow->setDistance(scale);
-    shadow->setBlurRadius(blur_radius);
-    ui->frame->setGraphicsEffect(shadow);
+        shadow->setColor(c);
+        shadow->setDistance(scale);
+        shadow->setBlurRadius(blur_radius);
+        ui->frame->setGraphicsEffect(shadow);
+    }
 
-    if(!fullscreen_on){
+    if(!going_fullscreen){
         ctrl->set_option("shadow-scale", QString::number(scale));
         ctrl->set_option("shadow-alpha", QString::number(c.alpha()));
         ctrl->set_option("shadow-blur-radius", QString::number(blur_radius));
@@ -226,8 +228,18 @@ void MainWindow::setBorderRadius(int r, bool going_fullscreen){
 }
 
 bool MainWindow::in_fullscreen(){
-    return (windowState() == Qt::WindowFullScreen)
-         | (ctrl->get_option("fullscreen").toInt()); // SANITY TEST
+    return windowState() == Qt::WindowFullScreen;
+
+        /*
+         * COMMENTING THIS LINE FIXES BORDER RADIUS NOT BEING PROPERLY SET
+         * ON STARTUP WHEN THE STORED WINDOW STATE IS FULLSCREEN
+         *
+         * NOT SURE IF THIS BREAKS SOMETHING, SO A REGRESSION TEST IS NEEDED,
+         * BECAUSE QT FUNCTION windowState() ISN'T RELIABLE SOMETIMES
+         *
+         */
+
+        // | (ctrl->get_option("fullscreen").toInt()); // SANITY TEST
 }
 
 void MainWindow::goFullScreenMode(){
@@ -245,9 +257,6 @@ void MainWindow::goFullScreenMode(){
 
 void MainWindow::goWindowMode(){
     if(settingsOpened) settingsWindow->updateBtnState();
-    setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
-              ctrl->get_option("shadow-scale").toInt(),
-              ctrl->get_option("shadow-blur-radius").toInt(), false);
 
     ui->centralWidget->layout()->setContentsMargins(5, 5, 5, 5);
     ui->frameLayout->layout()->setContentsMargins(0, 0, 0, 0);
@@ -255,6 +264,9 @@ void MainWindow::goWindowMode(){
     this->showNormal();
 
     setBorderRadius(getBorderRadius(), false);
+    setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
+              ctrl->get_option("shadow-scale").toInt(),
+              ctrl->get_option("shadow-blur-radius").toInt(), false);
 
     // CHANGING DPI'S IN FULLSCREEN WILL NOT AFFECT MANY THINGS LIKE WINDOW SIZE
     // BECAUSE WE'RE IN FULLSCREEN, SO WHEN WE CHANGE THE WINDOW STATE TO WINDOW

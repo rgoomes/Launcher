@@ -125,27 +125,26 @@ void SettingsWindow::setRandomColor(){
 }
 
 void SettingsWindow::changeWindowMode(){
-    bool in_full = w->in_fullscreen();
     updateBtnState();
 
-    if(in_full)
+    if(w->in_fullscreen())
         w->goWindowMode();
     else
         w->goFullScreenMode();
 }
 
 void SettingsWindow::changeBlurRadius(int new_value){
-    w->setShadow(QColor(0,0,0, w->shadowAlpha()), w->shadowScale(), new_value, w->in_fullscreen());
+    w->setShadow(QColor(0,0,0, w->shadowAlpha()), w->shadowScale(), new_value, false);
 }
 
 void SettingsWindow::changeShadowAlpha(int new_value){
-    w->setShadow(QColor(0,0,0, new_value), w->shadowScale(), w->shadowBlurRadius(), w->in_fullscreen());
+    w->setShadow(QColor(0,0,0, new_value), w->shadowScale(), w->shadowBlurRadius(), false);
 
     ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
 }
 
 void SettingsWindow::changeShadowScale(int new_value){
-    w->setShadow(QColor(0,0,0, w->shadowAlpha()), new_value, w->shadowBlurRadius(), w->in_fullscreen());
+    w->setShadow(QColor(0,0,0, w->shadowAlpha()), new_value, w->shadowBlurRadius(), false);
 }
 
 void SettingsWindow::changeHideOnAppState(bool state){
