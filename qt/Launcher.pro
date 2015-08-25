@@ -21,7 +21,9 @@ SOURCES += main.cpp\
     worker.cpp \
     NcFramelessHelper.cpp \
     settingswindow.cpp \
-    stylecontainer.cpp
+    stylecontainer.cpp \
+    job.cpp \
+    atomicbool.cpp
 
 HEADERS  += mainwindow.h \
     stylesheet.h \
@@ -31,7 +33,9 @@ HEADERS  += mainwindow.h \
     worker.h \
     NcFramelessHelper.h \
     settingswindow.h \
-    stylecontainer.hpp
+    stylecontainer.hpp \
+    job.h \
+    atomicbool.h
 
 FORMS    += mainwindow.ui \
     settingswindow.ui

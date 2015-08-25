@@ -7,6 +7,8 @@
 #include <QString>
 #include <QSemaphore>
 #include <QDebug>
+#include "job.h"
+#include "atomicbool.h"
 
 class Worker : public QObject
 {
@@ -19,8 +21,8 @@ public:
 private:
     QString key;
     QList<QString>* results;
-    bool working = false;
-    QSemaphore *hasWork;
+    AtomicBool *reset;
+    Job *hasWork;
     void search();
     void dfs(int, QDir*);
     void removeUnmatched();

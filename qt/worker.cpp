@@ -1,9 +1,10 @@
 #include "worker.h"
 
-Worker::Worker() : QObject(){
+Worker::Worker(){
     // TODO
     results = new QList<QString>();
-    hasWork = new QSemaphore(0);
+    hasWork = new Job();
+    reset = new AtomicBool(false);
 }
 
 Worker::~Worker() {
@@ -14,10 +15,10 @@ Worker::~Worker() {
 void Worker::process() {
     qDebug("Hello Thread!");
     while(true){
-        hasWork->acquire();
-        working = true;
+        hasWork->remove();
+        results->clear();
+        qDebug() << "Working";
         search();
-        working = false;
 
     }
 }
@@ -28,20 +29,28 @@ void Worker::search(){
     for(int depth=0; depth<10; depth++){
         dfs(depth, &dir);
     }
-    qDebug() << "End Work";
+    qDebug() << "End Work\nResults:";
     for(QString s : *results)
         qDebug() << s;
 }
 
 void Worker::dfs(int depth, QDir *cur){
+    if(reset->get()){
+        reset->set(false);
+        qDebug() << "Stop Work";
+        return;
+    }
     if(depth <= 0)
         return;
     if (cur->dirName().startsWith("."))
         return;
     QStringList files = cur->entryList(QDir::Files);
-    for(QString f : files){
-        if (f.contains(key))
-            results->append(f);
+    if(depth == 1){
+        for(QString f : files){
+            if (f.toLower().contains(key)){
+                results->append(f);
+            }
+        }
     }
     QStringList dirs = cur->entryList(QDir::Dirs);
     for(QString d : dirs){
@@ -51,22 +60,42 @@ void Worker::dfs(int depth, QDir *cur){
 }
 
 void Worker::removeUnmatched(){
+    qDebug() << "key:" << this->key;
     for(int i = 0; i < results->size(); ){
-        if( !results[i].contains(this->key) )
+        if( !results->at(i).toLower().contains(this->key) ){
             results->removeAt(i);
-        else
+        }else{
             i++;
+        }
     }
+    qDebug() << "New size" << results->size();
 }
 
 void Worker::updateWork(QString k){
-    if(k.startsWith(this->key)){
+    qDebug() << k << k.isEmpty();
+    k = k.toLower();
+
+    if(k.isEmpty()){
+        qDebug() << "Stop Work";
+        results->clear();
+        this->key = "";
+
+        reset->set(true);
+    }else if(k.startsWith(this->key)){
+        QString curkey = this->key;
         this->key = k;
         removeUnmatched();
+
+        qDebug() << "continuing";
+        if(curkey.isEmpty())
+            hasWork->add();
     }else{
+        qDebug() << "restarting";
         results->clear();
         this->key = k;
-        hasWork->release();
+
+        reset->set(true);
+        hasWork->add();
     }
 
 }
