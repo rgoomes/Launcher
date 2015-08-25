@@ -82,7 +82,6 @@ void Worker::updateWork(QString k){
 
     if(k.isEmpty()){
         qDebug() << "Stop Work";
-        results->clear();
         this->key = "";
 
         reset->set(true);
@@ -96,7 +95,6 @@ void Worker::updateWork(QString k){
             hasWork->add();
     }else{
         qDebug() << "restarting";
-        results->clear();
         this->key = k;
 
         reset->set(true);

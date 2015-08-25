@@ -75,6 +75,9 @@ background-color: rgba(255, 255, 255, 1);</string>
           <widget class="QFrame" name="results">
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
+             <widget class="ResultWidget" name="widget_2" native="true"/>
+            </item>
+            <item>
              <widget class="QWidget" name="widget" native="true">
               <property name="minimumSize">
                <size>
@@ -125,9 +128,6 @@ background-color: rgba(255, 255, 255, 1);</string>
                </layout>
               </widget>
              </widget>
-            </item>
-            <item>
-             <widget class="ResultWidget" name="widget_2" native="true"/>
             </item>
            </layout>
           </widget>
