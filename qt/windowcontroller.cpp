@@ -28,6 +28,9 @@ QMap <QString, QString > getDefaultOptions(){
     default_options["icon-theme"] = "light";
     default_options["resize-margin"] = "0";
     default_options["hide-on-app"] = "1";
+    default_options["search-type"] = "standard";
+    default_options["search-time"] = "0";
+    default_options["max-results"] = "0";
 
     return default_options;
 }

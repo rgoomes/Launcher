@@ -1,19 +1,15 @@
 #include "worker.h"
 
+#define MAX_DEPTH 128
+
+Worker::~Worker(){}
 Worker::Worker(){
-    // TODO
     results = new QList<QString>();
     hasWork = new Job();
     reset = new AtomicBool(false);
 }
 
-Worker::~Worker() {
-    // TODO
-}
-
-// Start.
 void Worker::process() {
-    qDebug("Hello Thread!");
     while(true){
         hasWork->remove();
         reset->set(false);
@@ -28,43 +24,47 @@ void Worker::process() {
 
 void Worker::search(){
     QDir dir = QDir::home();
-    try{
-        for(int depth=0; depth<10; depth++){
+    for(int depth=0; depth < MAX_DEPTH; depth++){
+        try{
             dfs(depth, &dir);
-            if(reset->get())
-                break;
+        } catch(Interrupt &){
+            break;
         }
-    }catch(Interrupt itr){
+
+        if(reset->get())
+            break;
     }
 
     if(!reset->get()){
-        qDebug() << "Got Results";
+        qDebug() << "Got Results" << results->size();
+
         /*resultsLock.lock();
         for(QString s : *results)
             qDebug() << s;
         resultsLock.unlock();*/
     }
-
 }
 
 void Worker::dfs(int depth, QDir *cur) throw(Interrupt){
-    if(reset->get()){
+    if(reset->get())
         throw Interrupt();
-    }
+    if(searchTime > 0 && duration_cast<milliseconds>(high_resolution_clock::now() - t).count() > searchTime)
+        throw Interrupt();
+
     if(depth <= 0)
         return;
-    if (cur->dirName().startsWith("."))
+    if(cur->dirName().startsWith("."))
         return;
     if(depth == 1){
         QStringList files = cur->entryList(QDir::Files);
         resultsLock.lock();
         for(QString f : files){
-            if (f.toLower().contains(key)){
+            if (f.toLower().contains(key))
                 results->append(f);
-            }
         }
         resultsLock.unlock();
     }
+
     QStringList dirs = cur->entryList(QDir::Dirs);
     for(QString d : dirs){
         QDir *ndir = new QDir(cur->absolutePath() + "/" + d);
@@ -85,8 +85,12 @@ void Worker::removeUnmatched(){
     resultsLock.unlock();
 }
 
-void Worker::updateWork(QString k){
+void Worker::updateWork(QString k, int searchTime, int maxResults){
     k = k.toLower();
+
+    this->maxResults = maxResults;
+    this->searchTime = searchTime;
+    t = high_resolution_clock::now();
 
     if(k.isEmpty()){
         this->key = "";

@@ -55,10 +55,15 @@ class MainWindow : public QMainWindow{
         void setSboxBorderWidth(int );
         void updateIcon(QString, QString );
         void setResizeMargin(int );
+        void setSearchTime(int );
+        void setSearchType(QString );
         void setHideOnApp(int );
+        void setMaxResults(int );
         bool in_fullscreen();
         bool hideOnApp();
         double curDpi();
+        int getMaxResults();
+        int getSearchTime();
         int getResizeMargin();
         int getBackgroundAlpha();
         int sboxBorderWidth();
@@ -74,6 +79,7 @@ class MainWindow : public QMainWindow{
         void signals_handler();
         void update();
         vector<QString> getFont();
+        QString getSearchType();
         QString getBackgroundColor();
         QString getSboxBorderColor();
         QString getIconTheme();

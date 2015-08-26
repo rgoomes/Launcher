@@ -35,12 +35,15 @@ class SettingsWindow : public QMainWindow{
         void changeShadowAlpha(int);
         void changeBlurRadius(int );
         void changeShadowScale(int );
+        void changeSearchTime(int );
+        void changeMaxResults(int );
         void changeWindowMode();
         void changeTextColor();
         void requestDpiChange(int );
         void centerWindow();
         void setRandomColor();
         void onRadioBtnToggled(bool );
+        void onSearchTypeChanged(bool );
         void showLauncher();
 
     private:

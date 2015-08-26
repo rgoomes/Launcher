@@ -12,6 +12,10 @@
 #include "job.h"
 #include "atomicbool.h"
 
+#include <chrono>
+
+using namespace std::chrono;
+
 class Interrupt{
 public:
     Interrupt(){
@@ -24,7 +28,7 @@ class Worker : public QObject
 public:
     Worker();
     ~Worker();
-    void updateWork(QString);
+    void updateWork(QString, int, int);
 
 private:
     QString key;
@@ -32,6 +36,9 @@ private:
     AtomicBool *reset;
     Job *hasWork;
     QMutex resultsLock;
+
+    int maxResults, searchTime;
+    high_resolution_clock::time_point t;
 
     void search();
     void dfs(int, QDir*) throw(Interrupt);

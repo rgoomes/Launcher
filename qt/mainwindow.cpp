@@ -307,8 +307,9 @@ void MainWindow::text_changed(QString text){
     updateIcon(text, getIconTheme());
 
     qDebug() << text;
-    worker->updateWork(text);
 
+    if(!getSearchType().compare("standard"))
+        worker->updateWork(text, this->getSearchTime() * 1000, this->getMaxResults());
 }
 
 void MainWindow::change_dpi(double new_dpi, bool fullscreen_on){
@@ -388,6 +389,30 @@ void MainWindow::updateSboxHeight(double diff){
     ctrl->set_option("search-height", QString::number(height));
 
     changeIconPos(true);
+}
+
+int MainWindow::getMaxResults(){
+    return ctrl->get_option("max-results").toInt();
+}
+
+void MainWindow::setMaxResults(int results){
+    ctrl->set_option("max-results", QString::number(results));
+}
+
+int MainWindow::getSearchTime(){
+    return ctrl->get_option("search-time").toInt();
+}
+
+void MainWindow::setSearchTime(int time){
+    ctrl->set_option("search-time", QString::number(time));
+}
+
+QString MainWindow::getSearchType(){
+    return ctrl->get_option("search-type");
+}
+
+void MainWindow::setSearchType(QString type){
+    ctrl->set_option("search-type", type);
 }
 
 void MainWindow::selection_changed(){

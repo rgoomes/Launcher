@@ -94,6 +94,10 @@ void SettingsWindow::onRadioBtnToggled(bool ){
     w->changeIconPos(false);
 }
 
+void SettingsWindow::onSearchTypeChanged(bool isDatabase){
+    w->setSearchType(isDatabase ? "database" : "standard");
+}
+
 void SettingsWindow::changeIconTheme(bool ){
     w->updateIcon(w->getSboxText(), w->getIconTheme().compare("light") ? "light" : "dark");
 }
@@ -156,6 +160,16 @@ void SettingsWindow::showLauncher(){
         w->show();
 }
 
+void SettingsWindow::changeSearchTime(int new_value){
+    w->setSearchTime(new_value);
+    ui->realTime->setText(new_value ? QString::number(new_value) + "s" : "Infinite");
+}
+
+void SettingsWindow::changeMaxResults(int new_value){
+    w->setMaxResults(new_value);
+    ui->resultsLabel->setText(new_value ? QString::number(new_value) : "Infinite");
+}
+
 void SettingsWindow::inits(){
     this->setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
 
@@ -177,7 +191,16 @@ void SettingsWindow::inits(){
     else
         ui->lightRadio->setChecked(true);
 
+    if(w->getSearchType().compare("standard"))
+        ui->databaseTypeRadio->setChecked(true);
+    else
+        ui->stdTypeRadio->setChecked(true);
+
     ui->dpiSlider->setValue(dist);
+    ui->timeSlider->setValue(w->getSearchTime());
+    ui->realTime->setText(w->getSearchTime() ? QString::number(w->getSearchTime()) + "s" : "Infinite");
+    ui->resultsSlider->setValue(w->getMaxResults());
+    ui->resultsLabel->setText(w->getMaxResults() ? QString::number(w->getMaxResults()) : "Infinite");
     ui->dpiNumberLabel->move(QPoint(lpos[dist],ui->dpiNumberLabel->y()));
     ui->dpiNumberLabel->setText(QString::number(w->curDpi()));
     ui->shadowBlurSlider->setValue(w->shadowBlurRadius());
@@ -200,6 +223,7 @@ void SettingsWindow::inits(){
     ui->hideOnAppCheck->setChecked(w->hideOnApp());
 
     connect(ui->lightRadio,  SIGNAL(toggled(bool)), this, SLOT(changeIconTheme(bool)));
+    connect(ui->databaseTypeRadio,  SIGNAL(toggled(bool)), this, SLOT(onSearchTypeChanged(bool)));
     connect(ui->iconLeftRadioButton,  SIGNAL(toggled(bool)), this, SLOT(onRadioBtnToggled(bool)));
     connect(ui->borderRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(changeBorderRadius(int )));
     connect(ui->borderWidthSlider, SIGNAL(valueChanged(int)), this, SLOT(changeBorderWidth(int )));
@@ -211,6 +235,8 @@ void SettingsWindow::inits(){
     connect(ui->backColorBtn, SIGNAL(clicked()), this, SLOT(changeBackgroundColor()));
     connect(ui->fontColorBtn, SIGNAL(clicked()), this, SLOT(changeTextColor()));
     connect(ui->dpiSlider, SIGNAL(valueChanged(int)), this, SLOT(requestDpiChange(int )));
+    connect(ui->timeSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSearchTime(int )));
+    connect(ui->resultsSlider, SIGNAL(valueChanged(int)), this, SLOT(changeMaxResults(int )));
     connect(ui->centerBtn, SIGNAL(clicked()), this, SLOT(centerWindow()));
     connect(ui->borderColorBtn, SIGNAL(clicked()), this, SLOT(changeBorderColor()));
     connect(ui->shadowAlphaSlider, SIGNAL(valueChanged(int)), this, SLOT(changeShadowAlpha(int )));
