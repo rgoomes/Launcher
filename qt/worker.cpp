@@ -67,6 +67,7 @@ void Worker::dfs(int depth, QDir *cur){
     for(QString d : dirs){
         QDir *ndir = new QDir(cur->absolutePath() + "/" + d);
         dfs(depth-1, ndir);
+        delete ndir;
     }
 }
 
