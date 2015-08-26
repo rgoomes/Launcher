@@ -8,6 +8,7 @@
 #include <QSemaphore>
 #include <QDebug>
 #include <QtConcurrent/QtConcurrent>
+#include <QMainWindow>
 #include "job.h"
 #include "atomicbool.h"
 

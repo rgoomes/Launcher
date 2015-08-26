@@ -12,7 +12,7 @@ class ResultWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ResultWidget(QWidget *parent = 0);
+    explicit ResultWidget(QWidget *parent = 0, QString name="");
     ~ResultWidget();
 
 private:

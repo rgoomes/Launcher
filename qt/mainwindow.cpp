@@ -19,6 +19,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     inits();
     setupWorker();
+
+    ui->results->layout()->addWidget(new ResultWidget(ui->results, "main.cpp"));
+    ui->results->layout()->addWidget(new ResultWidget(ui->results, "example.py"));
 }
 
 void MainWindow::setupWorker(){

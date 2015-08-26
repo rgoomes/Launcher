@@ -28,7 +28,6 @@ void Worker::process() {
 
 void Worker::search(){
     QDir dir = QDir::home();
-    qDebug() << "Start Work";
     try{
         for(int depth=0; depth<10; depth++){
             dfs(depth, &dir);
@@ -36,25 +35,21 @@ void Worker::search(){
                 break;
         }
     }catch(Interrupt itr){
-        qDebug() << "STOP WORK";
     }
 
     if(!reset->get()){
-        qDebug() << "Results:";
-        resultsLock.lock();
+        qDebug() << "Got Results";
+        /*resultsLock.lock();
         for(QString s : *results)
             qDebug() << s;
-        resultsLock.unlock();
+        resultsLock.unlock();*/
     }
 
-    qDebug() << "End Work\n";
 }
 
 void Worker::dfs(int depth, QDir *cur) throw(Interrupt){
     if(reset->get()){
-        qDebug() << "Stop Work";
         throw Interrupt();
-        return;
     }
     if(depth <= 0)
         return;
@@ -79,7 +74,6 @@ void Worker::dfs(int depth, QDir *cur) throw(Interrupt){
 }
 
 void Worker::removeUnmatched(){
-    qDebug() << "key:" << this->key;
     resultsLock.lock();
     for(int i = 0; i < results->size(); ){
         if( !results->at(i).toLower().contains(this->key) ){
@@ -89,15 +83,12 @@ void Worker::removeUnmatched(){
         }
     }
     resultsLock.unlock();
-    qDebug() << "New size" << results->size();
 }
 
 void Worker::updateWork(QString k){
-    qDebug() << k << k.isEmpty();
     k = k.toLower();
 
     if(k.isEmpty()){
-        qDebug() << "Stop Work";
         this->key = "";
 
         reset->set(true);
@@ -106,11 +97,9 @@ void Worker::updateWork(QString k){
         this->key = k;
         removeUnmatched();
 
-        qDebug() << "continuing";
         if(curkey.isEmpty())
             hasWork->add();
     }else{
-        qDebug() << "restarting";
         this->key = k;
 
         reset->set(true);
