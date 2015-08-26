@@ -17,7 +17,9 @@ void Worker::process() {
     while(true){
         hasWork->remove();
         reset->set(false);
+        resultsLock.lock();
         results->clear();
+        resultsLock.unlock();
         qDebug() << "Working";
         search();
 
@@ -53,11 +55,13 @@ void Worker::dfs(int depth, QDir *cur){
         return;
     QStringList files = cur->entryList(QDir::Files);
     if(depth == 1){
+        resultsLock.lock();
         for(QString f : files){
             if (f.toLower().contains(key)){
                 results->append(f);
             }
         }
+        resultsLock.unlock();
     }
     QStringList dirs = cur->entryList(QDir::Dirs);
     for(QString d : dirs){
