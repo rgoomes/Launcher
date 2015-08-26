@@ -15,7 +15,7 @@ class Style {
         ~Style();
 
     public:
-        void load_user_preferences(string );
+        void load_styles(string );
         void set_style(QString , QString );
         QString stylesheet(QString );
         QString get_style(QString );

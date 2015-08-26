@@ -13,7 +13,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     stylesheet.cpp \
     shadoweffect.cpp \
     utils.cpp \
@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     stylecontainer.cpp \
     job.cpp \
     atomicbool.cpp \
-    resultwidget.cpp
+    resultwidget.cpp \
+    cleaner.cpp
 
 HEADERS  += mainwindow.h \
     stylesheet.h \
@@ -37,7 +38,8 @@ HEADERS  += mainwindow.h \
     stylecontainer.hpp \
     job.h \
     atomicbool.h \
-    resultwidget.h
+    resultwidget.h \
+    cleaner.h
 
 FORMS    += mainwindow.ui \
     settingswindow.ui \

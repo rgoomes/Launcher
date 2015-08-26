@@ -6,10 +6,10 @@
 
 #include "windowcontroller.h"
 
-WindowController::WindowController(std::string path){ this->path = path; this->load_user_window_options(); }
+WindowController::WindowController(std::string path){ this->path = path; this->load_options(); }
 WindowController::~WindowController(){}
 
-QMap <QString, QString > get_default_options(){
+QMap <QString, QString > getDefaultOptions(){
     QMap <QString, QString > default_options;
 
     default_options["x"] = "100";
@@ -24,6 +24,10 @@ QMap <QString, QString > get_default_options(){
     default_options["search-height"] = "45";
     default_options["font"] = "Liberation Mono";
     default_options["font-size"] = "20";
+    default_options["search-icon-pos"] = "1";
+    default_options["icon-theme"] = "light";
+    default_options["resize-margin"] = "0";
+    default_options["hide-on-app"] = "1";
 
     return default_options;
 }
@@ -48,18 +52,16 @@ QString WindowController::windowoptions(){
     return window_options;
 }
 
-void WindowController::load_user_window_options(){
+void WindowController::load_options(){
+    QMap <QString, QString> defs = getDefaultOptions();
     std::ifstream file(this->path);
 
-    if(!file.good()){
-        this->options = get_default_options();
-        this->update_file();
-    } else {
+    if(!file.good())
+        options = defs;
+    else {
         std::string opt;
         while(std::getline(file, opt)){
-            if(!opt.length())
-                continue;
-            if(opt.find_first_not_of(" \t\v\f\r") == std::string::npos)
+            if(!opt.length() || opt.find_first_not_of(" \t\v\f\r") == std::string::npos)
                 continue;
 
             QStringList sopt = QString::fromStdString(opt).split(QRegExp("[:]"), QString::SkipEmptyParts);
@@ -68,8 +70,13 @@ void WindowController::load_user_window_options(){
 
             this->set_option((*sopt.begin()).remove(QChar(':')), (*++sopt.begin()).remove(QChar(';')));
         }
+
+        for(auto key : defs.keys())
+            if(options.find(key) == options.end())
+                this->set_option(key, defs[key]);
     }
 
     file.close();
+    update_file();
 }
 

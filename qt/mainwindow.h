@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QRect>
 #include <QTimer>
+#include <QToolButton>
 
 #include "settingswindow.h"
 #include "stylesheet.h"
@@ -30,6 +31,7 @@ class MainWindow : public QMainWindow{
 
     const int FRAME = 0;
     const int SBOX  = 1;
+    const int ICON  = 2;
 
     public:
         explicit MainWindow(QWidget *parent = 0);
@@ -39,9 +41,9 @@ class MainWindow : public QMainWindow{
         void inits();
         void setBorderRadius(int , bool );
         void setShadow(QColor , int , int , bool);
+        void setSboxBorderColor(std::string );
         void setBackgroundColor(QColor, bool);
-        void setSboxHeight(double );
-        void setBorderVisibility();
+        void updateSboxHeight(double );
         void goFullScreenMode();
         void goWindowMode();
         void center_window();
@@ -49,32 +51,57 @@ class MainWindow : public QMainWindow{
         void change_dpi(double , bool);
         void setFontColor(std::string );
         void setFont(QString, QString);
+        void changeIconPos(bool );
+        void setSboxBorderWidth(int );
+        void updateIcon(QString, QString );
+        void setResizeMargin(int );
+        void setHideOnApp(int );
         bool in_fullscreen();
-        bool eventFilter(QObject *, QEvent *);
-        double getBackgroundAlpha();
+        bool hideOnApp();
+        double curDpi();
+        int getResizeMargin();
+        int getBackgroundAlpha();
+        int sboxBorderWidth();
+        int shadowScale();
+        int shadowBlurRadius();
+        int getBorderRadius();
+        int shadowAlpha();
+        int iconOnLeft();
         int toDpi(QString );
         int toPx(int );
-
         void setupWorker();
+        void setupCleaner();
+        void signals_handler();
+        void update();
+        vector<QString> getFont();
+        QString getBackgroundColor();
+        QString getSboxBorderColor();
+        QString getIconTheme();
+        QString getSboxText();
+        bool settingsOpened   = false;
 
     public slots:
+        void clear_trigged();
         void request_resize();
         void selection_changed();
         void text_changed(QString );
 
     private:
+        class SettingsWindow *settingsWindow;
         WindowController *ctrl;
         Ui::MainWindow *ui;
-        SettingsWindow *settingsWindow;
         Container *cc;
         Worker* worker;
+        QToolButton *icon;
         QPoint mpos;
 
         bool resizing = false;
         bool scaling  = false;
 
     protected:
+        bool eventFilter(QObject *, QEvent *);
         void mouseReleaseEvent(QMouseEvent *event);
+        void mouseDoubleClickEvent(QMouseEvent *event);
         void mousePressEvent(QMouseEvent* event);
         void mouseMoveEvent(QMouseEvent* event);
         void resizeEvent(QResizeEvent* event);
