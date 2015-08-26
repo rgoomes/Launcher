@@ -38,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     mtx.lock();
     inits();
     setupWorker();
+
+    ui->results->layout()->addWidget(new ResultWidget(ui->results, "main.cpp"));
 }
 
 void MainWindow::setupWorker(){
@@ -305,6 +307,8 @@ void MainWindow::text_changed(QString text){
     updateIcon(text, getIconTheme());
 
     qDebug() << text;
+    worker->updateWork(text);
+
 }
 
 void MainWindow::change_dpi(double new_dpi, bool fullscreen_on){

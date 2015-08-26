@@ -18,6 +18,7 @@
 #include "shadoweffect.h"
 #include "windowcontroller.h"
 #include "worker.h"
+#include "resultwidget.h"
 
 #include <string>
 

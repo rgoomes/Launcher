@@ -13,7 +13,7 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     stylesheet.cpp \
     shadoweffect.cpp \
     utils.cpp \
@@ -22,6 +22,9 @@ SOURCES += main.cpp\
     NcFramelessHelper.cpp \
     settingswindow.cpp \
     stylecontainer.cpp \
+    job.cpp \
+    atomicbool.cpp \
+    resultwidget.cpp \
     cleaner.cpp
 
 HEADERS  += mainwindow.h \
@@ -33,11 +36,15 @@ HEADERS  += mainwindow.h \
     NcFramelessHelper.h \
     settingswindow.h \
     stylecontainer.hpp \
+    job.h \
+    atomicbool.h \
+    resultwidget.h \
     cleaner.h
 
 FORMS    += mainwindow.ui \
-    settingswindow.ui
+    settingswindow.ui \
+    resultwidget.ui
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 -g
 
 QMAKE_CFLAGS_RELEASE = -O3 -march=native
