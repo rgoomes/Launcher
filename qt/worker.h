@@ -11,6 +11,12 @@
 #include "job.h"
 #include "atomicbool.h"
 
+class Interrupt{
+public:
+    Interrupt(){
+    }
+};
+
 class Worker : public QObject
 {
     Q_OBJECT
@@ -27,7 +33,7 @@ private:
     QMutex resultsLock;
 
     void search();
-    void dfs(int, QDir*);
+    void dfs(int, QDir*) throw(Interrupt);
     void removeUnmatched();
 
 public slots:

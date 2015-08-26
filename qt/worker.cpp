@@ -29,12 +29,16 @@ void Worker::process() {
 void Worker::search(){
     QDir dir = QDir::home();
     qDebug() << "Start Work";
-    for(int depth=0; depth<10; depth++){
-        dfs(depth, &dir);
-        if(reset->get())
-            break;
+    try{
+        for(int depth=0; depth<10; depth++){
+            dfs(depth, &dir);
+            if(reset->get())
+                break;
+        }
+    }catch(Interrupt itr){
+        qDebug() << "STOP WORK";
     }
-    qDebug() << "End Work\n";
+
     if(!reset->get()){
         qDebug() << "Results:";
         resultsLock.lock();
@@ -42,19 +46,22 @@ void Worker::search(){
             qDebug() << s;
         resultsLock.unlock();
     }
+
+    qDebug() << "End Work\n";
 }
 
-void Worker::dfs(int depth, QDir *cur){
+void Worker::dfs(int depth, QDir *cur) throw(Interrupt){
     if(reset->get()){
         qDebug() << "Stop Work";
+        throw Interrupt();
         return;
     }
     if(depth <= 0)
         return;
     if (cur->dirName().startsWith("."))
         return;
-    QStringList files = cur->entryList(QDir::Files);
     if(depth == 1){
+        QStringList files = cur->entryList(QDir::Files);
         resultsLock.lock();
         for(QString f : files){
             if (f.toLower().contains(key)){
