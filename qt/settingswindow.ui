@@ -863,10 +863,10 @@
               <widget class="QLabel" name="label_24">
                <property name="geometry">
                 <rect>
-                 <x>320</x>
-                 <y>10</y>
+                 <x>310</x>
+                 <y>0</y>
                  <width>67</width>
-                 <height>17</height>
+                 <height>25</height>
                 </rect>
                </property>
                <property name="text">
@@ -876,10 +876,10 @@
               <widget class="QLabel" name="label_25">
                <property name="geometry">
                 <rect>
-                 <x>400</x>
-                 <y>10</y>
+                 <x>470</x>
+                 <y>0</y>
                  <width>71</width>
-                 <height>17</height>
+                 <height>25</height>
                 </rect>
                </property>
                <property name="text">
@@ -889,16 +889,219 @@
               <widget class="QLabel" name="label_26">
                <property name="geometry">
                 <rect>
-                 <x>500</x>
-                 <y>10</y>
+                 <x>630</x>
+                 <y>0</y>
                  <width>101</width>
-                 <height>17</height>
+                 <height>25</height>
                 </rect>
                </property>
                <property name="text">
                 <string>Memory usage</string>
                </property>
               </widget>
+              <widget class="QWidget" name="gauge_front0" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>260</x>
+                 <y>29</y>
+                 <width>50</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f04141, stop: 0.1 #ef2929, stop: 0.49 #cc0000, stop: 0.5 #a40000, stop: 1 #cc0000);
+border-radius: 6;
+padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_back0" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>260</x>
+                 <y>30</y>
+                 <width>140</width>
+                 <height>15</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #bd3333, stop: 0.1 #bd2020, stop: 0.49 #990000, stop: 0.5 #700000, stop: 1 #990000);
+border-width: 1px;
+border-radius: 6;
+padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_front1" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>260</x>
+                 <y>50</y>
+                 <width>131</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #98f041, stop: 0.1 #8cf029, stop: 0.49 #66cc00, stop: 0.5 #52a300, stop: 1 #66cc00);
+
+    border-radius: 7;
+    padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_back1" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>260</x>
+                 <y>51</y>
+                 <width>140</width>
+                 <height>15</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #78bd33, stop: 0.1 #6ebd20, stop: 0.49 #4c9900, stop: 0.5 #387000, stop: 1 #4c9900);
+    border-radius: 7;
+    padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_back2" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>435</x>
+                 <y>30</y>
+                 <width>140</width>
+                 <height>15</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #78bd33, stop: 0.1 #6ebd20, stop: 0.49 #4c9900, stop: 0.5 #387000, stop: 1 #4c9900);
+    border-radius: 7;
+    padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_front2" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>435</x>
+                 <y>29</y>
+                 <width>131</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #98f041, stop: 0.1 #8cf029, stop: 0.49 #66cc00, stop: 0.5 #52a300, stop: 1 #66cc00);
+
+    border-radius: 7;
+    padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_back3" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>615</x>
+                 <y>30</y>
+                 <width>140</width>
+                 <height>15</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #78bd33, stop: 0.1 #6ebd20, stop: 0.49 #4c9900, stop: 0.5 #387000, stop: 1 #4c9900);
+    border-radius: 7;
+    padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_front3" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>615</x>
+                 <y>29</y>
+                 <width>131</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #98f041, stop: 0.1 #8cf029, stop: 0.49 #66cc00, stop: 0.5 #52a300, stop: 1 #66cc00);
+
+    border-radius: 7;
+    padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_front4" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>615</x>
+                 <y>50</y>
+                 <width>50</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f04141, stop: 0.1 #ef2929, stop: 0.49 #cc0000, stop: 0.5 #a40000, stop: 1 #cc0000);
+border-radius: 6;
+padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_back4" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>615</x>
+                 <y>51</y>
+                 <width>140</width>
+                 <height>15</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #bd3333, stop: 0.1 #bd2020, stop: 0.49 #990000, stop: 0.5 #700000, stop: 1 #990000);
+border-width: 1px;
+border-radius: 6;
+padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_front5" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>435</x>
+                 <y>50</y>
+                 <width>71</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #98f041, stop: 0.1 #f1ff19, stop: 0.49 #f1ff19, stop: 0.5 #d9e519, stop: 1 #d9e519);
+
+    border-radius: 7;
+    padding: 3px;</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="gauge_back5" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>435</x>
+                 <y>51</y>
+                 <width>140</width>
+                 <height>15</height>
+                </rect>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #c0cc00, stop: 0.1 #a8b200, stop: 0.49 #a8b200, stop: 0.5 #909900, stop: 1 #909900);
+    border-radius: 7;
+    padding: 3px;</string>
+               </property>
+              </widget>
+              <zorder>label_20</zorder>
+              <zorder>widget_10</zorder>
+              <zorder>label_24</zorder>
+              <zorder>label_25</zorder>
+              <zorder>label_26</zorder>
+              <zorder>gauge_back0</zorder>
+              <zorder>gauge_front0</zorder>
+              <zorder>gauge_back1</zorder>
+              <zorder>gauge_front1</zorder>
+              <zorder>gauge_back2</zorder>
+              <zorder>gauge_front2</zorder>
+              <zorder>gauge_back3</zorder>
+              <zorder>gauge_front3</zorder>
+              <zorder>gauge_back4</zorder>
+              <zorder>gauge_front4</zorder>
+              <zorder>gauge_back5</zorder>
+              <zorder>gauge_front5</zorder>
              </widget>
             </item>
             <item>
