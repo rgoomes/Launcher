@@ -27,7 +27,7 @@ void Worker::process() {
 }
 
 void Worker::search(){
-    QDir dir = QDir::home();
+    QDir dir = QDir::root();
     for(int depth=0; depth < MAX_DEPTH; depth++){
         try{
             dfs(depth, &dir);
@@ -65,8 +65,6 @@ void Worker::dfs(int depth, QDir *cur) throw(Interrupt){
 
     if(depth <= 0)
         return;
-    if(cur->dirName().startsWith("."))
-        return;
     if(depth == 1){
         QStringList files = cur->entryList(QDir::Files);
         resultsLock.lock();
@@ -77,7 +75,7 @@ void Worker::dfs(int depth, QDir *cur) throw(Interrupt){
         resultsLock.unlock();
     }
 
-    QStringList dirs = cur->entryList(QDir::Dirs);
+    QStringList dirs = cur->entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
     for(QString d : dirs){
         QDir *ndir = new QDir(cur->absolutePath() + "/" + d);
         dfs(depth-1, ndir);
