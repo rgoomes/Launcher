@@ -1,6 +1,7 @@
 #include "worker.h"
 
 #define MAX_DEPTH 128
+#define DEBUG_SEARCH true
 
 Worker::~Worker(){}
 Worker::Worker(){
@@ -16,9 +17,12 @@ void Worker::process() {
         resultsLock.lock();
         results->clear();
         resultsLock.unlock();
-        qDebug() << "Working";
-        search();
 
+        #if DEBUG_SEARCH
+            qDebug() << "Working";
+        #endif
+
+        search();
     }
 }
 
@@ -31,12 +35,20 @@ void Worker::search(){
             break;
         }
 
+    #if DEBUG_SEARCH
+        qDebug() << "depth" << depth+1
+                 << "time"  << duration_cast<milliseconds>(high_resolution_clock::now() - t).count()+1
+                 << "ms";
+    #endif
+
         if(reset->get())
             break;
     }
 
     if(!reset->get()){
-        qDebug() << "Got Results" << results->size();
+        #if DEBUG_SEARCH
+            qDebug() << "Got Results" << results->size();
+        #endif
 
         /*resultsLock.lock();
         for(QString s : *results)
