@@ -42,6 +42,7 @@ class MainWindow : public QMainWindow{
         void setBorderRadius(int , bool );
         void setShadow(QColor , int , int , bool);
         void setSboxBorderColor(std::string );
+        void setSboxBorderRadius(int );
         void setBackgroundColor(QColor, bool);
         void updateSboxHeight(double );
         void goFullScreenMode();
@@ -59,9 +60,12 @@ class MainWindow : public QMainWindow{
         void setSearchType(QString );
         void setHideOnApp(int );
         void setMaxResults(int );
+        void setHideIcon(int );
         bool in_fullscreen();
         bool hideOnApp();
+        bool getHideIcon();
         double curDpi();
+        int getSboxBorderRadius();
         int getMaxResults();
         int getSearchTime();
         int getResizeMargin();

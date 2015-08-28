@@ -26,6 +26,7 @@ class SettingsWindow : public QMainWindow{
         void setFontSize(const QString& );
         void setFontFamily(const QString& );
         void changeResizeMargin(const QString& );
+        void changeSboxBorderRadius(int );
         void changeHideOnAppState(bool );
         void changeBackgroundColor();
         void changeBorderRadius(int );
@@ -37,6 +38,7 @@ class SettingsWindow : public QMainWindow{
         void changeShadowScale(int );
         void changeSearchTime(int );
         void changeMaxResults(int );
+        void changeHideIcon(bool );
         void changeWindowMode();
         void changeTextColor();
         void requestDpiChange(int );

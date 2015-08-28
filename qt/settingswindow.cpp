@@ -6,10 +6,12 @@
 #include <QRgb>
 
 #define LIMIT 128
+#define WIDTH1 "43"
+#define WIDTH2 "104"
 #define MAKE_EDITABLE "QComboBox { combobox-popup: 0; }"
 
 std::vector<double> dpis = {0.5, 0.625, 0.75, 0.875, 1.0, 1.12, 1.25, 1.38, 1.5};
-std::vector<int> lpos = {151, 162, 183, 199, 231, 240, 254, 275, 297};
+std::vector<int> lpos = {151, 156, 176, 185, 214, 218, 231, 244, 263};
 std::vector<int> font_sizes = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24,
                                26, 28, 32, 36, 40, 44, 48, 54, 60, 66, 72, 80, 88, 96};
 
@@ -18,10 +20,10 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui
     ui->setupUi(this);
 }
 
-std::string btn_style(QString c, bool border){
+std::string btn_style(QString c, bool border, std::string px){
     return "background-color:" + std::string(c.toUtf8().constData())
-           + std::string(";\nborder-style: solid;\nborder-width:3px;\nmax-width:104px;\noutline:none;\n")
-           + std::string("border-radius:5px;\nmax-height:20px;\nmin-width:104px;\nmin-height:20px;\n")
+           + std::string(";\nborder-style: solid;\nborder-width:3px;\nmax-width:") + px + std::string("px;\noutline:none;\n")
+           + std::string("border-radius:6px;\nmax-height:17px;\nmin-width:") + px + std::string("px;\nmin-height:17px;\n")
            + (border ? std::string("border-color: #CCCBCA;") : std::string(""));
 }
 
@@ -55,7 +57,7 @@ void SettingsWindow::changeBackgroundColor(){
         return;
 
     w->setBackgroundColor(c, false);
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha(), WIDTH2).c_str());
 }
 
 void SettingsWindow::changeBorderColor(){
@@ -64,7 +66,7 @@ void SettingsWindow::changeBorderColor(){
         return;
 
     w->setSboxBorderColor(c.name().toUtf8().constData());
-    ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false).c_str());
+    ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false, WIDTH1).c_str());
 }
 
 void SettingsWindow::changeTextColor(){
@@ -73,7 +75,7 @@ void SettingsWindow::changeTextColor(){
         return;
 
     w->setFontColor(c.name().toUtf8().constData());
-    ui->fontColorBtn->setStyleSheet(btn_style(w->getFont()[2], false).c_str());
+    ui->fontColorBtn->setStyleSheet(btn_style(w->getFont()[2], false, WIDTH1).c_str());
 }
 
 void SettingsWindow::changeBorderRadius(int new_value){
@@ -125,7 +127,7 @@ void SettingsWindow::centerWindow(){
 void SettingsWindow::setRandomColor(){
     w->setBackgroundColor(QColor(), true);
 
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha(), WIDTH2).c_str());
 }
 
 void SettingsWindow::changeWindowMode(){
@@ -144,7 +146,7 @@ void SettingsWindow::changeBlurRadius(int new_value){
 void SettingsWindow::changeShadowAlpha(int new_value){
     w->setShadow(QColor(0,0,0, new_value), w->shadowScale(), w->shadowBlurRadius(), false);
 
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha(), WIDTH2).c_str());
 }
 
 void SettingsWindow::changeShadowScale(int new_value){
@@ -153,6 +155,13 @@ void SettingsWindow::changeShadowScale(int new_value){
 
 void SettingsWindow::changeHideOnAppState(bool state){
     w->setHideOnApp(state);
+}
+
+void SettingsWindow::changeHideIcon(bool state){
+    ui->iconPosWidget->setDisabled(state);
+    ui->iconThemeWidget->setDisabled(state);
+
+    w->setHideIcon(state);
 }
 
 void SettingsWindow::showLauncher(){
@@ -168,6 +177,10 @@ void SettingsWindow::changeSearchTime(int new_value){
 void SettingsWindow::changeMaxResults(int new_value){
     w->setMaxResults(new_value);
     ui->resultsLabel->setText(new_value ? QString::number(new_value) : "Infinite");
+}
+
+void SettingsWindow::changeSboxBorderRadius(int new_value){
+    w->setSboxBorderRadius(new_value);
 }
 
 void SettingsWindow::inits(){
@@ -216,11 +229,15 @@ void SettingsWindow::inits(){
     ui->resizePxCombo->addItems(resize_margins);
     ui->resizePxCombo->setCurrentText(QString::number(w->getResizeMargin()));
     ui->fontFamilyCombo->setCurrentText(w->getFont()[0]);
-    ui->fontColorBtn->setStyleSheet(btn_style(w->getFont()[2], false).c_str());
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha()).c_str());
-    ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false).c_str());
+    ui->fontColorBtn->setStyleSheet(btn_style(w->getFont()[2], false, WIDTH1).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha(), WIDTH2).c_str());
+    ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false, WIDTH1).c_str());
     ui->borderWidthSlider->setValue(w->sboxBorderWidth());
     ui->hideOnAppCheck->setChecked(w->hideOnApp());
+    ui->hideIconCheck->setChecked(w->getHideIcon());
+    ui->iconPosWidget->setDisabled(w->getHideIcon());
+    ui->iconThemeWidget->setDisabled(w->getHideIcon());
+    ui->sboxBorderRadiusSlider->setValue(w->getSboxBorderRadius());
 
     connect(ui->lightRadio,  SIGNAL(toggled(bool)), this, SLOT(changeIconTheme(bool)));
     connect(ui->databaseTypeRadio,  SIGNAL(toggled(bool)), this, SLOT(onSearchTypeChanged(bool)));
@@ -242,7 +259,9 @@ void SettingsWindow::inits(){
     connect(ui->shadowAlphaSlider, SIGNAL(valueChanged(int)), this, SLOT(changeShadowAlpha(int )));
     connect(ui->shadowBlurSlider, SIGNAL(valueChanged(int)), this, SLOT(changeBlurRadius(int )));
     connect(ui->shadowScaleSlider, SIGNAL(valueChanged(int)), this, SLOT(changeShadowScale(int )));
+    connect(ui->sboxBorderRadiusSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSboxBorderRadius(int )));
     connect(ui->hideOnAppCheck, SIGNAL(clicked(bool)), this, SLOT(changeHideOnAppState(bool )));
     connect(ui->showLauncherBtn, SIGNAL(clicked(bool)), this, SLOT(showLauncher()));
+    connect(ui->hideIconCheck, SIGNAL(clicked(bool)), this, SLOT(changeHideIcon(bool )));
 
 }

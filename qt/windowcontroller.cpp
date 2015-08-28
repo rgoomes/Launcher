@@ -31,6 +31,7 @@ QMap <QString, QString > getDefaultOptions(){
     default_options["search-type"] = "standard";
     default_options["search-time"] = "0";
     default_options["max-results"] = "0";
+    default_options["hide-icon"] = "0";
 
     return default_options;
 }

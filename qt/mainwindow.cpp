@@ -215,6 +215,15 @@ void MainWindow::setShadow(QColor c, int scale, int blur_radius, bool going_full
     }
 }
 
+int MainWindow::getSboxBorderRadius(){
+    return cc->getStyle("border-radius", SBOX).toInt();
+}
+
+void MainWindow::setSboxBorderRadius(int r){
+    cc->setStyle("border-radius", QString::number(r), SBOX);
+    ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
+}
+
 int MainWindow::getBorderRadius(){
     return cc->getStyle("border-radius", FRAME).toInt();
 }
@@ -469,6 +478,15 @@ void MainWindow::setHideOnApp(int state){
     ctrl->set_option("hide-on-app", QString::number(state));
 }
 
+bool MainWindow::getHideIcon(){
+    return ctrl->get_option("hide-icon").toInt();
+}
+
+void MainWindow::setHideIcon(int state){
+    icon->setVisible(!state);
+    ctrl->set_option("hide-icon", QString::number(state));
+}
+
 void MainWindow::signals_handler(){
     #ifdef SIGNALS
         std::vector<int> quit_signals = {SIGINT, SIGQUIT, SIGTERM};
@@ -505,6 +523,7 @@ void MainWindow::inits(){
     QPixmap pixmap((getIconTheme().compare("dark") ? LIGHT_ICONS_PATH : DARK_ICONS_PATH) + "search.svg");
     icon->setIcon(QIcon(pixmap));
     icon->setIconSize(pixmap.size());
+    icon->setVisible(!getHideIcon());
 
     this->change_dpi(ctrl->get_option("dpi").toDouble(), false);
     this->setFontColor(cc->getStyle("color", SBOX).toUtf8().constData());
