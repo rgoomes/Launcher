@@ -209,6 +209,10 @@ void SettingsWindow::inits(){
     else
         ui->stdTypeRadio->setChecked(true);
 
+#if defined(_WIN32) || defined(_WIN64)
+    ui->databaseTypeRadio->setDisabled(true);
+#endif
+
     ui->dpiSlider->setValue(dist);
     ui->timeSlider->setValue(w->getSearchTime());
     ui->realTime->setText(w->getSearchTime() ? QString::number(w->getSearchTime()) + "s" : "Infinite");

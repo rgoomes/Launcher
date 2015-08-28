@@ -3,8 +3,29 @@
 #define MAX_DEPTH 128
 #define DEBUG_SEARCH true
 
+std::vector<QString> prune_paths;
+
+void initPrunePaths(){
+    #if defined(__linux) || defined(__unix)
+        prune_paths = {"/var/spool", "/media", "/home/.ecryptfs", "/var/lib/schroot",
+                       "/tmp", "/usr/tmp", "/var/tmp", "/proc", "/usr/share"};
+    #elif defined(_WIN32) || defined(_WIN64)
+        prune_paths = {};
+    #endif
+}
+
+bool ignorePath(QString cur_path){
+    for(QString path : prune_paths)
+        if(!cur_path.compare(path))
+            return true;
+
+    return false;
+}
+
 Worker::~Worker(){}
 Worker::Worker(){
+    initPrunePaths();
+
     results = new QList<QString>();
     hasWork = new Job();
     reset = new AtomicBool(false);
@@ -63,6 +84,8 @@ void Worker::dfs(int depth, QDir *cur) throw(Interrupt){
     if(searchTime > 0 && duration_cast<milliseconds>(high_resolution_clock::now() - t).count() > searchTime)
         throw Interrupt();
 
+    if(ignorePath(cur->absolutePath()))
+        return;
     if(depth <= 0)
         return;
     if(depth == 1){
