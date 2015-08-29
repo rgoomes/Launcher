@@ -2,6 +2,7 @@
 #define WORKER_H
 
 #include <QDir>
+#include <QDirIterator>
 #include <QObject>
 #include <QList>
 #include <QString>

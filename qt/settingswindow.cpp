@@ -176,7 +176,7 @@ void SettingsWindow::changeSearchTime(int new_value){
 
 void SettingsWindow::changeMaxResults(int new_value){
     w->setMaxResults(new_value);
-    ui->resultsLabel->setText(new_value ? QString::number(new_value) : "Infinite");
+    ui->resultsLabel->setText(QString::number(new_value));
 }
 
 void SettingsWindow::changeSboxBorderRadius(int new_value){
@@ -217,7 +217,7 @@ void SettingsWindow::inits(){
     ui->timeSlider->setValue(w->getSearchTime());
     ui->realTime->setText(w->getSearchTime() ? QString::number(w->getSearchTime()) + "s" : "Infinite");
     ui->resultsSlider->setValue(w->getMaxResults());
-    ui->resultsLabel->setText(w->getMaxResults() ? QString::number(w->getMaxResults()) : "Infinite");
+    ui->resultsLabel->setText(QString::number(w->getMaxResults()));
     ui->dpiNumberLabel->move(QPoint(lpos[dist],ui->dpiNumberLabel->y()));
     ui->dpiNumberLabel->setText(QString::number(w->curDpi()));
     ui->shadowBlurSlider->setValue(w->shadowBlurRadius());

@@ -479,12 +479,12 @@ void MainWindow::setHideOnApp(int state){
 }
 
 bool MainWindow::getHideIcon(){
-    return ctrl->get_option("hide-icon").toInt();
+    return ctrl->get_option("icon-hidden").toInt();
 }
 
 void MainWindow::setHideIcon(int state){
     icon->setVisible(!state);
-    ctrl->set_option("hide-icon", QString::number(state));
+    ctrl->set_option("icon-hidden", QString::number(state));
 }
 
 void MainWindow::signals_handler(){

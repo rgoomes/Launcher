@@ -36,7 +36,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="apprearenceTab">
        <attribute name="title">
@@ -860,7 +860,7 @@
              <x>0</x>
              <y>0</y>
              <width>776</width>
-             <height>397</height>
+             <height>422</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -1271,6 +1271,9 @@ padding: 3px;</string>
                  <width>100</width>
                  <height>30</height>
                 </rect>
+               </property>
+               <property name="minimum">
+                <number>1</number>
                </property>
                <property name="maximum">
                 <number>100</number>

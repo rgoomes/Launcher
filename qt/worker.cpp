@@ -89,18 +89,20 @@ void Worker::dfs(int depth, QDir *cur) throw(Interrupt){
     if(depth <= 0)
         return;
     if(depth == 1){
-        QStringList files = cur->entryList(QDir::Files);
+        QDirIterator files(cur->absolutePath(), QDir::Files);
         resultsLock.lock();
-        for(QString f : files){
-            if (f.toLower().contains(key))
-                results->append(f);
+        while(files.hasNext()){
+            files.next();
+            QString name = files.fileName();
+            if(name.toLower().contains(key))
+                results->append(name);
         }
         resultsLock.unlock();
     }
 
-    QStringList dirs = cur->entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
-    for(QString d : dirs){
-        QDir *ndir = new QDir(cur->absolutePath() + "/" + d);
+    QDirIterator dirs(cur->absolutePath(), QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+    while(dirs.hasNext()){
+        QDir *ndir = new QDir(dirs.next());
         dfs(depth-1, ndir);
         delete ndir;
     }
