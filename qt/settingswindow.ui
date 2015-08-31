@@ -36,7 +36,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="apprearenceTab">
        <attribute name="title">
@@ -54,7 +54,7 @@
              <x>0</x>
              <y>0</y>
              <width>760</width>
-             <height>467</height>
+             <height>472</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -709,7 +709,7 @@
               <property name="minimumSize">
                <size>
                 <width>0</width>
-                <height>100</height>
+                <height>105</height>
                </size>
               </property>
               <property name="maximumSize">
@@ -743,7 +743,7 @@
                <property name="geometry">
                 <rect>
                  <x>10</x>
-                 <y>50</y>
+                 <y>55</y>
                  <width>141</width>
                  <height>25</height>
                 </rect>
@@ -756,7 +756,7 @@
                <property name="geometry">
                 <rect>
                  <x>155</x>
-                 <y>50</y>
+                 <y>55</y>
                  <width>125</width>
                  <height>29</height>
                 </rect>
@@ -775,7 +775,7 @@
                <property name="geometry">
                 <rect>
                  <x>150</x>
-                 <y>80</y>
+                 <y>85</y>
                  <width>41</width>
                  <height>20</height>
                 </rect>
@@ -788,7 +788,7 @@
                <property name="geometry">
                 <rect>
                  <x>305</x>
-                 <y>50</y>
+                 <y>55</y>
                  <width>101</width>
                  <height>25</height>
                 </rect>
@@ -800,8 +800,8 @@
               <widget class="QComboBox" name="resizePxCombo">
                <property name="geometry">
                 <rect>
-                 <x>415</x>
-                 <y>50</y>
+                 <x>419</x>
+                 <y>55</y>
                  <width>71</width>
                  <height>25</height>
                 </rect>
@@ -827,13 +827,57 @@
                <property name="geometry">
                 <rect>
                  <x>510</x>
-                 <y>50</y>
+                 <y>55</y>
                  <width>150</width>
                  <height>27</height>
                 </rect>
                </property>
                <property name="text">
                 <string>Show launcher</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_29">
+               <property name="geometry">
+                <rect>
+                 <x>305</x>
+                 <y>30</y>
+                 <width>121</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Global Shortcut: </string>
+               </property>
+              </widget>
+              <widget class="QLineEdit" name="sedit">
+               <property name="geometry">
+                <rect>
+                 <x>420</x>
+                 <y>26</y>
+                 <width>240</width>
+                 <height>25</height>
+                </rect>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_30">
+               <property name="geometry">
+                <rect>
+                 <x>420</x>
+                 <y>6</y>
+                 <width>231</width>
+                 <height>21</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>8</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: red;</string>
+               </property>
+               <property name="text">
+                <string>Changing shortcut requires launcher reboot</string>
                </property>
               </widget>
              </widget>

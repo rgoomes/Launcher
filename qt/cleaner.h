@@ -3,20 +3,17 @@
 
 #include <QApplication>
 #include <QObject>
-#include <mutex>
 
-#include "stylecontainer.hpp"
-#include "windowcontroller.h"
 #include "mainwindow.h"
 
 class Cleaner : public QObject {
     Q_OBJECT
 
-    std::mutex *mtx;
-    MainWindow *w;
+    class MainWindow *w;
+    QMutex *mtx;
 
     public:
-        Cleaner(MainWindow* , std::mutex* );
+        Cleaner(MainWindow* , QMutex* );
         ~Cleaner();
 
     public slots:

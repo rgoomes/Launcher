@@ -61,6 +61,7 @@ class MainWindow : public QMainWindow{
         void setHideOnApp(int );
         void setMaxResults(int );
         void setHideIcon(int );
+        void setGlobalShortcut(QString );
         bool in_fullscreen();
         bool hideOnApp();
         bool getHideIcon();
@@ -80,24 +81,29 @@ class MainWindow : public QMainWindow{
         int toPx(int );
         void setupWorker();
         void setupCleaner();
+        void setupGlobalShortcut();
         void signals_handler();
         void update();
         vector<QString> getFont();
+        QString getGlobalShortcut();
         QString getSearchType();
         QString getBackgroundColor();
         QString getSboxBorderColor();
         QString getIconTheme();
         QString getSboxText();
-        bool settingsOpened   = false;
+        bool settingsOpened = false;
 
     public slots:
         void clear_trigged();
         void request_resize();
         void selection_changed();
         void text_changed(QString );
+        void onFullscreenShortcut();
 
     private:
         class SettingsWindow *settingsWindow;
+        class GlobalShortcut *globalshortcut;
+
         WindowController *ctrl;
         Ui::MainWindow *ui;
         Container *cc;

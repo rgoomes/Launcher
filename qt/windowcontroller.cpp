@@ -32,6 +32,7 @@ QMap <QString, QString > getDefaultOptions(){
     default_options["search-time"] = "0";
     default_options["max-results"] = "10";
     default_options["icon-hidden"] = "0";
+    default_options["global-shortcut"] = "Ctrl+Shift+R";
 
     return default_options;
 }

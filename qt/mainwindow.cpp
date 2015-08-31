@@ -3,6 +3,8 @@
 #include <QIcon>
 #include <QToolButton>
 #include <QFontMetrics>
+#include <QShortcut>
+
 #include <mutex>
 #include <sstream>
 
@@ -10,6 +12,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "cleaner.h"
+#include "globalshortcut.h"
 
 #define DARK_ICONS_PATH  QString("../qt/icons/dark/")
 #define LIGHT_ICONS_PATH QString("../qt/icons/light/")
@@ -30,12 +33,12 @@ using namespace std;
 #define PADDING 5
 #define LIMIT 128
 
-std::mutex mtx;
+QMutex sigLock;
 
 MainWindow::~MainWindow(){ delete ui; }
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
-    mtx.lock();
+    sigLock.lock();
     inits();
     setupWorker();
 
@@ -55,16 +58,24 @@ void MainWindow::setupWorker(){
 
 void MainWindow::setupCleaner(){
     QThread *thread = new QThread;
-    Cleaner *cleaner = new Cleaner(this, &mtx);
+    Cleaner *cleaner = new Cleaner(this, &sigLock);
     cleaner->moveToThread(thread);
     connect(thread, &QThread::started, cleaner, &Cleaner::cleanExit);
     thread->start();
 }
 
+void MainWindow::setupGlobalShortcut(){
+    QThread *thread = new QThread;
+    globalshortcut = new GlobalShortcut(this, getGlobalShortcut());
+    globalshortcut->moveToThread(thread);
+    connect(thread, &QThread::started, globalshortcut, &GlobalShortcut::listenShortcuts);
+    thread->start();
+}
+
 void MainWindow::keyPressEvent(QKeyEvent *event){
-    // QUIT FOR TESTING, LATER CHANGE TO this->hide()
+    // CLEANER QUIT FOR TESTING, LATER CHANGE TO this->hide()
     if(event->key() == Qt::Key_Escape)
-        mtx.unlock(); // FREE LOCK IN CLEANER
+        sigLock.unlock(); // FREE LOCK IN CLEANER
 
     // SHOW SETTINGS
     if(!settingsOpened) {
@@ -487,15 +498,30 @@ void MainWindow::setHideIcon(int state){
     ctrl->set_option("icon-hidden", QString::number(state));
 }
 
+QString MainWindow::getGlobalShortcut(){
+    return ctrl->get_option("global-shortcut");
+}
+
+void MainWindow::setGlobalShortcut(QString shortcut){
+    ctrl->set_option("global-shortcut", shortcut);
+}
+
 void MainWindow::signals_handler(){
     #ifdef SIGNALS
-        std::vector<int> quit_signals = {SIGINT, SIGQUIT, SIGTERM};
+        std::vector<int> quit_signals = {SIGINT, SIGQUIT, SIGTERM, SIGHUP, SIGSEGV};
     #else
         std::vector<int> quit_signals = std::vector<int>();
     #endif
 
     for(int sig : quit_signals)
-        signal(sig, [](int ) { mtx.unlock(); });
+        signal(sig, [](int ) { sigLock.unlock(); });
+}
+
+void MainWindow::onFullscreenShortcut(){
+    if(this->in_fullscreen())
+        goWindowMode();
+    else
+        goFullScreenMode();
 }
 
 void MainWindow::inits(){
@@ -540,6 +566,11 @@ void MainWindow::inits(){
     // UNIX SIGNALS HANDLER AND CLEANER
     setupCleaner();
     signals_handler();
+
+    // SETUP FULLSCREEN AND GLOBAL SHORTCUTS
+    setupGlobalShortcut();
+    QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_F12), this);
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(onFullscreenShortcut()));
 
     // LINE EDIT EVENT FILTERS
     ui->sbox->installEventFilter(this);

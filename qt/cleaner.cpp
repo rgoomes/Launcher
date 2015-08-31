@@ -1,7 +1,7 @@
 #include "cleaner.h"
 
 Cleaner::~Cleaner(){}
-Cleaner::Cleaner(MainWindow *w, std::mutex *mtx){
+Cleaner::Cleaner(MainWindow *w, QMutex *mtx){
     this->mtx = mtx;
     this->w = w;
 }

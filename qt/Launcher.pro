@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Launcher
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
     mainwindow.cpp \
     stylesheet.cpp \
@@ -25,9 +24,11 @@ SOURCES += main.cpp\
     job.cpp \
     atomicbool.cpp \
     resultwidget.cpp \
-    cleaner.cpp
+    cleaner.cpp \
+    globalshortcut.cpp \
+    singleinstance.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS += mainwindow.h \
     stylesheet.h \
     shadoweffect.h \
     utils.h \
@@ -39,12 +40,16 @@ HEADERS  += mainwindow.h \
     job.h \
     atomicbool.h \
     resultwidget.h \
-    cleaner.h
+    cleaner.h \
+    globalshortcut.h \
+    singleinstance.h
 
-FORMS    += mainwindow.ui \
+FORMS += mainwindow.ui \
     settingswindow.ui \
     resultwidget.ui
 
-QMAKE_CXXFLAGS += -std=c++11 -g
+LIBS += -lX11
 
+QMAKE_CXXFLAGS += -std=c++11 -g
 QMAKE_CFLAGS_RELEASE = -O3 -march=native
+
