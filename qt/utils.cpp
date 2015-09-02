@@ -1,5 +1,4 @@
 
-#include <QString>
 #include <QMap>
 #include <QColor>
 

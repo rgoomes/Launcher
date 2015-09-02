@@ -4,12 +4,10 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QObject>
-#include <QList>
-#include <QString>
 #include <QSemaphore>
 #include <QDebug>
 #include <QtConcurrent/QtConcurrent>
-#include <QMainWindow>
+
 #include "job.h"
 #include "atomicbool.h"
 

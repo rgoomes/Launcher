@@ -3,23 +3,22 @@
 #define MAX_DEPTH 128
 #define DEBUG_SEARCH true
 
-std::vector<QString> prune_paths;
+std::vector<QString> paths;
+QMap<QString, quint8> prunePaths;
 
 void initPrunePaths(){
     #if defined(__linux) || defined(__unix)
-        prune_paths = {"/var/spool", "/media", "/home/.ecryptfs", "/var/lib/schroot",
-                       "/tmp", "/usr/tmp", "/var/tmp", "/proc", "/usr/share"};
+        paths = {"/var/spool", "/media", "/home/.ecryptfs", "/tmp", "/usr/tmp", "/var/tmp", "/proc", "/usr/share"};
     #elif defined(_WIN32) || defined(_WIN64)
-        prune_paths = {};
+        paths = {};
     #endif
+
+    for(QString s : paths)
+        prunePaths[s];
 }
 
-bool ignorePath(QString cur_path){
-    for(QString path : prune_paths)
-        if(!cur_path.compare(path))
-            return true;
-
-    return false;
+bool ignorePath(QString cur){
+    return prunePaths.find(cur) != prunePaths.end() ? true : false;
 }
 
 Worker::~Worker(){}

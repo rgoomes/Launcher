@@ -877,7 +877,7 @@
                 <string notr="true">color: red;</string>
                </property>
                <property name="text">
-                <string>Changing shortcut requires launcher reboot</string>
+                <string>Changing shortcut requires launcher restart</string>
                </property>
               </widget>
              </widget>
