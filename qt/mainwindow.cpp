@@ -1,11 +1,8 @@
-#include <QTimer>
 #include <QThread>
 #include <QIcon>
-#include <QToolButton>
 #include <QFontMetrics>
 #include <QShortcut>
 
-#include <mutex>
 #include <sstream>
 
 #include "utils.h"

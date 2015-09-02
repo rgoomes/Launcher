@@ -1,6 +1,5 @@
 #include <fstream>
 
-#include <QString>
 #include <QDebug>
 
 #include "stylecontainer.hpp"

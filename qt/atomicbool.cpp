@@ -1,5 +1,4 @@
 #include "atomicbool.h"
-#include <QDebug>
 
 AtomicBool::AtomicBool(bool v){
     value = v;
