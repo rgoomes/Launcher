@@ -1,10 +1,3 @@
-#include <QThread>
-#include <QIcon>
-#include <QFontMetrics>
-#include <QShortcut>
-
-#include <sstream>
-
 #include "utils.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"

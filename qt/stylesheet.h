@@ -2,20 +2,21 @@
 #define STYLESHEET_H
 
 #include <QMap>
-#include <string>
+#include <QStringList>
 
-using namespace std;
+#include <string>
+#include <fstream>
 
 class Style {
     QMap <QString, QString > styles;
-    string obj;
+    std::string obj;
 
     public:
-        Style(string, string );
+        Style(std::string, std::string );
         ~Style();
 
     public:
-        void load_styles(string );
+        void load_styles(std::string );
         void set_style(QString , QString );
         QString stylesheet(QString );
         QString get_style(QString );

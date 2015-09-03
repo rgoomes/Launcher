@@ -2,8 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QGraphicsBlurEffect>
-#include <QGraphicsScene>
 #include <QDesktopWidget>
 #include <QResizeEvent>
 #include <QMouseEvent>
@@ -11,6 +9,10 @@
 #include <QRect>
 #include <QTimer>
 #include <QToolButton>
+#include <QThread>
+#include <QIcon>
+#include <QFontMetrics>
+#include <QShortcut>
 
 #include "settingswindow.h"
 #include "stylesheet.h"
@@ -19,8 +21,6 @@
 #include "windowcontroller.h"
 #include "worker.h"
 #include "resultwidget.h"
-
-#include <string>
 
 namespace Ui {
     class MainWindow;
@@ -84,7 +84,7 @@ class MainWindow : public QMainWindow{
         void setupGlobalShortcut();
         void signals_handler();
         void update();
-        vector<QString> getFont();
+        std::vector<QString> getFont();
         QString getGlobalShortcut();
         QString getSearchType();
         QString getBackgroundColor();

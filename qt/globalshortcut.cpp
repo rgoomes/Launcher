@@ -9,21 +9,25 @@ void showWindow(MainWindow *w){
 }
 
 int getModifiers(QString shortcut){
-     QStringList tokens = shortcut.toLower().simplified().replace(" ", "").split(QRegExp("[+]"));
+    #if defined(__linux) || defined(__unix)
+        QStringList tokens = shortcut.toLower().simplified().replace(" ", "").split(QRegExp("[+]"));
 
-     int modifiers = 0;
-     for(QString t : tokens){
-         if(!t.compare("ctrl"))
-             modifiers |= ControlMask;
-         else if(!t.compare("shift"))
-             modifiers |= ShiftMask;
-         else if(!t.compare("alt"))
-             modifiers |= Mod1Mask;
-         else if(!t.compare("super"))
-             modifiers |= Mod4Mask;
-     }
+        int modifiers = 0;
+        for(QString t : tokens){
+            if(!t.compare("ctrl"))
+                modifiers |= ControlMask;
+            else if(!t.compare("shift"))
+                modifiers |= ShiftMask;
+            else if(!t.compare("alt"))
+                modifiers |= Mod1Mask;
+            else if(!t.compare("super"))
+                modifiers |= Mod4Mask;
+        }
 
-     return modifiers;
+        return modifiers;
+    #else
+        return 0;
+    #endif
 }
 
 int getKeyCode(Display *display, QString shortcut){

@@ -1,6 +1,4 @@
-
-#include <QMap>
-#include <QColor>
+#include "utils.h"
 
 // GENERATE RANDOM COLOR
 QString rand_color(int alpha){

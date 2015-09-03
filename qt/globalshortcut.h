@@ -1,7 +1,6 @@
 #ifndef GLOBALSHORTCUT_H
 #define GLOBALSHORTCUT_H
 
-#include <QApplication>
 #include <QObject>
 
 #include "mainwindow.h"

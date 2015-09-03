@@ -2,6 +2,11 @@
 #define WINDOWCONTROLLER_H
 
 #include <QMap>
+#include <QString>
+#include <QStringList>
+
+#include <string>
+#include <fstream>
 
 class WindowController {
     QMap <QString, QString > options;

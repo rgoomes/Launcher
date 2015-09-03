@@ -1,10 +1,6 @@
 #include "settingswindow.h"
 #include "ui_settingswindow.h"
 
-#include <sstream>
-#include <QColorDialog>
-#include <QRgb>
-
 #define LIMIT 128
 #define WIDTH1 "43"
 #define WIDTH2 "104"
@@ -223,8 +219,6 @@ bool SettingsWindow::eventFilter(QObject *obj, QEvent *event){
 }
 
 void SettingsWindow::inits(){
-    this->setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
-
     int dist = std::distance(dpis.begin(), std::find(dpis.begin(), dpis.end(), w->curDpi()));
 
     QStringList values, resize_margins;

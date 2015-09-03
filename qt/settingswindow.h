@@ -2,6 +2,11 @@
 #define SETTINGSWINDOW_H
 
 #include <QMainWindow>
+#include <QColorDialog>
+#include <QRgb>
+
+#include <sstream>
+
 #include "mainwindow.h"
 
 namespace Ui {

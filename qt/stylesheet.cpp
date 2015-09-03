@@ -1,8 +1,3 @@
-#include <fstream>
-
-#include <QDebug>
-#include <QMap>
-
 #include "stylesheet.h"
 #include "utils.h"
 

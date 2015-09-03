@@ -2,17 +2,16 @@
 #define STYLECONTAINER_HPP
 
 #include <vector>
-#include <string>
+#include <QString>
+
 #include "stylesheet.h"
 
-using namespace std;
-
 class Container {
-    vector<Style> objects;
-    string path;
+    std::vector<Style> objects;
+    std::string path;
 
     public:
-        Container(string );
+        Container(std::string );
         ~Container();
 
     public:

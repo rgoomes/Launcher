@@ -1,5 +1,4 @@
 #include "job.h"
-#include <QDebug>
 
 Job::Job(){
     mutex = new QMutex();

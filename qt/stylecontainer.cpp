@@ -1,7 +1,3 @@
-#include <fstream>
-
-#include <QDebug>
-
 #include "stylecontainer.hpp"
 #include "stylesheet.h"
 

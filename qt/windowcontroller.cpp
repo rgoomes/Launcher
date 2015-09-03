@@ -1,8 +1,3 @@
-#include <fstream>
-
-#include <QString>
-#include <QDebug>
-
 #include "windowcontroller.h"
 
 WindowController::WindowController(std::string path){ this->path = path; this->load_options(); }
