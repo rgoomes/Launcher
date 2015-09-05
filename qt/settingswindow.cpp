@@ -128,11 +128,7 @@ void SettingsWindow::setRandomColor(){
 
 void SettingsWindow::changeWindowMode(){
     updateBtnState();
-
-    if(w->in_fullscreen())
-        w->goWindowMode();
-    else
-        w->goFullScreenMode();
+    w->goMode();
 }
 
 void SettingsWindow::changeBlurRadius(int new_value){
@@ -179,43 +175,8 @@ void SettingsWindow::changeSboxBorderRadius(int new_value){
     w->setSboxBorderRadius(new_value);
 }
 
-bool SettingsWindow::eventFilter(QObject *obj, QEvent *event){
-    Q_UNUSED(obj);
-
-    if(event->type() == QEvent::KeyPress){
-        QKeyEvent *ev = static_cast<QKeyEvent *>(event);
-        QString s = ui->sedit->text(), final;
-        bool withPlusAndNotNull = ((s.size() && s[s.length()-1] == '+') || !s.size());
-
-        if(ev->key() == Qt::Key_Return)
-            w->setGlobalShortcut(ui->sedit->text());
-        else if(ev->key() == Qt::Key_Control)
-            ui->sedit->setText(s + (withPlusAndNotNull ? "Ctrl" : "+Ctrl"));
-        else if(ev->key() == Qt::Key_Shift)
-            ui->sedit->setText(s + (withPlusAndNotNull ? "Shift" : "+Shift"));
-        else if(ev->key() == Qt::Key_Super_L)
-            ui->sedit->setText(s + (withPlusAndNotNull ? "Super" : "+Super"));
-        else if(ev->key() == Qt::Key_Alt)
-            ui->sedit->setText(s + (withPlusAndNotNull ? "Alt" : "+Alt"));
-        else if(ev->key() == Qt::Key_Backspace){
-            if(!withPlusAndNotNull){
-                QStringList tokens = s.split(QRegExp("[+]"));
-
-                int size = -1;
-                for(QString t : tokens)
-                    size++;
-                for(QString t : tokens){
-                    if(size-- <= 0)
-                        break;
-                    final += t + "+";
-                }
-
-                ui->sedit->setText(final.left(final.length()-1) + " ");
-            }
-        }
-    }
-
-    return false;
+void SettingsWindow::onTextChanged(QString s){
+    w->setGlobalShortcut(s);
 }
 
 void SettingsWindow::inits(){
@@ -246,7 +207,6 @@ void SettingsWindow::inits(){
     ui->databaseTypeRadio->setDisabled(true);
 #endif
 
-    ui->sedit->installEventFilter(this);
     ui->dpiSlider->setValue(dist);
     ui->timeSlider->setValue(w->getSearchTime());
     ui->realTime->setText(w->getSearchTime() ? QString::number(w->getSearchTime()) + "s" : "Infinite");
@@ -302,4 +262,5 @@ void SettingsWindow::inits(){
     connect(ui->hideOnAppCheck, SIGNAL(clicked(bool)), this, SLOT(changeHideOnAppState(bool )));
     connect(ui->showLauncherBtn, SIGNAL(clicked(bool)), this, SLOT(showLauncher()));
     connect(ui->hideIconCheck, SIGNAL(clicked(bool)), this, SLOT(changeHideIcon(bool )));
+    connect(ui->sedit, SIGNAL(textChanged(QString)), this, SLOT(onTextChanged(QString )));
 }

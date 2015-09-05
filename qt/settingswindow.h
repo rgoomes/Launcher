@@ -52,6 +52,7 @@ class SettingsWindow : public QMainWindow{
         void onRadioBtnToggled(bool );
         void onSearchTypeChanged(bool );
         void showLauncher();
+        void onTextChanged(QString );
 
     private:
         Ui::SettingsWindow *ui;
@@ -59,7 +60,6 @@ class SettingsWindow : public QMainWindow{
     protected:
         void closeEvent(QCloseEvent *event);
         void keyPressEvent(QKeyEvent* event);
-        bool eventFilter(QObject *, QEvent *);
 };
 
 #endif // SETTINGSWINDOW_H

@@ -12,11 +12,6 @@
     #define SIGNALS
 #endif
 
-#define fmax(x, y) (((x) > (y)) ? (x) : (y))
-#define fmin(x, y) (((x) < (y)) ? (x) : (y))
-
-using namespace std;
-
 #define MARGIN_SIZE 30
 #define WAIT_TIME 10
 #define GRIP_SIZE 5
@@ -68,14 +63,12 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
         sigLock.unlock(); // FREE LOCK IN CLEANER
 
     // SHOW SETTINGS
-    if(!settingsOpened) {
-        if(event->key() == Qt::Key_F1){
-            settingsWindow = new SettingsWindow(this);
-            settingsWindow->setMainWindow(this);
-            settingsWindow->show();
-            settingsWindow->activateWindow();
-            settingsOpened = true;
-        }
+    if(!settingsOpened && event->key() == Qt::Key_F1){
+        settingsWindow = new SettingsWindow(this);
+        settingsWindow->setMainWindow(this);
+        settingsWindow->show();
+        settingsWindow->activateWindow();
+        settingsOpened = true;
     }
 
     // AUTOCOMPLETE
@@ -97,17 +90,13 @@ void MainWindow::setResizeMargin(int margin){
 void MainWindow::storeWindowPosition(){
     int win_gap = this->getResizeMargin();
 
-    ctrl->set_option("x", QString::number(max(this->x(), 0) + win_gap));
-    ctrl->set_option("y", QString::number(max(this->y(), 0) + win_gap));
+    ctrl->set_option("x", QString::number(std::max(this->x(), 0) + win_gap));
+    ctrl->set_option("y", QString::number(std::max(this->y(), 0) + win_gap));
 }
 
 void MainWindow::mouseDoubleClickEvent(QMouseEvent *event){
-    if(event->button() == Qt::LeftButton){
-        if(this->in_fullscreen())
-            goWindowMode();
-        else
-            goFullScreenMode();
-    }
+    if(event->button() == Qt::LeftButton)
+        goMode();
 }
 
 void MainWindow::mousePressEvent(QMouseEvent* event){
@@ -115,7 +104,7 @@ void MainWindow::mousePressEvent(QMouseEvent* event){
 }
 
 void MainWindow::mouseMoveEvent(QMouseEvent* event){
-    if(!this->in_fullscreen() && !scaling)
+    if(!this->in_fullscreen() && !scaling && !resizing)
         move(event->globalPos() - mpos);
 }
 
@@ -136,11 +125,9 @@ void MainWindow::request_resize(){
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event){
-    QMainWindow::resizeEvent(event);
-
-    if(!resizing && !this->in_fullscreen() && event->spontaneous()){
+    if(!this->in_fullscreen() && event->spontaneous()){
         resizing = true;
-        QTimer::singleShot(WAIT_TIME, this, SLOT(request_resize()));
+        request_resize();
     }
 }
 
@@ -164,7 +151,7 @@ QString MainWindow::getSboxBorderColor(){
     return cc->getStyle("border-color", SBOX);
 }
 
-void MainWindow::setSboxBorderColor(string color){
+void MainWindow::setSboxBorderColor(std::string color){
     cc->setStyle("border-color", QString::fromStdString(color), SBOX);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
 }
@@ -241,17 +228,6 @@ void MainWindow::setBorderRadius(int r, bool going_fullscreen){
 
 bool MainWindow::in_fullscreen(){
     return windowState() == Qt::WindowFullScreen;
-
-        /*
-         * COMMENTING THIS LINE FIXES BORDER RADIUS NOT BEING PROPERLY SET
-         * ON STARTUP WHEN THE STORED WINDOW STATE IS FULLSCREEN
-         *
-         * NOT SURE IF THIS BREAKS SOMETHING, SO A REGRESSION TEST IS NEEDED,
-         * BECAUSE QT FUNCTION windowState() ISN'T RELIABLE SOMETIMES
-         *
-         */
-
-        // | (ctrl->get_option("fullscreen").toInt()); // SANITY TEST
 }
 
 void MainWindow::goFullScreenMode(){
@@ -276,15 +252,20 @@ void MainWindow::goWindowMode(){
     this->showNormal();
 
     setBorderRadius(getBorderRadius(), false);
-    setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
-              ctrl->get_option("shadow-scale").toInt(),
-              ctrl->get_option("shadow-blur-radius").toInt(), false);
+    setShadow(QColor(0,0,0, shadowAlpha()), shadowScale(), shadowBlurRadius(), false);
 
     // CHANGING DPI'S IN FULLSCREEN WILL NOT AFFECT MANY THINGS LIKE WINDOW SIZE
     // BECAUSE WE'RE IN FULLSCREEN, SO WHEN WE CHANGE THE WINDOW STATE TO WINDOW
     // MODE WE NEED TO RESTORE THOSE THINGS TO THE CORRECT VALUES, TO MATCH THE
     // CURRENT DPI'S. SOLUTION: CALL AGAIN CHANGE_DPI WHEN WE GO WINDOW MODE
     change_dpi(ctrl->get_option("dpi").toDouble(), false);
+}
+
+void MainWindow::goMode(){
+    if(this->in_fullscreen())
+        goWindowMode();
+    else
+        goFullScreenMode();
 }
 
 void MainWindow::center_window(){
@@ -336,14 +317,8 @@ void MainWindow::change_dpi(double new_dpi, bool fullscreen_on){
     this->request_resize();
 }
 
-vector<QString> MainWindow::getFont(){
-    vector<QString> font;
-
-    font.push_back(ctrl->get_option("font"));
-    font.push_back(ctrl->get_option("font-size"));
-    font.push_back(cc->getStyle("color", SBOX));
-
-    return font;
+std::vector<QString> MainWindow::getFont(){
+    return {ctrl->get_option("font"), ctrl->get_option("font-size"), cc->getStyle("color", SBOX)};
 }
 
 void MainWindow::setFont(QString font, QString size){
@@ -352,14 +327,12 @@ void MainWindow::setFont(QString font, QString size){
     ctrl->set_option("font", font);
     ctrl->set_option("font-size", size);
 
-    // SETTING FONT WITH HIGH SIZE MIGHT EXCEED
-    // SBOX HEIGHT SO WE NEED TO UPDATE IT. ALSO
-    // WE NEED TO MAKE SURE SBOX ICON STAYS ALWAYS
-    // IN THE MIDDLE OF THE SBOX
+    // SETTING FONT WITH HIGH SIZE MIGHT EXCEED SBOX HEIGHT SO WE NEED TO UPDATE IT.
+    // ALSO WE NEED TO MAKE SURE SBOX ICON STAYS ALWAYS IN THE MIDDLE OF THE SBOX
     updateSboxHeight(0);
 }
 
-void MainWindow::setFontColor(string color){
+void MainWindow::setFontColor(std::string color){
     cc->setStyle("color", QString::fromStdString(color), SBOX);
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
 }
@@ -387,13 +360,14 @@ void MainWindow::changeIconPos(bool keep){
     ui->sbox->setStyleSheet(cc->getStylesheet("Sbox", SBOX));
 }
 
-void MainWindow::updateSboxHeight(double diff){
+void MainWindow::updateSboxHeight(int diff){
     QFontMetrics fm(QFont(ctrl->get_option("font"), toDpi(ctrl->get_option("font-size"))));
+    int margin_fix = 0; // TODO: FIND OUTSIDE TOP MARGIN. FIXES ICON NOT STAYING IN MIDDLE OF SBOX
 
-    double height = fmax(ctrl->get_option("search-height").toInt() + toPx(diff), toPx(fm.height()));
-    height = fmin(height, -toPx(MARGIN_SIZE) + (!in_fullscreen() ? ctrl->get_option("height").toInt()
+    int height = std::max(ctrl->get_option("search-height").toInt() + toPx(diff), toPx(fm.height()) + margin_fix);
+    height = std::min(height, -toPx(MARGIN_SIZE) + (!in_fullscreen() ? ctrl->get_option("height").toInt()
            : toPx(QApplication::desktop()->screenGeometry().height())));
-    height = fmax(height, 0);
+    height = std::max(height, 0);
 
     ui->sbox->setMinimumHeight(toDpi(QString::number(height)));
     ctrl->set_option("search-height", QString::number(height));
@@ -508,10 +482,7 @@ void MainWindow::signals_handler(){
 }
 
 void MainWindow::onFullscreenShortcut(){
-    if(this->in_fullscreen())
-        goWindowMode();
-    else
-        goFullScreenMode();
+    this->goMode();
 }
 
 void MainWindow::inits(){
@@ -545,9 +516,7 @@ void MainWindow::inits(){
     this->setFontColor(cc->getStyle("color", SBOX).toUtf8().constData());
 
     // DRAW SHADOW
-    setShadow(QColor(0, 0, 0, ctrl->get_option("shadow-alpha").toInt()),
-              ctrl->get_option("shadow-scale").toInt(),
-              ctrl->get_option("shadow-blur-radius").toInt(), false);
+    setShadow(QColor(0,0,0, shadowAlpha()), shadowScale(), shadowBlurRadius(), false);
 
     // FULLSCREEN STATE
     if(ctrl->get_option("fullscreen").toInt())

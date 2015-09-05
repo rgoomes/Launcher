@@ -7,7 +7,6 @@
 #include <QMouseEvent>
 #include <QDebug>
 #include <QRect>
-#include <QTimer>
 #include <QToolButton>
 #include <QThread>
 #include <QIcon>
@@ -44,9 +43,10 @@ class MainWindow : public QMainWindow{
         void setSboxBorderColor(std::string );
         void setSboxBorderRadius(int );
         void setBackgroundColor(QColor, bool);
-        void updateSboxHeight(double );
+        void updateSboxHeight(int );
         void goFullScreenMode();
         void goWindowMode();
+        void goMode();
         void center_window();
         void storeWindowPosition();
         void change_dpi(double , bool);
@@ -62,6 +62,7 @@ class MainWindow : public QMainWindow{
         void setMaxResults(int );
         void setHideIcon(int );
         void setGlobalShortcut(QString );
+        void request_resize();
         bool in_fullscreen();
         bool hideOnApp();
         bool getHideIcon();
@@ -95,7 +96,6 @@ class MainWindow : public QMainWindow{
 
     public slots:
         void clear_trigged();
-        void request_resize();
         void selection_changed();
         void text_changed(QString );
         void onFullscreenShortcut();
