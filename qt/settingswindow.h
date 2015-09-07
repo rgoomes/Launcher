@@ -8,6 +8,7 @@
 #include <sstream>
 
 #include "mainwindow.h"
+#include "maincontroller.h"
 
 namespace Ui {
     class SettingsWindow;
@@ -17,9 +18,10 @@ class SettingsWindow : public QMainWindow{
     Q_OBJECT
 
     class MainWindow *w;
+    class MainController *mc;
 
     public:
-        explicit SettingsWindow(QWidget *parent = 0);
+        explicit SettingsWindow(MainWindow *w, MainController *mc, QWidget *parent = 0);
         ~SettingsWindow();
 
     public:

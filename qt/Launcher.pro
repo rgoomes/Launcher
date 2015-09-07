@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     resultwidget.cpp \
     cleaner.cpp \
     globalshortcut.cpp \
-    singleinstance.cpp
+    singleinstance.cpp \
+    maincontroller.cpp
 
 HEADERS += mainwindow.h \
     stylesheet.h \
@@ -42,7 +43,8 @@ HEADERS += mainwindow.h \
     resultwidget.h \
     cleaner.h \
     globalshortcut.h \
-    singleinstance.h
+    singleinstance.h \
+    maincontroller.h
 
 FORMS += mainwindow.ui \
     settingswindow.ui \

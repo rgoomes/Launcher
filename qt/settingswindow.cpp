@@ -12,8 +12,11 @@ std::vector<int> font_sizes = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 2
                                26, 28, 32, 36, 40, 44, 48, 54, 60, 66, 72, 80, 88, 96};
 
 SettingsWindow::~SettingsWindow(){ delete ui; }
-SettingsWindow::SettingsWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::SettingsWindow){
+SettingsWindow::SettingsWindow(MainWindow *w, MainController *mc, QWidget *parent) : QMainWindow(parent), ui(new Ui::SettingsWindow){
+    this->w = w;
+    this->mc = mc;
     ui->setupUi(this);
+    inits();
 }
 
 std::string btn_style(QString c, bool border, std::string px){
@@ -21,11 +24,6 @@ std::string btn_style(QString c, bool border, std::string px){
            + std::string(";\nborder-style: solid;\nborder-width:3px;\nmax-width:") + px + std::string("px;\noutline:none;\n")
            + std::string("border-radius:6px;\nmax-height:17px;\nmin-width:") + px + std::string("px;\nmin-height:17px;\n")
            + (border ? std::string("border-color: #CCCBCA;") : std::string(""));
-}
-
-void SettingsWindow::setMainWindow(MainWindow *w){
-    this->w = w;
-    inits();
 }
 
 void SettingsWindow::closeEvent(QCloseEvent *) {
@@ -41,45 +39,45 @@ void SettingsWindow::keyPressEvent(QKeyEvent *event){
 
 void SettingsWindow::changeBackgroundColor(){
     int r, g, b;
-    std::stringstream ss(w->getBackgroundColor().toStdString());
+    std::stringstream ss(mc->getBackgroundColor().toStdString());
 
     ss.ignore(LIMIT, '(');
     ss >> r; ss.ignore(LIMIT, ',');
     ss >> g; ss.ignore(LIMIT, ',');
     ss >> b;
 
-    QColor c = QColorDialog::getColor(QColor(r,g,b,w->getBackgroundAlpha()), 0, QString(), QColorDialog::ShowAlphaChannel);
+    QColor c = QColorDialog::getColor(QColor(r,g,b,mc->getBackgroundAlpha()), 0, QString(), QColorDialog::ShowAlphaChannel);
     if(!c.isValid())
         return;
 
-    w->setBackgroundColor(c, false);
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha(), WIDTH2).c_str());
+    mc->setBackgroundColor(c, false);
+    ui->backColorBtn->setStyleSheet(btn_style(mc->getBackgroundColor(), mc->shadowAlpha(), WIDTH2).c_str());
 }
 
 void SettingsWindow::changeBorderColor(){
-    QColor c = QColorDialog::getColor(QColor(w->getSboxBorderColor()), 0, QString());
+    QColor c = QColorDialog::getColor(QColor(mc->getSboxBorderColor()), 0, QString());
     if(!c.isValid())
         return;
 
-    w->setSboxBorderColor(c.name().toUtf8().constData());
-    ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false, WIDTH1).c_str());
+    mc->setSboxBorderColor(c.name().toUtf8().constData());
+    ui->borderColorBtn->setStyleSheet(btn_style(mc->getSboxBorderColor(), false, WIDTH1).c_str());
 }
 
 void SettingsWindow::changeTextColor(){
-    QColor c = QColorDialog::getColor(QColor(w->getFont()[2]), 0, QString());
+    QColor c = QColorDialog::getColor(QColor(mc->getFont()[2]), 0, QString());
     if(!c.isValid())
         return;
 
-    w->setFontColor(c.name().toUtf8().constData());
-    ui->fontColorBtn->setStyleSheet(btn_style(w->getFont()[2], false, WIDTH1).c_str());
+    mc->setFontColor(c.name().toUtf8().constData());
+    ui->fontColorBtn->setStyleSheet(btn_style(mc->getFont()[2], false, WIDTH1).c_str());
 }
 
 void SettingsWindow::changeBorderRadius(int new_value){
-    w->setBorderRadius(new_value, false);
+    mc->setBorderRadius(new_value, false);
 }
 
 void SettingsWindow::changeBorderWidth(int new_value){
-    w->setSboxBorderWidth(new_value);
+    mc->setSboxBorderWidth(new_value);
 }
 
 void SettingsWindow::requestDpiChange(int pos){
@@ -89,27 +87,27 @@ void SettingsWindow::requestDpiChange(int pos){
 }
 
 void SettingsWindow::onRadioBtnToggled(bool ){
-    w->changeIconPos(false);
+    mc->changeIconPos(false);
 }
 
 void SettingsWindow::onSearchTypeChanged(bool isDatabase){
-    w->setSearchType(isDatabase ? "database" : "standard");
+    mc->setSearchType(isDatabase ? "database" : "standard");
 }
 
 void SettingsWindow::changeIconTheme(bool ){
-    w->updateIcon(w->getSboxText(), w->getIconTheme().compare("light") ? "light" : "dark");
+    mc->updateIcon(mc->getSboxText(), mc->getIconTheme().compare("light") ? "light" : "dark");
 }
 
 void SettingsWindow::setFontSize(const QString &s){
-    w->setFont(w->getFont()[0], s);
+    mc->setFont(mc->getFont()[0], s);
 }
 
 void SettingsWindow::setFontFamily(const QString &s){
-    w->setFont(s, w->getFont()[1]);
+    mc->setFont(s, mc->getFont()[1]);
 }
 
 void SettingsWindow::changeResizeMargin(const QString &s){
-    w->setResizeMargin(s.toInt());
+    mc->setResizeMargin(s.toInt());
 }
 
 void SettingsWindow::updateBtnState(){
@@ -121,9 +119,9 @@ void SettingsWindow::centerWindow(){
 }
 
 void SettingsWindow::setRandomColor(){
-    w->setBackgroundColor(QColor(), true);
+    mc->setBackgroundColor(QColor(), true);
 
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha(), WIDTH2).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(mc->getBackgroundColor(), mc->shadowAlpha(), WIDTH2).c_str());
 }
 
 void SettingsWindow::changeWindowMode(){
@@ -132,28 +130,28 @@ void SettingsWindow::changeWindowMode(){
 }
 
 void SettingsWindow::changeBlurRadius(int new_value){
-    w->setShadow(QColor(0,0,0, w->shadowAlpha()), w->shadowScale(), new_value, false);
+    mc->setShadow(QColor(0,0,0, mc->shadowAlpha()), mc->shadowScale(), new_value, false);
 }
 
 void SettingsWindow::changeShadowAlpha(int new_value){
-    w->setShadow(QColor(0,0,0, new_value), w->shadowScale(), w->shadowBlurRadius(), false);
+    mc->setShadow(QColor(0,0,0, new_value), mc->shadowScale(), mc->shadowBlurRadius(), false);
 
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha(), WIDTH2).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(mc->getBackgroundColor(), mc->shadowAlpha(), WIDTH2).c_str());
 }
 
 void SettingsWindow::changeShadowScale(int new_value){
-    w->setShadow(QColor(0,0,0, w->shadowAlpha()), new_value, w->shadowBlurRadius(), false);
+    mc->setShadow(QColor(0,0,0, mc->shadowAlpha()), new_value, mc->shadowBlurRadius(), false);
 }
 
 void SettingsWindow::changeHideOnAppState(bool state){
-    w->setHideOnApp(state);
+    mc->setHideOnApp(state);
 }
 
 void SettingsWindow::changeHideIcon(bool state){
     ui->iconPosWidget->setDisabled(state);
     ui->iconThemeWidget->setDisabled(state);
 
-    w->setHideIcon(state);
+    mc->setHideIcon(state);
 }
 
 void SettingsWindow::showLauncher(){
@@ -162,25 +160,27 @@ void SettingsWindow::showLauncher(){
 }
 
 void SettingsWindow::changeSearchTime(int new_value){
-    w->setSearchTime(new_value);
+    mc->setSearchTime(new_value);
     ui->realTime->setText(new_value ? QString::number(new_value) + "s" : "Infinite");
 }
 
 void SettingsWindow::changeMaxResults(int new_value){
-    w->setMaxResults(new_value);
+    mc->setMaxResults(new_value);
     ui->resultsLabel->setText(QString::number(new_value));
 }
 
 void SettingsWindow::changeSboxBorderRadius(int new_value){
-    w->setSboxBorderRadius(new_value);
+    mc->setSboxBorderRadius(new_value);
 }
 
 void SettingsWindow::onTextChanged(QString s){
-    w->setGlobalShortcut(s);
+    mc->setGlobalShortcut(s);
 }
 
 void SettingsWindow::inits(){
-    int dist = std::distance(dpis.begin(), std::find(dpis.begin(), dpis.end(), w->curDpi()));
+    setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+
+    int dist = std::distance(dpis.begin(), std::find(dpis.begin(), dpis.end(), mc->curDpi()));
 
     QStringList values, resize_margins;
     for(int size : font_sizes)
@@ -188,17 +188,17 @@ void SettingsWindow::inits(){
     for(int i = 0; i <= 30; i++)
         resize_margins << QString::number(i);
 
-    if(w->iconOnLeft())
+    if(mc->iconOnLeft())
         ui->iconLeftRadioButton->setChecked(true);
     else
         ui->iconRightRadioButton->setChecked(true);
 
-    if(w->getIconTheme().compare("light"))
+    if(mc->getIconTheme().compare("light"))
         ui->darkRadio->setChecked(true);
     else
         ui->lightRadio->setChecked(true);
 
-    if(w->getSearchType().compare("standard"))
+    if(mc->getSearchType().compare("standard"))
         ui->databaseTypeRadio->setChecked(true);
     else
         ui->stdTypeRadio->setChecked(true);
@@ -208,35 +208,35 @@ void SettingsWindow::inits(){
 #endif
 
     ui->dpiSlider->setValue(dist);
-    ui->timeSlider->setValue(w->getSearchTime());
-    ui->realTime->setText(w->getSearchTime() ? QString::number(w->getSearchTime()) + "s" : "Infinite");
-    ui->resultsSlider->setValue(w->getMaxResults());
-    ui->resultsLabel->setText(QString::number(w->getMaxResults()));
+    ui->timeSlider->setValue(mc->getSearchTime());
+    ui->realTime->setText(mc->getSearchTime() ? QString::number(mc->getSearchTime()) + "s" : "Infinite");
+    ui->resultsSlider->setValue(mc->getMaxResults());
+    ui->resultsLabel->setText(QString::number(mc->getMaxResults()));
     ui->dpiNumberLabel->move(QPoint(lpos[dist],ui->dpiNumberLabel->y()));
-    ui->dpiNumberLabel->setText(QString::number(w->curDpi()));
-    ui->shadowBlurSlider->setValue(w->shadowBlurRadius());
-    ui->shadowAlphaSlider->setValue(w->shadowAlpha());
-    ui->shadowScaleSlider->setValue(w->shadowScale());
-    ui->borderRadiusSlider->setValue(w->getBorderRadius());
+    ui->dpiNumberLabel->setText(QString::number(mc->curDpi()));
+    ui->shadowBlurSlider->setValue(mc->shadowBlurRadius());
+    ui->shadowAlphaSlider->setValue(mc->shadowAlpha());
+    ui->shadowScaleSlider->setValue(mc->shadowScale());
+    ui->borderRadiusSlider->setValue(mc->getBorderRadius());
     ui->fullWindowBtn->setText(w->in_fullscreen() ? "Go Window Mode" : "Go Fullscreen Mode");
     ui->fontSizeCombo->addItems(values);
-    ui->fontSizeCombo->setCurrentText(w->getFont()[1]);
+    ui->fontSizeCombo->setCurrentText(mc->getFont()[1]);
     ui->fontSizeCombo->setStyleSheet(MAKE_EDITABLE);
     ui->fontFamilyCombo->setStyleSheet(MAKE_EDITABLE);
     ui->resizePxCombo->setStyleSheet(MAKE_EDITABLE);
     ui->resizePxCombo->addItems(resize_margins);
-    ui->resizePxCombo->setCurrentText(QString::number(w->getResizeMargin()));
-    ui->fontFamilyCombo->setCurrentText(w->getFont()[0]);
-    ui->fontColorBtn->setStyleSheet(btn_style(w->getFont()[2], false, WIDTH1).c_str());
-    ui->backColorBtn->setStyleSheet(btn_style(w->getBackgroundColor(), w->shadowAlpha(), WIDTH2).c_str());
-    ui->borderColorBtn->setStyleSheet(btn_style(w->getSboxBorderColor(), false, WIDTH1).c_str());
-    ui->borderWidthSlider->setValue(w->sboxBorderWidth());
-    ui->hideOnAppCheck->setChecked(w->hideOnApp());
-    ui->hideIconCheck->setChecked(w->getHideIcon());
-    ui->iconPosWidget->setDisabled(w->getHideIcon());
-    ui->iconThemeWidget->setDisabled(w->getHideIcon());
-    ui->sboxBorderRadiusSlider->setValue(w->getSboxBorderRadius());
-    ui->sedit->setText(w->getGlobalShortcut());
+    ui->resizePxCombo->setCurrentText(QString::number(mc->getResizeMargin()));
+    ui->fontFamilyCombo->setCurrentText(mc->getFont()[0]);
+    ui->fontColorBtn->setStyleSheet(btn_style(mc->getFont()[2], false, WIDTH1).c_str());
+    ui->backColorBtn->setStyleSheet(btn_style(mc->getBackgroundColor(), mc->shadowAlpha(), WIDTH2).c_str());
+    ui->borderColorBtn->setStyleSheet(btn_style(mc->getSboxBorderColor(), false, WIDTH1).c_str());
+    ui->borderWidthSlider->setValue(mc->sboxBorderWidth());
+    ui->hideOnAppCheck->setChecked(mc->hideOnApp());
+    ui->hideIconCheck->setChecked(mc->getHideIcon());
+    ui->iconPosWidget->setDisabled(mc->getHideIcon());
+    ui->iconThemeWidget->setDisabled(mc->getHideIcon());
+    ui->sboxBorderRadiusSlider->setValue(mc->getSboxBorderRadius());
+    ui->sedit->setText(mc->getGlobalShortcut());
 
     connect(ui->lightRadio,  SIGNAL(toggled(bool)), this, SLOT(changeIconTheme(bool)));
     connect(ui->databaseTypeRadio,  SIGNAL(toggled(bool)), this, SLOT(onSearchTypeChanged(bool)));

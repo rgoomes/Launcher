@@ -10,7 +10,7 @@ void Cleaner::cleanExit(){
     mtx->lock();
 
     // UPDATE ALL CHANGES
-    w->update();
+    w->updateFiles();
 
     // TODO: LATER CLEAN ALL THE STUFF
 
