@@ -18,6 +18,9 @@ class Cleaner : public QObject {
 
     public slots:
         void cleanExit();
+
+    signals:
+        void finished();
 };
 
 #endif // CLEANER_H

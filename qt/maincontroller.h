@@ -31,7 +31,7 @@ class MainController{
         void updateIcon(QString , QString );
         void setFont(QString , QString);
         void setFontColor(std::string color);
-        void updateSboxHeight(int );
+        void updateSboxHeight(int = 0);
         void setMaxResults(int );
         void setSearchTime(int );
         void setSearchType(QString );

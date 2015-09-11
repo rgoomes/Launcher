@@ -32,6 +32,9 @@ class GlobalShortcut: public QObject {
 
     private:
         void globalShortcutX11();
+
+    signals:
+        void finished();
 };
 
 #endif // GLOBALSHORTCUT_H

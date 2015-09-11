@@ -45,6 +45,8 @@ void MainWindow::setupCleaner(){
     Cleaner *cleaner = new Cleaner(this, &sigLock);
     cleaner->moveToThread(thread);
     connect(thread, &QThread::started, cleaner, &Cleaner::cleanExit);
+    connect(cleaner, &Cleaner::finished, cleaner, &Cleaner::deleteLater );
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater );
     thread->start();
 }
 
@@ -53,6 +55,8 @@ void MainWindow::setupGlobalShortcut(){
     globalshortcut = new GlobalShortcut(this, mc->getGlobalShortcut());
     globalshortcut->moveToThread(thread);
     connect(thread, &QThread::started, globalshortcut, &GlobalShortcut::listenShortcuts);
+    connect(globalshortcut, &GlobalShortcut::finished, globalshortcut, &GlobalShortcut::deleteLater );
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater );
     thread->start();
 }
 
@@ -95,7 +99,7 @@ void MainWindow::request_resize(){
     wc->set_option("width",  QString::number(mc->toPx(this->width())));
     wc->set_option("height", QString::number(mc->toPx(this->height())));
 
-    mc->updateSboxHeight(0);
+    mc->updateSboxHeight();
     if(resizing)
         mc->storeWindowPosition();
 
@@ -170,7 +174,7 @@ void MainWindow::text_changed(QString text){
 void MainWindow::change_dpi(double new_dpi, bool fullscreen_on){
     wc->set_option("dpi", QString::number(new_dpi));
 
-    mc->updateSboxHeight(0);
+    mc->updateSboxHeight();
     mc->setFont(wc->get_option("font"), wc->get_option("font-size"));
 
     if(fullscreen_on)
@@ -197,8 +201,7 @@ void MainWindow::updateFiles(){
     ct->update_file();
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *event){
-    QMainWindow::eventFilter(obj, event);
+bool MainWindow::eventFilter(QObject *, QEvent *event){
     QPoint cur = static_cast<const QMouseEvent*>(event)->pos();
 
     if(abs(mc->toDpi(wc->get_option("search-height")) - cur.y()) <= GRIP_SIZE)
@@ -210,9 +213,6 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
             QApplication::setOverrideCursor(Qt::IBeamCursor);
     if(event->type() == QEvent::Leave)
         QApplication::setOverrideCursor(Qt::ArrowCursor);
-
-    /////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////
 
     if(scaling && event->type() == QEvent::MouseMove)
         mc->updateSboxHeight(cur.y() - mpos.y());

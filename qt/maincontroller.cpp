@@ -181,7 +181,7 @@ void MainController::setFont(QString font, QString size){
 
     // SETTING FONT WITH HIGH SIZE MIGHT EXCEED SBOX HEIGHT SO WE NEED TO UPDATE IT.
     // ALSO WE NEED TO MAKE SURE SBOX ICON STAYS ALWAYS IN THE MIDDLE OF THE SBOX
-    updateSboxHeight(0);
+    updateSboxHeight();
 }
 
 void MainController::setFontColor(std::string color){
@@ -191,7 +191,7 @@ void MainController::setFontColor(std::string color){
 
 void MainController::updateSboxHeight(int diff){
     QFontMetrics fm(QFont(wc->get_option("font"), toDpi(wc->get_option("font-size"))));
-    int margin_fix = 0; // TODO: FIND OUTSIDE TOP MARGIN. FIXES ICON NOT STAYING IN MIDDLE OF SBOX
+    int margin_fix = 2*sboxBorderWidth()+1;
 
     int height = std::max(wc->get_option("search-height").toInt() + toPx(diff), toPx(fm.height()) + margin_fix);
     height = std::min(height, -toPx(MARGIN_SIZE) + (!w->in_fullscreen() ? wc->get_option("height").toInt()

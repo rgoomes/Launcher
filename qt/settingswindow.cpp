@@ -8,8 +8,7 @@
 
 std::vector<double> dpis = {0.5, 0.625, 0.75, 0.875, 1.0, 1.12, 1.25, 1.38, 1.5};
 std::vector<int> lpos = {151, 156, 176, 185, 214, 218, 231, 244, 263};
-std::vector<int> font_sizes = {6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24,
-                               26, 28, 32, 36, 40, 44, 48, 54, 60, 66, 72, 80, 88, 96};
+std::vector<int> font_sizes = {12, 13, 14, 15, 16, 18, 20, 22, 24, 26, 28, 32, 36, 40, 44, 48, 54, 60, 66, 72, 80, 88, 96};
 
 SettingsWindow::~SettingsWindow(){ delete ui; }
 SettingsWindow::SettingsWindow(MainWindow *w, MainController *mc, QWidget *parent) : QMainWindow(parent), ui(new Ui::SettingsWindow){
