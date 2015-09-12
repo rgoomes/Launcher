@@ -203,28 +203,34 @@ void MainWindow::updateFiles(){
     ct->update_file();
 }
 
-bool MainWindow::eventFilter(QObject *, QEvent *event){
-    QPoint cur = static_cast<const QMouseEvent*>(event)->pos();
+bool MainWindow::eventFilter(QObject *obj, QEvent *event){
+    if(obj == ui->sbox){
+        QPoint cur = static_cast<const QMouseEvent*>(event)->pos();
 
-    if(abs(mc->toDpi(wc->get_option("search-height")) - cur.y()) <= GRIP_SIZE)
-        QApplication::setOverrideCursor(Qt::SplitVCursor);
-    else if(cur.y() && !scaling)
-        QApplication::setOverrideCursor(Qt::IBeamCursor);
-    if(event->type() == QEvent::MouseButtonRelease)
-        if(abs(mc->toDpi(wc->get_option("search-height")) - cur.y()) > GRIP_SIZE)
-            QApplication::setOverrideCursor(Qt::IBeamCursor);
-    if(event->type() == QEvent::Leave)
-        QApplication::setOverrideCursor(Qt::ArrowCursor);
-
-    if(scaling && event->type() == QEvent::MouseMove)
-        mc->updateSboxHeight(cur.y() - mpos.y());
-    if(event->type() == QEvent::MouseMove)
-        mpos = cur;
-    if(event->type() == QEvent::MouseButtonPress)
         if(abs(mc->toDpi(wc->get_option("search-height")) - cur.y()) <= GRIP_SIZE)
-            scaling = true;
-    if(event->type() == QEvent::MouseButtonRelease)
-        scaling = false;
+            QApplication::setOverrideCursor(Qt::SplitVCursor);
+        else if(cur.y() && !scaling)
+            QApplication::setOverrideCursor(Qt::IBeamCursor);
+        if(event->type() == QEvent::MouseButtonRelease)
+            if(abs(mc->toDpi(wc->get_option("search-height")) - cur.y()) > GRIP_SIZE)
+                QApplication::setOverrideCursor(Qt::IBeamCursor);
+        if(event->type() == QEvent::Leave)
+            QApplication::setOverrideCursor(Qt::ArrowCursor);
+
+        if(scaling && event->type() == QEvent::MouseMove)
+            mc->updateSboxHeight(cur.y() - mpos.y());
+        if(event->type() == QEvent::MouseMove)
+            mpos = cur;
+        if(event->type() == QEvent::MouseButtonPress)
+            if(abs(mc->toDpi(wc->get_option("search-height")) - cur.y()) <= GRIP_SIZE)
+                scaling = true;
+        if(event->type() == QEvent::MouseButtonRelease)
+            scaling = false;
+    }
+    else if(obj == ui->results && event->type() == QEvent::Wheel){
+        QWheelEvent *wheel = static_cast<QWheelEvent*>(event);
+        return wheel->orientation() == Qt::Horizontal ? true : false;
+    }
 
     return false;
 }
@@ -263,6 +269,9 @@ void MainWindow::onNewResult(QString name, QString path){
 void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+
+    // INIT FORMAT THEMES
+    initFormatThemes();
 
     // LINE EDIT DEFAULT ICON
     icon = new QToolButton(ui->sbox);
@@ -305,8 +314,9 @@ void MainWindow::inits(){
     QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_F12), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(onFullscreenShortcut()));
 
-    // LINE EDIT EVENT FILTERS AND SIGNALS/SLOTS
+    // EVENT FILTERS AND SIGNALS/SLOTS
     ui->sbox->installEventFilter(this);
+    ui->results->installEventFilter(this);
     connect(icon, SIGNAL(clicked()), this, SLOT(clear_trigged()));
     connect(ui->sbox, SIGNAL(textChanged(QString )), this, SLOT(text_changed(QString )));
     connect(ui->sbox, SIGNAL(selectionChanged()), this, SLOT(selection_changed()));

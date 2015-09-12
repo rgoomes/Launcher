@@ -1,5 +1,7 @@
 #include "utils.h"
 
+QMap<QString, QString> formatThemes;
+
 // GENERATE RANDOM COLOR
 QString rand_color(int alpha){
     return QString("rgba(")
@@ -53,4 +55,45 @@ QMap <QString, QString > iconDefaultStyle(){
     default_styles["padding"] = "0px";
 
     return default_styles;
+}
+
+void initFormatThemes(){
+    formatThemes["pdf"]  = "application-pdf";
+    formatThemes["doc"]  = "application-msword";
+    formatThemes["docx"] = "application-msword";
+    formatThemes["odt"]  = "x-office-document";
+    formatThemes["odp"]  = "x-office-presentation";
+    formatThemes["zip"]  = "package-x-generic";
+    formatThemes["rar"]  = "package-x-generic";
+    formatThemes["bz2"]  = "package-x-generic";
+    formatThemes["gz"]   = "package-x-generic";
+    formatThemes["mp4"]  = "video-x-generic";
+    formatThemes["wmv"]  = "video-x-generic";
+    formatThemes["html"] = "text-html";
+    formatThemes["mp3"]  = "audio-x-generic";
+    formatThemes["ttf"]  = "font-x-generic";
+    formatThemes["otf"]  = "font-x-generic";
+}
+
+QIcon fileIcon(QString filePath){
+    bool isImage = false;
+    QFileInfo fileInfo(filePath);
+    const QString ext = fileInfo.suffix().toLower();
+
+    for(QString format : QImageReader::supportedImageFormats())
+        if(!format.compare(ext)){
+            isImage = true;
+            break;
+        }
+
+    if(isImage)
+        return QIcon(filePath);
+    else if(formatThemes.find(ext) != formatThemes.end())
+        return QIcon::fromTheme(formatThemes[ext]);
+    else if(fileInfo.isExecutable())
+        return QIcon::fromTheme("application-x-executable");
+    else{
+        QProxyStyle ps;
+        return ps.standardIcon(QStyle::SP_FileIcon);
+    }
 }

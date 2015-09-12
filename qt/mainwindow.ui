@@ -48,6 +48,9 @@
             <string notr="true">background-color: transparent;
 border: none;</string>
            </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
            <property name="widgetResizable">
             <bool>true</bool>
            </property>

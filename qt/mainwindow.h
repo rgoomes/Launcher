@@ -13,6 +13,7 @@
 #include <QShortcut>
 #include <QLineEdit>
 #include <QFrame>
+#include <QWheelEvent>
 
 #include "settingswindow.h"
 #include "stylesheet.h"
