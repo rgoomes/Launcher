@@ -76,19 +76,14 @@ void initFormatThemes(){
 }
 
 QIcon fileIcon(QString filePath){
-    bool isImage = false;
     QFileInfo fileInfo(filePath);
     const QString ext = fileInfo.suffix().toLower();
 
     for(QString format : QImageReader::supportedImageFormats())
-        if(!format.compare(ext)){
-            isImage = true;
-            break;
-        }
+        if(!format.compare(ext))
+            return QIcon(filePath);
 
-    if(isImage)
-        return QIcon(filePath);
-    else if(formatThemes.find(ext) != formatThemes.end())
+    if(formatThemes.find(ext) != formatThemes.end())
         return QIcon::fromTheme(formatThemes[ext]);
     else if(fileInfo.isExecutable())
         return QIcon::fromTheme("application-x-executable");
