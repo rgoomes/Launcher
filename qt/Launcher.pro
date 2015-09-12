@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     cleaner.cpp \
     globalshortcut.cpp \
     singleinstance.cpp \
-    maincontroller.cpp
+    maincontroller.cpp \
+    resultscontroller.cpp
 
 HEADERS += mainwindow.h \
     stylesheet.h \
@@ -44,7 +45,8 @@ HEADERS += mainwindow.h \
     cleaner.h \
     globalshortcut.h \
     singleinstance.h \
-    maincontroller.h
+    maincontroller.h \
+    resultscontroller.h
 
 FORMS += mainwindow.ui \
     settingswindow.ui \

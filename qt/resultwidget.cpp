@@ -1,15 +1,13 @@
 #include "resultwidget.h"
 #include "ui_resultwidget.h"
 
-ResultWidget::ResultWidget(QWidget *parent, QString name) :
+ResultWidget::~ResultWidget(){ delete ui; }
+ResultWidget::ResultWidget(QWidget *parent, QString name, QString path) :
     QWidget(parent),
     ui(new Ui::ResultWidget)
 {
     ui->setupUi(this);
     ui->name->setText(name);
+    ui->path->setText(path);
 }
 
-ResultWidget::~ResultWidget()
-{
-    delete ui;
-}

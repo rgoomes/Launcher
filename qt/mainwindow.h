@@ -21,6 +21,7 @@
 #include "worker.h"
 #include "resultwidget.h"
 #include "maincontroller.h"
+#include "resultscontroller.h"
 
 extern const int FRAME;
 extern const int SBOX;
@@ -50,6 +51,7 @@ class MainWindow : public QMainWindow{
         void setupGlobalShortcut();
         void signals_handler();
         void updateFiles();
+        void updateResults();
         bool in_fullscreen();
         int toDpi(QString );
         int toPx(int );
@@ -64,12 +66,14 @@ class MainWindow : public QMainWindow{
         void selection_changed();
         void text_changed(QString );
         void onFullscreenShortcut();
+        void onNewResult(QString , QString );
 
     private:
         class SettingsWindow *settingsWindow;
         class GlobalShortcut *globalshortcut;
         class MainController *mc;
 
+        ResultsController *rc;
         WindowController *wc;
         Ui::MainWindow *ui;
         Container *ct;

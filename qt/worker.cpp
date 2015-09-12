@@ -93,8 +93,10 @@ void Worker::dfs(int depth, QDir *cur) throw(Interrupt){
         while(files.hasNext()){
             files.next();
             QString name = files.fileName();
-            if(name.toLower().contains(key))
+            if(name.toLower().contains(key)){
                 results->append(name);
+                emit newResult(files.fileName(), files.filePath());
+            }
         }
         resultsLock.unlock();
     }
@@ -119,10 +121,9 @@ void Worker::removeUnmatched(){
     resultsLock.unlock();
 }
 
-void Worker::updateWork(QString k, int searchTime, int maxResults){
+void Worker::updateWork(QString k, int searchTime){
     k = k.toLower();
 
-    this->maxResults = maxResults;
     this->searchTime = searchTime;
     t = high_resolution_clock::now();
 

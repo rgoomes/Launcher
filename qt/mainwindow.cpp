@@ -25,8 +25,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     sigLock.lock();
     inits();
     setupWorker();
-
-    ui->results->layout()->addWidget(new ResultWidget(ui->results, "main.cpp"));
 }
 
 void MainWindow::setupWorker(){
@@ -34,6 +32,7 @@ void MainWindow::setupWorker(){
     worker = new Worker();
     worker->moveToThread(thread);
     connect(thread, &QThread::started, worker, &Worker::process );
+    connect(worker, &Worker::newResult, this, &MainWindow::onNewResult);
     connect(worker, &Worker::finished, thread, &QThread::quit );
     connect(worker, &Worker::finished, worker, &Worker::deleteLater );
     connect(thread, &QThread::finished, thread, &QThread::deleteLater );
@@ -167,8 +166,10 @@ void MainWindow::center_window(){
 void MainWindow::text_changed(QString text){
     mc->updateIcon(text, mc->getIconTheme());
 
+    rc->clearResults();
+
     if(!mc->getSearchType().compare("standard"))
-        worker->updateWork(text, mc->getSearchTime() * 1000, mc->getMaxResults());
+        worker->updateWork(text, mc->getSearchTime() * 1000);
 }
 
 void MainWindow::change_dpi(double new_dpi, bool fullscreen_on){
@@ -194,6 +195,7 @@ void MainWindow::selection_changed(){
 
 void MainWindow::clear_trigged(){
     ui->sbox->setText("");
+    rc->clearResults();
 }
 
 void MainWindow::updateFiles(){
@@ -254,6 +256,10 @@ QToolButton* MainWindow::iconUi(){
     return icon;
 }
 
+void MainWindow::onNewResult(QString name, QString path){
+    rc->addResult(name, path);
+}
+
 void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -275,6 +281,7 @@ void MainWindow::inits(){
     // CONTROLLERS
     wc = new WindowController("../User/window.user");
     mc = new MainController(this, this->wc, this->ct);
+    rc = new ResultsController(ui->results, 10);
 
     // INIT STORED PATH
     QPixmap pixmap((mc->getIconTheme().compare("dark") ? LIGHT_ICONS_PATH : DARK_ICONS_PATH) + "search.svg");

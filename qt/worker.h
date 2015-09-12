@@ -10,6 +10,7 @@
 
 #include "job.h"
 #include "atomicbool.h"
+#include "resultscontroller.h"
 
 #include <chrono>
 
@@ -27,7 +28,7 @@ class Worker : public QObject
 public:
     Worker();
     ~Worker();
-    void updateWork(QString, int, int);
+    void updateWork(QString, int);
 
 private:
     QString key;
@@ -36,7 +37,7 @@ private:
     Job *hasWork;
     QMutex resultsLock;
 
-    int maxResults, searchTime;
+    int searchTime;
     high_resolution_clock::time_point t;
 
     void search();
@@ -49,6 +50,7 @@ public slots:
 signals:
     void finished();
     void error(QString err);
+    void newResult(QString , QString );
 
 };
 

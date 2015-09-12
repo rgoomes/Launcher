@@ -26,15 +26,12 @@
     </property>
     <item>
      <widget class="QFrame" name="frame">
-      <property name="minimumSize">
-       <size>
-        <width>200</width>
-        <height>65</height>
-       </size>
-      </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <layout class="QVBoxLayout" name="frameLayout">
+         <property name="spacing">
+          <number>5</number>
+         </property>
          <item>
           <widget class="QLineEdit" name="sbox">
            <property name="minimumSize">
@@ -46,12 +43,25 @@
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="results">
-           <layout class="QVBoxLayout" name="verticalLayout_3">
-            <item>
-             <widget class="ResultWidget" name="widget_2" native="true"/>
-            </item>
-           </layout>
+          <widget class="QScrollArea" name="scrollArea">
+           <property name="styleSheet">
+            <string notr="true">background-color: transparent;
+border: none;</string>
+           </property>
+           <property name="widgetResizable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="results">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>0</y>
+              <width>570</width>
+              <height>115</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout"/>
+           </widget>
           </widget>
          </item>
         </layout>
@@ -63,14 +73,6 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>ResultWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">resultwidget.h</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>
