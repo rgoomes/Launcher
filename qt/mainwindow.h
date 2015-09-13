@@ -71,7 +71,6 @@ class MainWindow : public QMainWindow{
     private:
         class SettingsWindow *settingsWindow;
         class GlobalShortcut *globalshortcut;
-        class ResultsController *rc;
         class Worker* worker;
 
         WindowController *wc;

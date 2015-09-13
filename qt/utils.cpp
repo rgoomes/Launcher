@@ -44,6 +44,7 @@ QMap <QString, QString > sboxDefaultStyle(){
     default_styles["background"] = "transparent";
     default_styles["padding-left"] = "30px";
     default_styles["padding-right"] = "0px";
+    default_styles["selection-background-color"] = "#878787";
 
     return default_styles;
 }

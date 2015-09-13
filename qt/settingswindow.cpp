@@ -62,6 +62,16 @@ void SettingsWindow::changeBorderColor(){
     ui->borderColorBtn->setStyleSheet(btn_style(mc->getSboxBorderColor(), false, WIDTH1).c_str());
 }
 
+void SettingsWindow::changeSelectionColor(){
+    QColor c = QColorDialog::getColor(QColor(mc->getSelectionColor()), 0, QString());
+    if(!c.isValid())
+        return;
+
+    mc->setSelectionColor(c.name().toUtf8().constData());
+    rc->updateSelectionColor();
+    ui->selectColorBtn->setStyleSheet(btn_style(mc->getSelectionColor(), false, WIDTH1).c_str());
+}
+
 void SettingsWindow::changeTextColor(){
     QColor c = QColorDialog::getColor(QColor(mc->getFont()[2]), 0, QString());
     if(!c.isValid())
@@ -228,6 +238,7 @@ void SettingsWindow::inits(){
     ui->fontColorBtn->setStyleSheet(btn_style(mc->getFont()[2], false, WIDTH1).c_str());
     ui->backColorBtn->setStyleSheet(btn_style(mc->getBackgroundColor(), mc->shadowAlpha(), WIDTH2).c_str());
     ui->borderColorBtn->setStyleSheet(btn_style(mc->getSboxBorderColor(), false, WIDTH1).c_str());
+    ui->selectColorBtn->setStyleSheet(btn_style(mc->getSelectionColor(), false, WIDTH1).c_str());
     ui->borderWidthSlider->setValue(mc->sboxBorderWidth());
     ui->hideOnAppCheck->setChecked(mc->hideOnApp());
     ui->hideIconCheck->setChecked(mc->getHideIcon());
@@ -261,4 +272,5 @@ void SettingsWindow::inits(){
     connect(ui->showLauncherBtn, SIGNAL(clicked(bool)), this, SLOT(showLauncher()));
     connect(ui->hideIconCheck, SIGNAL(clicked(bool)), this, SLOT(changeHideIcon(bool )));
     connect(ui->sedit, SIGNAL(textChanged(QString)), this, SLOT(onTextChanged(QString )));
+    connect(ui->selectColorBtn, SIGNAL(clicked(bool)), this, SLOT(changeSelectionColor()));
 }

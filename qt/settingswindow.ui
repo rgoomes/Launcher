@@ -739,150 +739,200 @@
                 <string>Other</string>
                </property>
               </widget>
-              <widget class="QLabel" name="label_10">
+              <widget class="QLabel" name="label_31">
                <property name="geometry">
                 <rect>
                  <x>10</x>
-                 <y>55</y>
-                 <width>141</width>
+                 <y>20</y>
+                 <width>121</width>
                  <height>25</height>
                 </rect>
                </property>
                <property name="text">
-                <string>Scale Factor (HiDPI):</string>
+                <string>Selection color:</string>
                </property>
               </widget>
-              <widget class="QSlider" name="dpiSlider">
+              <widget class="QPushButton" name="selectColorBtn">
                <property name="geometry">
                 <rect>
-                 <x>155</x>
-                 <y>55</y>
-                 <width>125</width>
-                 <height>29</height>
-                </rect>
-               </property>
-               <property name="maximum">
-                <number>8</number>
-               </property>
-               <property name="pageStep">
-                <number>1</number>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-              <widget class="QLabel" name="dpiNumberLabel">
-               <property name="geometry">
-                <rect>
-                 <x>150</x>
-                 <y>85</y>
-                 <width>41</width>
-                 <height>20</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>dpi</string>
-               </property>
-              </widget>
-              <widget class="QLabel" name="label_19">
-               <property name="geometry">
-                <rect>
-                 <x>305</x>
-                 <y>55</y>
-                 <width>101</width>
-                 <height>25</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>Resize Margin:</string>
-               </property>
-              </widget>
-              <widget class="QComboBox" name="resizePxCombo">
-               <property name="geometry">
-                <rect>
-                 <x>419</x>
-                 <y>55</y>
-                 <width>71</width>
-                 <height>25</height>
-                </rect>
-               </property>
-               <property name="editable">
-                <bool>true</bool>
-               </property>
-              </widget>
-              <widget class="QCheckBox" name="hideOnAppCheck">
-               <property name="geometry">
-                <rect>
-                 <x>7</x>
-                 <y>25</y>
-                 <width>291</width>
-                 <height>25</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>Hide launcher on application entering</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="showLauncherBtn">
-               <property name="geometry">
-                <rect>
-                 <x>510</x>
-                 <y>55</y>
-                 <width>150</width>
+                 <x>130</x>
+                 <y>20</y>
+                 <width>35</width>
                  <height>27</height>
                 </rect>
                </property>
                <property name="text">
-                <string>Show launcher</string>
-               </property>
-              </widget>
-              <widget class="QLabel" name="label_29">
-               <property name="geometry">
-                <rect>
-                 <x>305</x>
-                 <y>30</y>
-                 <width>121</width>
-                 <height>17</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>Global Shortcut: </string>
-               </property>
-              </widget>
-              <widget class="QLineEdit" name="sedit">
-               <property name="geometry">
-                <rect>
-                 <x>420</x>
-                 <y>26</y>
-                 <width>240</width>
-                 <height>25</height>
-                </rect>
-               </property>
-              </widget>
-              <widget class="QLabel" name="label_30">
-               <property name="geometry">
-                <rect>
-                 <x>420</x>
-                 <y>6</y>
-                 <width>231</width>
-                 <height>21</height>
-                </rect>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">color: red;</string>
-               </property>
-               <property name="text">
-                <string>Changing shortcut requires launcher restart</string>
+                <string/>
                </property>
               </widget>
              </widget>
             </item>
            </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="systemTab">
+       <attribute name="title">
+        <string>Other</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QScrollArea" name="scrollArea_3">
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_3">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>776</width>
+             <height>422</height>
+            </rect>
+           </property>
+           <widget class="QCheckBox" name="hideOnAppCheck">
+            <property name="geometry">
+             <rect>
+              <x>7</x>
+              <y>25</y>
+              <width>291</width>
+              <height>25</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Hide launcher on application entering</string>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="showLauncherBtn">
+            <property name="geometry">
+             <rect>
+              <x>510</x>
+              <y>55</y>
+              <width>150</width>
+              <height>27</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Show launcher</string>
+            </property>
+           </widget>
+           <widget class="QComboBox" name="resizePxCombo">
+            <property name="geometry">
+             <rect>
+              <x>419</x>
+              <y>55</y>
+              <width>71</width>
+              <height>25</height>
+             </rect>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_19">
+            <property name="geometry">
+             <rect>
+              <x>305</x>
+              <y>55</y>
+              <width>101</width>
+              <height>25</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Resize Margin:</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_10">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>60</y>
+              <width>141</width>
+              <height>25</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Scale Factor (HiDPI):</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="dpiNumberLabel">
+            <property name="geometry">
+             <rect>
+              <x>150</x>
+              <y>90</y>
+              <width>41</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>dpi</string>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_30">
+            <property name="geometry">
+             <rect>
+              <x>420</x>
+              <y>6</y>
+              <width>231</width>
+              <height>21</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: red;</string>
+            </property>
+            <property name="text">
+             <string>Changing shortcut requires launcher restart</string>
+            </property>
+           </widget>
+           <widget class="QSlider" name="dpiSlider">
+            <property name="geometry">
+             <rect>
+              <x>155</x>
+              <y>60</y>
+              <width>125</width>
+              <height>29</height>
+             </rect>
+            </property>
+            <property name="maximum">
+             <number>8</number>
+            </property>
+            <property name="pageStep">
+             <number>1</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+           <widget class="QLineEdit" name="sedit">
+            <property name="geometry">
+             <rect>
+              <x>420</x>
+              <y>26</y>
+              <width>240</width>
+              <height>25</height>
+             </rect>
+            </property>
+           </widget>
+           <widget class="QLabel" name="label_29">
+            <property name="geometry">
+             <rect>
+              <x>305</x>
+              <y>30</y>
+              <width>121</width>
+              <height>17</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Global Shortcut: </string>
+            </property>
+           </widget>
           </widget>
          </widget>
         </item>

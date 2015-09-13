@@ -14,13 +14,18 @@ class ResultsController : public QObject{
     std::vector<ResultWidget*> results;
     QWidget *resultsWidget;
     QLayout *resultsLayout;
+    int curResultSelected;
 
     public:
         ResultsController(QWidget *);
         ~ResultsController();
 
         void setStretcher(bool );
-        void openFirstResult();
+        void openSelectedResult();
+        void setSelectedResult(ResultWidget *);
+        void changeSelection(int );
+        void clearSelection();
+        void updateSelectionColor();
 
     public slots:
         void clearResults();

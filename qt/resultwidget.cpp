@@ -14,8 +14,26 @@ ResultWidget::ResultWidget(QWidget *parent, QString name, QString path) :
     ui->icon->setPixmap(fileIcon(path).pixmap(QSize(48, 48)));
 }
 
+void ResultWidget::enterEvent(QEvent* ){
+    rc->setSelectedResult(this);
+    selectResult();
+}
+
+void ResultWidget::leaveEvent(QEvent* ){
+    rc->clearSelection();
+    deselectResult();
+}
+
 void ResultWidget::mousePressEvent(QMouseEvent *){
     open();
+}
+
+void ResultWidget::selectResult(){
+    this->setStyleSheet("background-color: " + mc->getSelectionColor() + ";");
+}
+
+void ResultWidget::deselectResult(){
+    this->setStyleSheet("");
 }
 
 void ResultWidget::open(){

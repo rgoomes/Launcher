@@ -268,3 +268,13 @@ void MainController::setGlobalShortcut(QString shortcut){
 QString MainController::getSboxText(){
     return w->sboxUi()->text();
 }
+
+QString MainController::getSelectionColor(){
+    return ct->getStyle("selection-background-color", SBOX);
+}
+
+void MainController::setSelectionColor(std::string color){
+    ct->setStyle("selection-background-color", QString::fromStdString(color), SBOX);
+    w->sboxUi()->setStyleSheet(ct->getStylesheet("Sbox", SBOX));
+
+}

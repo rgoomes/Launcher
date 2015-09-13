@@ -1,6 +1,8 @@
 #include "resultscontroller.h"
 #include "types.h"
 
+#define NO_RESULT_SELECTED -1
+
 QWidget* stretcher;
 
 ResultsController::~ResultsController(){}
@@ -9,6 +11,7 @@ ResultsController::ResultsController(QWidget *resultsWidget){
 
     this->resultsWidget = resultsWidget;
     this->resultsLayout = resultsWidget->layout();
+    this->curResultSelected = NO_RESULT_SELECTED;
 }
 
 void ResultsController::addResult(QString name, QString path){
@@ -21,6 +24,11 @@ void ResultsController::addResult(QString name, QString path){
     ResultWidget *res = new ResultWidget(resultsWidget, name, path);
     results.push_back(res);
 
+    if(results.size() == 1 || curResultSelected == NO_RESULT_SELECTED){
+        curResultSelected = 0;
+        res->selectResult();
+    }
+
     resultsLayout->addWidget(res);
     resultsLayout->addWidget(stretcher);
 }
@@ -29,7 +37,8 @@ void ResultsController::clearResults(){
     for(ResultWidget *result : results)
         delete result;
 
-    results.clear();
+    this->results.clear();
+    this->clearSelection();
 }
 
 void ResultsController::setStretcher(bool isVertical){
@@ -41,9 +50,49 @@ void ResultsController::setStretcher(bool isVertical){
                              isVertical ? QSizePolicy::Expanding : QSizePolicy::Preferred);
 }
 
-void ResultsController::openFirstResult(){
+void ResultsController::openSelectedResult(){
     if(results.size()){
-        ResultWidget *tmp = results[0];
+        ResultWidget *tmp = results[curResultSelected == NO_RESULT_SELECTED ? 0 : curResultSelected];
         tmp->open();
     }
+}
+
+void ResultsController::setSelectedResult(ResultWidget *cur){
+    if(curResultSelected > NO_RESULT_SELECTED)
+        results[curResultSelected]->deselectResult();
+
+    for(int pos = 0; pos < int(results.size()); pos++){
+        if(cur == results[pos]){
+            curResultSelected = pos;
+            break;
+        }
+    }
+}
+
+void ResultsController::changeSelection(int dir){
+    if(!results.size())
+        return;
+    if(results.size() == 1){
+        curResultSelected = 0;
+        results[curResultSelected]->selectResult();
+        return;
+    }
+    if(curResultSelected == NO_RESULT_SELECTED){
+        curResultSelected = dir > 0 ? 0 : results.size() - 1;
+        results[curResultSelected]->selectResult();
+        return;
+    }
+
+    results[curResultSelected]->deselectResult();
+    curResultSelected = (curResultSelected + dir) % results.size();
+    results[curResultSelected]->selectResult();
+}
+
+void ResultsController::clearSelection(){
+    curResultSelected = NO_RESULT_SELECTED;
+}
+
+void ResultsController::updateSelectionColor(){
+    if(curResultSelected > NO_RESULT_SELECTED)
+        results[curResultSelected]->selectResult();
 }

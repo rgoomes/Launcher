@@ -204,10 +204,15 @@ void MainWindow::updateFiles(){
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event){
+
     if(obj == ui->sbox && event->type() == KEYPRESS ){
         QKeyEvent *ev = static_cast<QKeyEvent *>(event);
         if(ev->key() == Qt::Key_Return)
-            rc->openFirstResult();
+            rc->openSelectedResult();
+        else if(ev->key() == Qt::Key_Up)
+            rc->changeSelection(-1);
+        else if(ev->key() == Qt::Key_Down)
+            rc->changeSelection(+1);
     }
     else if(obj == ui->sbox){
         QPoint cur = static_cast<const QMouseEvent*>(event)->pos();
@@ -255,21 +260,14 @@ void MainWindow::onFullscreenShortcut(){
     this->goMode();
 }
 
-QLineEdit* MainWindow::sboxUi(){
-    return ui->sbox;
-}
-
-QFrame* MainWindow::frameUi(){
-    return ui->frame;
-}
-
-QToolButton* MainWindow::iconUi(){
-    return icon;
-}
+QLineEdit* MainWindow::sboxUi(){ return ui->sbox; }
+QFrame* MainWindow::frameUi(){ return ui->frame;  }
+QToolButton* MainWindow::iconUi(){ return icon;   }
 
 void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    ui->scrollArea->setFocusPolicy(Qt::NoFocus);
 
     // INIT FORMAT THEMES
     initFormatThemes();

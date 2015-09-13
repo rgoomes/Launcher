@@ -18,12 +18,16 @@ public:
     ~ResultWidget();
 
     void open();
+    void selectResult();
+    void deselectResult();
 
 private:
     Ui::ResultWidget *ui;
 
 protected:
     void mousePressEvent(QMouseEvent *);
+    void enterEvent(QEvent *);
+    void leaveEvent(QEvent *);
 
 };
 

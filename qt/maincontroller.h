@@ -30,7 +30,7 @@ class MainController{
         void setBorderRadius(int , bool );
         void updateIcon(QString , QString );
         void setFont(QString , QString);
-        void setFontColor(std::string color);
+        void setFontColor(std::string );
         void updateSboxHeight(int = 0);
         void setMaxResults(int );
         void setSearchTime(int );
@@ -38,6 +38,7 @@ class MainController{
         void setHideOnApp(int );
         void setHideIcon(int );
         void setGlobalShortcut(QString );
+        void setSelectionColor(std::string );
         void changeIconPos(bool );
         void showLauncher();
         void hideLauncher();
@@ -62,6 +63,7 @@ class MainController{
         QString getSearchType();
         QString getGlobalShortcut();
         QString getSboxText();
+        QString getSelectionColor();
         std::vector<QString> getFont();
 
 };

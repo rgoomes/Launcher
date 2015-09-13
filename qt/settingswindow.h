@@ -45,6 +45,7 @@ class SettingsWindow : public QMainWindow{
         void changeMaxResults(int );
         void changeHideIcon(bool );
         void changeWindowMode();
+        void changeSelectionColor();
         void changeTextColor();
         void requestDpiChange(int );
         void centerWindow();
