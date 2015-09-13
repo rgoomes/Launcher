@@ -36,6 +36,7 @@ void Worker::process() {
         reset->set(false);
         resultsLock.lock();
         results->clear();
+        emit cleanResults();
         resultsLock.unlock();
 
         #if DEBUG_SEARCH
@@ -78,8 +79,13 @@ void Worker::search(){
 }
 
 void Worker::dfs(int depth, QDir *cur) throw(Interrupt){
-    if(reset->get())
+    if(reset->get()){
+        if(key.isEmpty())
+            emit cleanResults();
+
         throw Interrupt();
+    }
+
     if(searchTime > 0 && duration_cast<milliseconds>(high_resolution_clock::now() - t).count() > searchTime)
         throw Interrupt();
 
@@ -129,7 +135,6 @@ void Worker::updateWork(QString k, int searchTime){
 
     if(k.isEmpty()){
         this->key = "";
-
         reset->set(true);
     }else if(k.contains(this->key)){
         QString curkey = this->key;

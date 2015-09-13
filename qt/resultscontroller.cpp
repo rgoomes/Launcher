@@ -1,17 +1,19 @@
 #include "resultscontroller.h"
+#include "types.h"
 
 QWidget* stretcher;
 
-ResultsController::ResultsController(QWidget *resultsWidget, int maxResults){
+ResultsController::~ResultsController(){}
+ResultsController::ResultsController(QWidget *resultsWidget){
     setStretcher(true);
-    this->maxResults = maxResults;
+
     this->resultsWidget = resultsWidget;
     this->resultsLayout = resultsWidget->layout();
 }
 
 void ResultsController::addResult(QString name, QString path){
     // TODO: PLACE RESULT ORDERED BY ACCESS DATE
-    if(int(results.size()) == maxResults)
+    if(int(results.size()) == mc->getMaxResults())
         return;
     if(results.size())
         resultsLayout->removeWidget(stretcher);
@@ -37,4 +39,11 @@ void ResultsController::setStretcher(bool isVertical){
     stretcher = new QWidget();
     stretcher->setSizePolicy(isVertical ? QSizePolicy::Preferred : QSizePolicy::Expanding,
                              isVertical ? QSizePolicy::Expanding : QSizePolicy::Preferred);
+}
+
+void ResultsController::openFirstResult(){
+    if(results.size()){
+        ResultWidget *tmp = results[0];
+        tmp->open();
+    }
 }

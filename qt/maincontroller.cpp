@@ -228,6 +228,18 @@ void MainController::setSearchType(QString type){
     wc->set_option("search-type", type);
 }
 
+void MainController::showLauncher(){
+    if(!w->isVisible())
+        w->show();
+}
+
+void MainController::hideLauncher(){
+    if(w->isVisible()){
+        w->sboxUi()->setText("");
+        w->hide();
+    }
+}
+
 bool MainController::hideOnApp(){
     return wc->get_option("hide-on-app").toInt();
 }

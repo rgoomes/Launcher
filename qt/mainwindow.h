@@ -14,6 +14,7 @@
 #include <QLineEdit>
 #include <QFrame>
 #include <QWheelEvent>
+#include <QKeyEvent>
 
 #include "settingswindow.h"
 #include "stylesheet.h"
@@ -21,7 +22,6 @@
 #include "windowcontroller.h"
 #include "worker.h"
 #include "resultwidget.h"
-#include "maincontroller.h"
 #include "resultscontroller.h"
 
 extern const int FRAME;
@@ -67,18 +67,16 @@ class MainWindow : public QMainWindow{
         void selection_changed();
         void text_changed(QString );
         void onFullscreenShortcut();
-        void onNewResult(QString , QString );
 
     private:
         class SettingsWindow *settingsWindow;
         class GlobalShortcut *globalshortcut;
-        class MainController *mc;
+        class ResultsController *rc;
+        class Worker* worker;
 
-        ResultsController *rc;
         WindowController *wc;
         Ui::MainWindow *ui;
         Container *ct;
-        Worker* worker;
         QToolButton *icon;
         QPoint mpos;
 

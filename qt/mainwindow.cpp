@@ -3,6 +3,7 @@
 #include "ui_mainwindow.h"
 #include "cleaner.h"
 #include "globalshortcut.h"
+#include "types.h"
 
 #define DARK_ICONS_PATH  QString("../qt/icons/dark/")
 #define LIGHT_ICONS_PATH QString("../qt/icons/light/")
@@ -13,6 +14,7 @@
 #endif
 
 #define GRIP_SIZE 5
+#define KEYPRESS  6
 
 const int FRAME = 0;
 const int SBOX  = 1;
@@ -32,7 +34,8 @@ void MainWindow::setupWorker(){
     worker = new Worker();
     worker->moveToThread(thread);
     connect(thread, &QThread::started, worker, &Worker::process );
-    connect(worker, &Worker::newResult, this, &MainWindow::onNewResult);
+    connect(worker, &Worker::newResult, rc, &ResultsController::addResult);
+    connect(worker, &Worker::cleanResults, rc, &ResultsController::clearResults);
     connect(worker, &Worker::finished, thread, &QThread::quit );
     connect(worker, &Worker::finished, worker, &Worker::deleteLater );
     connect(thread, &QThread::finished, thread, &QThread::deleteLater );
@@ -65,7 +68,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event){
         sigLock.unlock(); // FREE LOCK IN CLEANER
 
     if(!settingsOpened && event->key() == Qt::Key_F1){
-        settingsWindow = new SettingsWindow(this, this->mc);
+        settingsWindow = new SettingsWindow(this);
         settingsWindow->show();
         settingsWindow->activateWindow();
         settingsOpened = true;
@@ -166,8 +169,6 @@ void MainWindow::center_window(){
 void MainWindow::text_changed(QString text){
     mc->updateIcon(text, mc->getIconTheme());
 
-    rc->clearResults();
-
     if(!mc->getSearchType().compare("standard"))
         worker->updateWork(text, mc->getSearchTime() * 1000);
 }
@@ -195,7 +196,6 @@ void MainWindow::selection_changed(){
 
 void MainWindow::clear_trigged(){
     ui->sbox->setText("");
-    rc->clearResults();
 }
 
 void MainWindow::updateFiles(){
@@ -204,7 +204,12 @@ void MainWindow::updateFiles(){
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event){
-    if(obj == ui->sbox){
+    if(obj == ui->sbox && event->type() == KEYPRESS ){
+        QKeyEvent *ev = static_cast<QKeyEvent *>(event);
+        if(ev->key() == Qt::Key_Return)
+            rc->openFirstResult();
+    }
+    else if(obj == ui->sbox){
         QPoint cur = static_cast<const QMouseEvent*>(event)->pos();
 
         if(abs(mc->toDpi(wc->get_option("search-height")) - cur.y()) <= GRIP_SIZE)
@@ -262,10 +267,6 @@ QToolButton* MainWindow::iconUi(){
     return icon;
 }
 
-void MainWindow::onNewResult(QString name, QString path){
-    rc->addResult(name, path);
-}
-
 void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -290,7 +291,7 @@ void MainWindow::inits(){
     // CONTROLLERS
     wc = new WindowController("../User/window.user");
     mc = new MainController(this, this->wc, this->ct);
-    rc = new ResultsController(ui->results, 10);
+    rc = new ResultsController(ui->results);
 
     // INIT STORED PATH
     QPixmap pixmap((mc->getIconTheme().compare("dark") ? LIGHT_ICONS_PATH : DARK_ICONS_PATH) + "search.svg");

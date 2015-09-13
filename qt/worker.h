@@ -51,6 +51,7 @@ signals:
     void finished();
     void error(QString err);
     void newResult(QString , QString );
+    void cleanResults();
 
 };
 

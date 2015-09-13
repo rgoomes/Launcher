@@ -1,12 +1,8 @@
 #include "globalshortcut.h"
+#include "types.h"
 
 GlobalShortcut::~GlobalShortcut(){}
 GlobalShortcut::GlobalShortcut(MainWindow *w, QString shortcut){ this->w = w; this->shortcut = shortcut; }
-
-void showWindow(MainWindow *w){
-    if(!w->isVisible())
-        w->show();
-}
 
 int getModifiers(QString shortcut){
     #if defined(__linux) || defined(__unix)
@@ -55,7 +51,7 @@ void GlobalShortcut::globalShortcutX11(){
     while(true){
         XNextEvent(dpy, &event);
         if(event.type == KeyPress)
-            showWindow(w);
+            mc->showLauncher();
     }
 #endif
 

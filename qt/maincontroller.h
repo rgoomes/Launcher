@@ -39,6 +39,8 @@ class MainController{
         void setHideIcon(int );
         void setGlobalShortcut(QString );
         void changeIconPos(bool );
+        void showLauncher();
+        void hideLauncher();
         bool hideOnApp();
         bool getHideIcon();
         int toDpi(QString );
