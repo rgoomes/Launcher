@@ -20,7 +20,7 @@ void ResultWidget::enterEvent(QEvent* ){
 }
 
 void ResultWidget::leaveEvent(QEvent* ){
-    rc->clearSelection();
+    rc->clearSelection(this);
     deselectResult();
 }
 

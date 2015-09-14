@@ -135,6 +135,7 @@ void Worker::updateWork(QString k, int searchTime){
 
     if(k.isEmpty()){
         this->key = "";
+        emit cleanResults();
         reset->set(true);
     }else if(k.contains(this->key)){
         QString curkey = this->key;

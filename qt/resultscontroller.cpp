@@ -38,7 +38,7 @@ void ResultsController::clearResults(){
         delete result;
 
     this->results.clear();
-    this->clearSelection();
+    this->clearSelection(NULL);
 }
 
 void ResultsController::setStretcher(bool isVertical){
@@ -88,8 +88,14 @@ void ResultsController::changeSelection(int dir){
     results[curResultSelected]->selectResult();
 }
 
-void ResultsController::clearSelection(){
-    curResultSelected = NO_RESULT_SELECTED;
+void ResultsController::clearSelection(ResultWidget *cur){
+    if(cur == NULL){
+        curResultSelected = NO_RESULT_SELECTED;
+        return;
+    }
+
+    if(cur == results[curResultSelected])
+        curResultSelected = NO_RESULT_SELECTED;
 }
 
 void ResultsController::updateSelectionColor(){

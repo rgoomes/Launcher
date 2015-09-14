@@ -24,7 +24,7 @@ class ResultsController : public QObject{
         void openSelectedResult();
         void setSelectedResult(ResultWidget *);
         void changeSelection(int );
-        void clearSelection();
+        void clearSelection(ResultWidget *);
         void updateSelectionColor();
 
     public slots:
