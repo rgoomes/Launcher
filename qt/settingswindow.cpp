@@ -63,11 +63,19 @@ void SettingsWindow::changeBorderColor(){
 }
 
 void SettingsWindow::changeSelectionColor(){
-    QColor c = QColorDialog::getColor(QColor(mc->getSelectionColor()), 0, QString());
+    int r, g, b;
+    std::stringstream ss(mc->getSelectionColor().toStdString());
+
+    ss.ignore(LIMIT, '(');
+    ss >> r; ss.ignore(LIMIT, ',');
+    ss >> g; ss.ignore(LIMIT, ',');
+    ss >> b;
+
+    QColor c = QColorDialog::getColor(QColor(r,g,b,mc->getSelectionAlpha()), 0, QString(), QColorDialog::ShowAlphaChannel);
     if(!c.isValid())
         return;
 
-    mc->setSelectionColor(c.name().toUtf8().constData());
+    mc->setSelectionColor(c);
     rc->updateSelectionColor();
     ui->selectColorBtn->setStyleSheet(btn_style(mc->getSelectionColor(), false, WIDTH1).c_str());
 }

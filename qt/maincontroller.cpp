@@ -273,8 +273,21 @@ QString MainController::getSelectionColor(){
     return ct->getStyle("selection-background-color", SBOX);
 }
 
-void MainController::setSelectionColor(std::string color){
-    ct->setStyle("selection-background-color", QString::fromStdString(color), SBOX);
-    w->sboxUi()->setStyleSheet(ct->getStylesheet("Sbox", SBOX));
+void MainController::setSelectionColor(QColor color){
+    QString c = genColor(color, false, getSelectionAlpha());
 
+    ct->setStyle("selection-background-color", c, SBOX);
+    w->sboxUi()->setStyleSheet(ct->getStylesheet("Sbox", SBOX));
+}
+
+int MainController::getSelectionAlpha(){
+    int alpha;
+    std::stringstream ss(ct->getStyle("selection-background-color", SBOX).toStdString());
+
+    ss.ignore(LIMIT, ',');
+    ss.ignore(LIMIT, ',');
+    ss.ignore(LIMIT, ',');
+    ss >> alpha;
+
+    return alpha;
 }

@@ -45,8 +45,8 @@
          <item>
           <widget class="QScrollArea" name="scrollArea">
            <property name="styleSheet">
-            <string notr="true">background-color: transparent;
-border: none;</string>
+            <string notr="true">border: none;
+background: transparent;</string>
            </property>
            <property name="horizontalScrollBarPolicy">
             <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -63,7 +63,23 @@ border: none;</string>
               <height>115</height>
              </rect>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout"/>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <property name="spacing">
+              <number>5</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>5</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+            </layout>
            </widget>
           </widget>
          </item>

@@ -38,7 +38,7 @@ class MainController{
         void setHideOnApp(int );
         void setHideIcon(int );
         void setGlobalShortcut(QString );
-        void setSelectionColor(std::string );
+        void setSelectionColor(QColor );
         void changeIconPos(bool );
         void showLauncher();
         void hideLauncher();
@@ -57,6 +57,7 @@ class MainController{
         int getMaxResults();
         int getSearchTime();
         int iconOnLeft();
+        int getSelectionAlpha();
         QString getBackgroundColor();
         QString getSboxBorderColor();
         QString getIconTheme();
