@@ -765,6 +765,55 @@
                 <string/>
                </property>
               </widget>
+              <widget class="QLabel" name="label_32">
+               <property name="geometry">
+                <rect>
+                 <x>210</x>
+                 <y>20</y>
+                 <width>101</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Results layout:</string>
+               </property>
+              </widget>
+              <widget class="QWidget" name="widget_5" native="true">
+               <property name="geometry">
+                <rect>
+                 <x>310</x>
+                 <y>23</y>
+                 <width>161</width>
+                 <height>21</height>
+                </rect>
+               </property>
+               <widget class="QRadioButton" name="radioButton">
+                <property name="geometry">
+                 <rect>
+                  <x>10</x>
+                  <y>0</y>
+                  <width>117</width>
+                  <height>22</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Single</string>
+                </property>
+               </widget>
+               <widget class="QRadioButton" name="radioButton_2">
+                <property name="geometry">
+                 <rect>
+                  <x>80</x>
+                  <y>0</y>
+                  <width>117</width>
+                  <height>22</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Double</string>
+                </property>
+               </widget>
+              </widget>
              </widget>
             </item>
            </layout>
@@ -795,8 +844,8 @@
            <widget class="QCheckBox" name="hideOnAppCheck">
             <property name="geometry">
              <rect>
-              <x>7</x>
-              <y>25</y>
+              <x>10</x>
+              <y>30</y>
               <width>291</width>
               <height>25</height>
              </rect>
@@ -808,9 +857,9 @@
            <widget class="QPushButton" name="showLauncherBtn">
             <property name="geometry">
              <rect>
-              <x>510</x>
-              <y>55</y>
-              <width>150</width>
+              <x>210</x>
+              <y>120</y>
+              <width>155</width>
               <height>27</height>
              </rect>
             </property>
@@ -821,10 +870,10 @@
            <widget class="QComboBox" name="resizePxCombo">
             <property name="geometry">
              <rect>
-              <x>419</x>
-              <y>55</y>
+              <x>125</x>
+              <y>120</y>
               <width>71</width>
-              <height>25</height>
+              <height>27</height>
              </rect>
             </property>
             <property name="editable">
@@ -834,8 +883,8 @@
            <widget class="QLabel" name="label_19">
             <property name="geometry">
              <rect>
-              <x>305</x>
-              <y>55</y>
+              <x>10</x>
+              <y>121</y>
               <width>101</width>
               <height>25</height>
              </rect>
@@ -848,7 +897,7 @@
             <property name="geometry">
              <rect>
               <x>10</x>
-              <y>60</y>
+              <y>190</y>
               <width>141</width>
               <height>25</height>
              </rect>
@@ -861,7 +910,7 @@
             <property name="geometry">
              <rect>
               <x>150</x>
-              <y>90</y>
+              <y>220</y>
               <width>41</width>
               <height>20</height>
              </rect>
@@ -873,8 +922,8 @@
            <widget class="QLabel" name="label_30">
             <property name="geometry">
              <rect>
-              <x>420</x>
-              <y>6</y>
+              <x>125</x>
+              <y>76</y>
               <width>231</width>
               <height>21</height>
              </rect>
@@ -895,7 +944,7 @@
             <property name="geometry">
              <rect>
               <x>155</x>
-              <y>60</y>
+              <y>190</y>
               <width>125</width>
               <height>29</height>
              </rect>
@@ -913,8 +962,8 @@
            <widget class="QLineEdit" name="sedit">
             <property name="geometry">
              <rect>
-              <x>420</x>
-              <y>26</y>
+              <x>125</x>
+              <y>96</y>
               <width>240</width>
               <height>25</height>
              </rect>
@@ -923,14 +972,27 @@
            <widget class="QLabel" name="label_29">
             <property name="geometry">
              <rect>
-              <x>305</x>
-              <y>30</y>
+              <x>10</x>
+              <y>100</y>
               <width>121</width>
               <height>17</height>
              </rect>
             </property>
             <property name="text">
              <string>Global Shortcut: </string>
+            </property>
+           </widget>
+           <widget class="QCheckBox" name="enablePreviewCheck">
+            <property name="geometry">
+             <rect>
+              <x>10</x>
+              <y>10</y>
+              <width>281</width>
+              <height>22</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Enable preview document</string>
             </property>
            </widget>
           </widget>

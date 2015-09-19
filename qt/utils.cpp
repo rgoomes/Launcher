@@ -77,19 +77,27 @@ void initFormatThemes(){
 }
 
 QIcon fileIcon(QString filePath){
-    QFileInfo fileInfo(filePath);
-    const QString ext = fileInfo.suffix().toLower();
+    QString ext = extension(filePath);
 
-    for(QString format : QImageReader::supportedImageFormats())
-        if(!format.compare(ext))
-            return QIcon(filePath);
-
-    if(formatThemes.find(ext) != formatThemes.end())
+    if(isImage(ext))
+        return QIcon(filePath);
+    else if(formatThemes.find(ext) != formatThemes.end())
         return QIcon::fromTheme(formatThemes[ext]);
-    else if(fileInfo.isExecutable())
-        return QIcon::fromTheme("application-x-executable");
     else{
         QProxyStyle ps;
         return ps.standardIcon(QStyle::SP_FileIcon);
     }
+}
+
+bool isImage(QString extension){
+    for(QString format : QImageReader::supportedImageFormats())
+        if(!format.compare(extension))
+            return true;
+
+    return false;
+}
+
+QString extension(QString filePath){
+    QFileInfo fileInfo(filePath);
+    return fileInfo.suffix().toLower();
 }

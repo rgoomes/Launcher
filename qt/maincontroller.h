@@ -15,11 +15,15 @@ class MainController{
     WindowController *wc;
     Container *ct;
 
+    QString curPreviewPath;
+    double previewScale;
+
     public:
         MainController(MainWindow *, WindowController *, Container *);
 
     public:
         double curDpi();
+        double getPreviewScale();
         void setResizeMargin(int );
         void storeWindowPosition();
         void setSboxBorderColor(std::string );
@@ -37,8 +41,10 @@ class MainController{
         void setSearchType(QString );
         void setHideOnApp(int );
         void setHideIcon(int );
+        void setPreviewPath(QString );
         void setGlobalShortcut(QString );
         void setSelectionColor(QColor );
+        void setPreviewScale(double );
         void changeIconPos(bool );
         void showLauncher();
         void hideLauncher();
@@ -65,6 +71,7 @@ class MainController{
         QString getGlobalShortcut();
         QString getSboxText();
         QString getSelectionColor();
+        QString getCurPreviewPath();
         std::vector<QString> getFont();
 
 };

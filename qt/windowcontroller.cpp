@@ -27,6 +27,7 @@ QMap <QString, QString > getDefaultOptions(){
     default_options["max-results"] = "10";
     default_options["icon-hidden"] = "0";
     default_options["global-shortcut"] = "Ctrl+Shift+R";
+    default_options["layout"] = "double";
 
     return default_options;
 }

@@ -15,6 +15,8 @@
 #include <QFrame>
 #include <QWheelEvent>
 #include <QKeyEvent>
+#include <QPlainTextEdit>
+#include <QPainter>
 
 #include "settingswindow.h"
 #include "stylesheet.h"
@@ -57,9 +59,15 @@ class MainWindow : public QMainWindow{
         int toDpi(QString );
         int toPx(int );
 
+        void sboxEventFilter(QEvent *);
+        void previewAreaEventFilter(QEvent *);
+        bool resultsEventFilter(QEvent *);
+
         QLineEdit* sboxUi();
         QFrame* frameUi();
         QToolButton* iconUi();
+        QWidget* previewUi();
+        QPlainTextEdit* previewTextUi();
         bool settingsOpened = false;
 
     public slots:

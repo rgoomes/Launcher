@@ -42,3 +42,8 @@ void ResultWidget::open(){
     if(mc->hideOnApp())
         mc->hideLauncher();
 }
+
+QString ResultWidget::path(){
+    return ui->path->text();
+}
+

@@ -12,12 +12,15 @@
 
 QString rand_color(int );
 QString genColor(QColor, bool , int );
+QString extension(QString );
 
 QMap<QString, QString > frameDefaultStyle();
 QMap<QString, QString > sboxDefaultStyle();
 QMap<QString, QString > iconDefaultStyle();
 
 void initFormatThemes();
-QIcon fileIcon(QString filePath);
+bool isImage(QString );
+
+QIcon fileIcon(QString );
 
 #endif // UTILS_H

@@ -157,6 +157,10 @@ void MainWindow::goMode(){
         goFullScreenMode();
 }
 
+void MainWindow::onFullscreenShortcut(){
+    this->goMode();
+}
+
 void MainWindow::center_window(){
     if(this->in_fullscreen())
         return;
@@ -203,9 +207,46 @@ void MainWindow::updateFiles(){
     ct->update_file();
 }
 
-bool MainWindow::eventFilter(QObject *obj, QEvent *event){
+void MainWindow::previewAreaEventFilter(QEvent *event){
+    if(event->type() == QEvent::Wheel){
+        bool isControlPressed = QApplication::keyboardModifiers() & Qt::ControlModifier;
+        QWheelEvent *wheel = static_cast<QWheelEvent*>(event);
 
-    if(obj == ui->sbox && event->type() == KEYPRESS ){
+        if(isControlPressed)
+            mc->setPreviewScale(wheel->angleDelta().y() > 0 ? 0.1 : -0.1);
+    }
+    else if(event->type() == QEvent::Paint){
+        if(!mc->getCurPreviewPath().isEmpty()){
+            // TODO: FIX 100% CPU USAGE, FIX SLOWNESS WHEN IMAGES HAVE BIG RESOLUTION
+            // ZOOM (scale variable) MUST TAKE INTO ACCOUNT THE POSITION OF THE MOUSE
+
+            QPainter painter(ui->previewArea);
+            QPixmap pix(mc->getCurPreviewPath());
+
+            double scale = mc->getPreviewScale();
+            int width_ = std::min(ui->previewArea->width(), pix.width());
+            int height_ = std::min(int(ui->previewArea->width()/(pix.width()/(pix.height() * 1.0f))), pix.height());
+            int pos_y = (pix.height() < ui->previewArea->height()) ? ui->previewArea->height()/2 - int(pix.height()/2)
+                    : ui->previewArea->height()/2 - height_/2;
+            int pos_x = (pix.width() < ui->previewArea->width()) ? ui->previewArea->width()/2 - int(pix.width()/2) : 0;
+
+            painter.drawPixmap(pos_x, pos_y, pix.scaled(QSize(scale * width_, scale * height_)));
+            ui->previewArea->update();
+        }
+    }
+}
+
+bool MainWindow::resultsEventFilter(QEvent *event){
+    if(event->type() == QEvent::Wheel){
+        QWheelEvent *wheel = static_cast<QWheelEvent*>(event);
+        return wheel->orientation() == Qt::Horizontal ? true : false;
+    }
+
+    return false;
+}
+
+void MainWindow::sboxEventFilter(QEvent *event){
+    if(event->type() == KEYPRESS ){
         QKeyEvent *ev = static_cast<QKeyEvent *>(event);
         if(ev->key() == Qt::Key_Return)
             rc->openSelectedResult();
@@ -214,7 +255,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
         else if(ev->key() == Qt::Key_Down)
             rc->changeSelection(+1);
     }
-    else if(obj == ui->sbox){
+    else{
         QPoint cur = static_cast<const QMouseEvent*>(event)->pos();
 
         if(abs(mc->toDpi(wc->get_option("search-height")) - cur.y()) <= GRIP_SIZE)
@@ -237,10 +278,15 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event){
         if(event->type() == QEvent::MouseButtonRelease)
             scaling = false;
     }
-    else if(obj == ui->results && event->type() == QEvent::Wheel){
-        QWheelEvent *wheel = static_cast<QWheelEvent*>(event);
-        return wheel->orientation() == Qt::Horizontal ? true : false;
-    }
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event){
+    if(obj == ui->previewArea)
+        previewAreaEventFilter(event);
+    else if(obj == ui->sbox)
+        sboxEventFilter(event);
+    else if(obj == ui->results)
+        return resultsEventFilter(event);
 
     return false;
 }
@@ -256,18 +302,17 @@ void MainWindow::signals_handler(){
         signal(sig, [](int ) { sigLock.unlock(); });
 }
 
-void MainWindow::onFullscreenShortcut(){
-    this->goMode();
-}
-
 QLineEdit* MainWindow::sboxUi(){ return ui->sbox; }
 QFrame* MainWindow::frameUi(){ return ui->frame;  }
 QToolButton* MainWindow::iconUi(){ return icon;   }
+QWidget* MainWindow::previewUi(){ return ui->previewArea; }
+QPlainTextEdit* MainWindow::previewTextUi(){ return ui->plainTextEdit; }
 
 void MainWindow::inits(){
     setAttribute(Qt::WA_TranslucentBackground, true);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     ui->scrollArea->setFocusPolicy(Qt::NoFocus);
+    ui->plainTextEdit->setFocusPolicy(Qt::NoFocus);
 
     // INIT FORMAT THEMES
     initFormatThemes();
@@ -311,11 +356,12 @@ void MainWindow::inits(){
     // SETUP FULLSCREEN AND GLOBAL SHORTCUTS
     setupGlobalShortcut();
     QShortcut *shortcut = new QShortcut(QKeySequence(Qt::Key_F12), this);
-    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(onFullscreenShortcut()));
 
     // EVENT FILTERS AND SIGNALS/SLOTS
     ui->sbox->installEventFilter(this);
     ui->results->installEventFilter(this);
+    ui->previewArea->installEventFilter(this);
+    connect(shortcut, SIGNAL(activated()), this, SLOT(onFullscreenShortcut()));
     connect(icon, SIGNAL(clicked()), this, SLOT(clear_trigged()));
     connect(ui->sbox, SIGNAL(textChanged(QString )), this, SLOT(text_changed(QString )));
     connect(ui->sbox, SIGNAL(selectionChanged()), this, SLOT(selection_changed()));

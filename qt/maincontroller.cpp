@@ -3,6 +3,8 @@
 #define DARK_ICONS_PATH  QString("../qt/icons/dark/")
 #define LIGHT_ICONS_PATH QString("../qt/icons/light/")
 
+#define MAX_SCALE 5.0
+#define MIN_SCALE 1.0
 #define MARGIN_SIZE 30
 #define PADDING 5
 #define LIMIT 128
@@ -11,6 +13,9 @@ MainController::MainController(MainWindow *w, WindowController *wc, Container *c
     this->wc = wc;
     this->ct = ct;
     this->w = w;
+
+    previewScale = 1.0f;
+    curPreviewPath = "";
 }
 
 double MainController::curDpi() {
@@ -229,8 +234,12 @@ void MainController::setSearchType(QString type){
 }
 
 void MainController::showLauncher(){
-    if(!w->isVisible())
+    if(!w->isVisible()){
+        w->activateWindow();
+        w->sboxUi()->setFocus();
+        w->sboxUi()->grabKeyboard();
         w->show();
+    }
 }
 
 void MainController::hideLauncher(){
@@ -290,4 +299,23 @@ int MainController::getSelectionAlpha(){
     ss >> alpha;
 
     return alpha;
+}
+
+void MainController::setPreviewScale(double diff){
+    previewScale += diff;
+
+    previewScale = std::min(previewScale, MAX_SCALE);
+    previewScale = std::max(previewScale, MIN_SCALE);
+}
+
+QString MainController::getCurPreviewPath(){
+    return this->curPreviewPath;
+}
+
+void MainController::setPreviewPath(QString curPreviewPath){
+   this->curPreviewPath = curPreviewPath;
+}
+
+double MainController::getPreviewScale(){
+    return this->previewScale;
 }

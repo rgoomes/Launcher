@@ -27,6 +27,7 @@ void ResultsController::addResult(QString name, QString path){
     if(results.size() == 1 || curResultSelected == NO_RESULT_SELECTED){
         curResultSelected = 0;
         res->selectResult();
+        updatePreviewImage(path);
     }
 
     resultsLayout->addWidget(res);
@@ -64,6 +65,7 @@ void ResultsController::setSelectedResult(ResultWidget *cur){
     for(int pos = 0; pos < int(results.size()); pos++){
         if(cur == results[pos]){
             curResultSelected = pos;
+            updatePreviewImage(cur->path());
             break;
         }
     }
@@ -75,17 +77,21 @@ void ResultsController::changeSelection(int dir){
     if(results.size() == 1){
         curResultSelected = 0;
         results[curResultSelected]->selectResult();
+        updatePreviewImage(results[curResultSelected]->path());
         return;
     }
     if(curResultSelected == NO_RESULT_SELECTED){
         curResultSelected = dir > 0 ? 0 : results.size() - 1;
         results[curResultSelected]->selectResult();
+        updatePreviewImage(results[curResultSelected]->path());
         return;
     }
 
     results[curResultSelected]->deselectResult();
     curResultSelected = (curResultSelected + dir) % results.size();
     results[curResultSelected]->selectResult();
+
+    updatePreviewImage(results[curResultSelected]->path());
 }
 
 void ResultsController::clearSelection(ResultWidget *cur){
@@ -101,4 +107,8 @@ void ResultsController::clearSelection(ResultWidget *cur){
 void ResultsController::updateSelectionColor(){
     if(curResultSelected > NO_RESULT_SELECTED)
         results[curResultSelected]->selectResult();
+}
+
+void ResultsController::updatePreviewImage(QString path){
+     mc->setPreviewPath(isImage(extension(path)) ? path : "");
 }

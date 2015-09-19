@@ -20,6 +20,7 @@ public:
     void open();
     void selectResult();
     void deselectResult();
+    QString path();
 
 private:
     Ui::ResultWidget *ui;
