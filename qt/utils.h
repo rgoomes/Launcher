@@ -10,6 +10,13 @@
 #include <QProxyStyle>
 #include <QImageReader>
 
+typedef struct {
+    QPixmap img;
+    QString path;
+    int posx;
+    int posy;
+} ImageCache;
+
 QString rand_color(int );
 QString genColor(QColor, bool , int );
 QString extension(QString );

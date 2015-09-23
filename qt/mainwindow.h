@@ -25,6 +25,7 @@
 #include "worker.h"
 #include "resultwidget.h"
 #include "resultscontroller.h"
+#include "utils.h"
 
 extern const int FRAME;
 extern const int SBOX;
@@ -85,6 +86,7 @@ class MainWindow : public QMainWindow{
         Ui::MainWindow *ui;
         Container *ct;
         QToolButton *icon;
+        ImageCache imgCache;
         QPoint mpos;
 
         bool resizing = false;

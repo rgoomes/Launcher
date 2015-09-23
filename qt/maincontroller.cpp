@@ -16,6 +16,7 @@ MainController::MainController(MainWindow *w, WindowController *wc, Container *c
 
     previewScale = 1.0f;
     curPreviewPath = "";
+    canRender = false;
 }
 
 double MainController::curDpi() {

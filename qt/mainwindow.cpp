@@ -1,4 +1,3 @@
-#include "utils.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "cleaner.h"
@@ -112,6 +111,7 @@ void MainWindow::resizeEvent(QResizeEvent* event){
     if(!this->in_fullscreen() && event->spontaneous()){
         resizing = true;
         request_resize();
+        mc->canRender = true;
     }
 }
 
@@ -216,22 +216,35 @@ void MainWindow::previewAreaEventFilter(QEvent *event){
             mc->setPreviewScale(wheel->angleDelta().y() > 0 ? 0.1 : -0.1);
     }
     else if(event->type() == QEvent::Paint){
-        if(!mc->getCurPreviewPath().isEmpty()){
-            // TODO: FIX 100% CPU USAGE, FIX SLOWNESS WHEN IMAGES HAVE BIG RESOLUTION
-            // ZOOM (scale variable) MUST TAKE INTO ACCOUNT THE POSITION OF THE MOUSE
+        if(mc->canRender){
+            // TODO: FIX IMAGE LOADING TIMES WHEN IMAGES HAVE BIG RESOLUTION, IMPLEMENT
+            // ZOOM (scale variable), MUST TAKE INTO ACCOUNT THE POSITION OF THE MOUSE
+
+            if(!mc->getCurPreviewPath().isEmpty()){
+                QPainter painter(ui->previewArea);
+                QPixmap pix(mc->getCurPreviewPath());
+
+                double scale = mc->getPreviewScale();
+                int width_ = std::min(ui->previewArea->width(), pix.width());
+                int height_ = std::min(int(ui->previewArea->width()/(pix.width()/(pix.height() * 1.0f))), pix.height());
+                int pos_x = (pix.width() < ui->previewArea->width()) ? ui->previewArea->width()/2 - int(pix.width()/2) : 0;
+                int pos_y = (pix.height() < ui->previewArea->height()) ? ui->previewArea->height()/2 - int(pix.height()/2)
+                        : ui->previewArea->height()/2 - height_/2;
+
+                QPixmap tmp = pix.scaled(QSize(scale * width_, scale * height_));
+                imgCache = (ImageCache){tmp, mc->getCurPreviewPath(), pos_x, pos_y};
+
+                painter.drawPixmap(pos_x, pos_y, tmp);
+            }
+
+            ui->previewArea->update();
+            mc->canRender = false;
+        }
+        else if(!imgCache.path.compare(mc->getCurPreviewPath())){
+            // USING IMAGE CACHE HERE
 
             QPainter painter(ui->previewArea);
-            QPixmap pix(mc->getCurPreviewPath());
-
-            double scale = mc->getPreviewScale();
-            int width_ = std::min(ui->previewArea->width(), pix.width());
-            int height_ = std::min(int(ui->previewArea->width()/(pix.width()/(pix.height() * 1.0f))), pix.height());
-            int pos_y = (pix.height() < ui->previewArea->height()) ? ui->previewArea->height()/2 - int(pix.height()/2)
-                    : ui->previewArea->height()/2 - height_/2;
-            int pos_x = (pix.width() < ui->previewArea->width()) ? ui->previewArea->width()/2 - int(pix.width()/2) : 0;
-
-            painter.drawPixmap(pos_x, pos_y, pix.scaled(QSize(scale * width_, scale * height_)));
-            ui->previewArea->update();
+            painter.drawPixmap(imgCache.posx, imgCache.posy, imgCache.img);
         }
     }
 }
@@ -334,7 +347,7 @@ void MainWindow::inits(){
     // CONTROLLERS
     wc = new WindowController("../User/window.user");
     mc = new MainController(this, this->wc, this->ct);
-    rc = new ResultsController(ui->results);
+    rc = new ResultsController(ui->results, ui->scrollArea);
 
     // INIT STORED PATH
     QPixmap pixmap((mc->getIconTheme().compare("dark") ? LIGHT_ICONS_PATH : DARK_ICONS_PATH) + "search.svg");

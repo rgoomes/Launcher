@@ -6,9 +6,10 @@
 QWidget* stretcher;
 
 ResultsController::~ResultsController(){}
-ResultsController::ResultsController(QWidget *resultsWidget){
+ResultsController::ResultsController(QWidget *resultsWidget, QScrollArea *scrollArea){
     setStretcher(true);
 
+    this->scrollArea    = scrollArea;
     this->resultsWidget = resultsWidget;
     this->resultsLayout = resultsWidget->layout();
     this->curResultSelected = NO_RESULT_SELECTED;
@@ -92,6 +93,9 @@ void ResultsController::changeSelection(int dir){
     results[curResultSelected]->selectResult();
 
     updatePreviewImage(results[curResultSelected]->path());
+
+    scrollArea->ensureWidgetVisible(results[curResultSelected], 0,0);
+    scrollArea->horizontalScrollBar()->setValue(0);
 }
 
 void ResultsController::clearSelection(ResultWidget *cur){
@@ -111,4 +115,5 @@ void ResultsController::updateSelectionColor(){
 
 void ResultsController::updatePreviewImage(QString path){
      mc->setPreviewPath(isImage(extension(path)) ? path : "");
+     mc->canRender = true;
 }

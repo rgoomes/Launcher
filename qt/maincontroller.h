@@ -20,6 +20,7 @@ class MainController{
 
     public:
         MainController(MainWindow *, WindowController *, Container *);
+        bool canRender;
 
     public:
         double curDpi();
