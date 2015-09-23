@@ -130,6 +130,10 @@ void MainWindow::goFullScreenMode(){
     this->showFullScreen();
 
     mc->changeIconPos(true);
+
+    // TODO: PREVIEW AREA SIZE STILL NOT UPDATED HERE. WHY? FIX..
+    mc->canRender = true;
+    ui->previewArea->repaint();
 }
 
 void MainWindow::goWindowMode(){
@@ -217,24 +221,25 @@ void MainWindow::previewAreaEventFilter(QEvent *event){
     }
     else if(event->type() == QEvent::Paint){
         if(mc->canRender){
-            // TODO: FIX IMAGE LOADING TIMES WHEN IMAGES HAVE BIG RESOLUTION, IMPLEMENT
-            // ZOOM (scale variable), MUST TAKE INTO ACCOUNT THE POSITION OF THE MOUSE
+            // TODO: IMPLEMENT ZOOM MUST TAKE INTO ACCOUNT THE POSITION OF THE MOUSE
 
             if(!mc->getCurPreviewPath().isEmpty()){
-                QPainter painter(ui->previewArea);
-                QPixmap pix(mc->getCurPreviewPath());
+                QImageReader reader(mc->getCurPreviewPath());
+                int readerWidth = reader.size().width();
+                int readerHeight = reader.size().height();
 
-                double scale = mc->getPreviewScale();
-                int width_ = std::min(ui->previewArea->width(), pix.width());
-                int height_ = std::min(int(ui->previewArea->width()/(pix.width()/(pix.height() * 1.0f))), pix.height());
-                int pos_x = (pix.width() < ui->previewArea->width()) ? ui->previewArea->width()/2 - int(pix.width()/2) : 0;
-                int pos_y = (pix.height() < ui->previewArea->height()) ? ui->previewArea->height()/2 - int(pix.height()/2)
+                int width_ = std::min(ui->previewArea->width(), readerWidth);
+                int height_ = std::min(int(ui->previewArea->width()/(readerWidth/(readerHeight * 1.0f))), readerHeight);
+                int pos_x = (readerWidth < ui->previewArea->width()) ? ui->previewArea->width()/2 - int(readerWidth/2) : 0;
+                int pos_y = (readerHeight < ui->previewArea->height()) ? ui->previewArea->height()/2 - int(readerHeight/2)
                         : ui->previewArea->height()/2 - height_/2;
 
-                QPixmap tmp = pix.scaled(QSize(scale * width_, scale * height_));
+                double scale = mc->getPreviewScale();
+                reader.setScaledSize(QSize(scale * width_, scale * height_));
+                QImage tmp = reader.read();
+                QPainter painter(ui->previewArea);
+                painter.drawImage(pos_x, pos_y, tmp);
                 imgCache = (ImageCache){tmp, mc->getCurPreviewPath(), pos_x, pos_y};
-
-                painter.drawPixmap(pos_x, pos_y, tmp);
             }
 
             ui->previewArea->update();
@@ -244,7 +249,7 @@ void MainWindow::previewAreaEventFilter(QEvent *event){
             // USING IMAGE CACHE HERE
 
             QPainter painter(ui->previewArea);
-            painter.drawPixmap(imgCache.posx, imgCache.posy, imgCache.img);
+            painter.drawImage(imgCache.posx, imgCache.posy, imgCache.img);
         }
     }
 }

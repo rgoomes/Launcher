@@ -200,14 +200,15 @@ void MainController::updateSboxHeight(int diff){
     int margin_fix = 2*sboxBorderWidth()+1;
 
     int height = std::max(wc->get_option("search-height").toInt() + toPx(diff), toPx(fm.height()) + margin_fix);
-    height = std::min(height, -toPx(MARGIN_SIZE) + (!w->in_fullscreen() ? wc->get_option("height").toInt()
-           : toPx(QApplication::desktop()->screenGeometry().height())));
+    height = std::min(height, -toPx(MARGIN_SIZE) + (!w->in_fullscreen() ? int(wc->get_option("height").toInt() * 0.5)
+           : toPx(QApplication::desktop()->screenGeometry().height() * 0.5)));
     height = std::max(height, 0);
 
     w->sboxUi()->setMinimumHeight(toDpi(QString::number(height)));
     wc->set_option("search-height", QString::number(height));
 
     changeIconPos(true);
+    this->canRender = true;
 }
 
 int MainController::getMaxResults(){
@@ -319,4 +320,9 @@ void MainController::setPreviewPath(QString curPreviewPath){
 
 double MainController::getPreviewScale(){
     return this->previewScale;
+}
+
+void MainController::reloadPreview(){
+    if(w->in_fullscreen())
+        w->previewUi()->repaint();
 }

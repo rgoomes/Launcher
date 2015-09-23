@@ -11,7 +11,7 @@
 #include <QImageReader>
 
 typedef struct {
-    QPixmap img;
+    QImage img;
     QString path;
     int posx;
     int posy;

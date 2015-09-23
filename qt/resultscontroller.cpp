@@ -116,4 +116,7 @@ void ResultsController::updateSelectionColor(){
 void ResultsController::updatePreviewImage(QString path){
      mc->setPreviewPath(isImage(extension(path)) ? path : "");
      mc->canRender = true;
+
+     // THIS FIXES PAINT EVENTS WHEN IN FULLSCREEN
+     mc->reloadPreview();
 }
