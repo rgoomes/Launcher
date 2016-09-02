@@ -6,7 +6,7 @@
 #include <QObject>
 #include <QSemaphore>
 #include <QDebug>
-#include <QtConcurrent/QtConcurrent>
+#include <QHash>
 
 #include "job.h"
 #include "atomicbool.h"

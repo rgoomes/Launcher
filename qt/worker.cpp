@@ -4,7 +4,7 @@
 #define DEBUG_SEARCH true
 
 std::vector<QString> paths;
-QMap<QString, quint8> prunePaths;
+QHash<QString, quint8> prunePaths;
 
 void initPrunePaths(){
     #if defined(__linux) || defined(__unix)
@@ -18,7 +18,7 @@ void initPrunePaths(){
 }
 
 bool ignorePath(QString cur){
-    return prunePaths.find(cur) != prunePaths.end() ? true : false;
+    return prunePaths.contains(cur);
 }
 
 Worker::~Worker(){}
@@ -48,7 +48,7 @@ void Worker::process() {
 }
 
 void Worker::search(){
-    QDir dir = QDir::root();
+    QDir dir = QDir::home();
     for(int depth=0; depth < MAX_DEPTH; depth++){
         try{
             dfs(depth, &dir);

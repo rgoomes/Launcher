@@ -236,13 +236,13 @@ void SettingsWindow::inits(){
     ui->borderRadiusSlider->setValue(mc->getBorderRadius());
     ui->fullWindowBtn->setText(w->in_fullscreen() ? "Go Window Mode" : "Go Fullscreen Mode");
     ui->fontSizeCombo->addItems(values);
-    ui->fontSizeCombo->setCurrentText(mc->getFont()[1]);
+    ui->fontSizeCombo->setEditText(mc->getFont()[1]);
     ui->fontSizeCombo->setStyleSheet(MAKE_EDITABLE);
     ui->fontFamilyCombo->setStyleSheet(MAKE_EDITABLE);
     ui->resizePxCombo->setStyleSheet(MAKE_EDITABLE);
     ui->resizePxCombo->addItems(resize_margins);
-    ui->resizePxCombo->setCurrentText(QString::number(mc->getResizeMargin()));
-    ui->fontFamilyCombo->setCurrentText(mc->getFont()[0]);
+    ui->resizePxCombo->setEditText(QString::number(mc->getResizeMargin()));
+    ui->fontFamilyCombo->setEditText(mc->getFont()[0]);
     ui->fontColorBtn->setStyleSheet(btn_style(mc->getFont()[2], false, WIDTH1).c_str());
     ui->backColorBtn->setStyleSheet(btn_style(mc->getBackgroundColor(), mc->shadowAlpha(), WIDTH2).c_str());
     ui->borderColorBtn->setStyleSheet(btn_style(mc->getSboxBorderColor(), false, WIDTH1).c_str());

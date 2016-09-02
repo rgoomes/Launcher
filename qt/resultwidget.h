@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMouseEvent>
 #include <QDesktopServices>
+#include <QUrl>
 
 namespace Ui {
 class ResultWidget;

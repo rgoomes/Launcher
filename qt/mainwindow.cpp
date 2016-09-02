@@ -32,12 +32,12 @@ void MainWindow::setupWorker(){
     QThread* thread = new QThread;
     worker = new Worker();
     worker->moveToThread(thread);
-    connect(thread, &QThread::started, worker, &Worker::process );
-    connect(worker, &Worker::newResult, rc, &ResultsController::addResult);
-    connect(worker, &Worker::cleanResults, rc, &ResultsController::clearResults);
-    connect(worker, &Worker::finished, thread, &QThread::quit );
-    connect(worker, &Worker::finished, worker, &Worker::deleteLater );
-    connect(thread, &QThread::finished, thread, &QThread::deleteLater );
+    connect(thread, SIGNAL(started()), worker, SLOT(process()));
+    connect(worker, SIGNAL(newResult(QString,QString)), rc, SLOT(addResult(QString,QString)));
+    connect(worker, SIGNAL(cleanResults()), rc, SLOT(clearResults()));
+    connect(worker, SIGNAL(finished()), thread, SLOT(quit()) );
+    connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()) );
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()) );
     thread->start();
 }
 
@@ -45,9 +45,10 @@ void MainWindow::setupCleaner(){
     QThread *thread = new QThread;
     Cleaner *cleaner = new Cleaner(this, &sigLock);
     cleaner->moveToThread(thread);
-    connect(thread, &QThread::started, cleaner, &Cleaner::cleanExit);
-    connect(cleaner, &Cleaner::finished, cleaner, &Cleaner::deleteLater );
-    connect(thread, &QThread::finished, thread, &QThread::deleteLater );
+    connect(thread, SIGNAL(started()), cleaner, SLOT(cleanExit()));
+    connect(cleaner, SIGNAL(finished()), cleaner, SLOT(deleteLater()) );
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()) );
+
     thread->start();
 }
 
@@ -55,9 +56,9 @@ void MainWindow::setupGlobalShortcut(){
     QThread *thread = new QThread;
     globalshortcut = new GlobalShortcut(this, mc->getGlobalShortcut());
     globalshortcut->moveToThread(thread);
-    connect(thread, &QThread::started, globalshortcut, &GlobalShortcut::listenShortcuts);
-    connect(globalshortcut, &GlobalShortcut::finished, globalshortcut, &GlobalShortcut::deleteLater );
-    connect(thread, &QThread::finished, thread, &QThread::deleteLater );
+    connect(thread, SIGNAL(started()), globalshortcut, SLOT(listenShortcuts()));
+    connect(globalshortcut, SIGNAL(finished()), globalshortcut, SLOT(deleteLater()) );
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
     thread->start();
 }
 
@@ -213,11 +214,16 @@ void MainWindow::updateFiles(){
 
 void MainWindow::previewAreaEventFilter(QEvent *event){
     if(event->type() == QEvent::Wheel){
+        // FIXME: QWheelEvent::angleDelta is deprecated. Zoom in/out disabled
+
+        /*
         bool isControlPressed = QApplication::keyboardModifiers() & Qt::ControlModifier;
         QWheelEvent *wheel = static_cast<QWheelEvent*>(event);
 
+
         if(isControlPressed)
             mc->setPreviewScale(wheel->angleDelta().y() > 0 ? 0.1 : -0.1);
+        */
     }
     else if(event->type() == QEvent::Paint){
         if(mc->canRender){
